@@ -1,8 +1,9 @@
 {
-  "name": "raverlights-messaging",
+  "name": "rvlmessaging-node",
   "version": "1.0.0",
-  "description": "A standalone, dependecy-less library that implements the Raver Lights messaging stack for use with Arduino, PlatformIO, and WASM ",
+  "description": "A Node.js implementation of RVLMessaging based on Web Assembly",
   "main": "dist/index.js",
+  "types": "declarations/index.d.ts",
   "directories": {
     "example": "example"
   },
