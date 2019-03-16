@@ -1,0 +1,3 @@
+[submodule "lib/RVLMessaging"]
+	path = lib/RVLMessaging
+	url = https://github.com/nebrius/RVLMessaging.git

@@ -1,0 +1,34 @@
+{
+  "name": "raverlights-messaging",
+  "version": "1.0.0",
+  "description": "A standalone, dependecy-less library that implements the Raver Lights messaging stack for use with Arduino, PlatformIO, and WASM ",
+  "main": "dist/index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild-ts": "tslint src/**/*.ts",
+    "build-ts": "tsc",
+    "build-cpp": "em++ -s WASM=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS=\"['_init','_loop','_setWaveParameters']\" -std=c++11 -Ilib/RVLMessaging/src -Isrc -g4 -o dist/output.js src/*.cpp",
+    "postbuild-cpp": "node scripts/hackOutput.js",
+    "build": "npm run build-cpp && npm run build-ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nebrius/RaverLightsMessaging.git"
+  },
+  "author": "Bryan Hughes <bryan@nebri.us>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nebrius/RaverLightsMessaging/issues"
+  },
+  "homepage": "https://github.com/nebrius/RaverLightsMessaging#readme",
+  "devDependencies": {
+    "@types/node": "^11.11.3",
+    "@types/webassembly-js-api": "0.0.2",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {}
+}
