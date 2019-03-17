@@ -1131,11 +1131,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5552,
+    STACK_BASE = 5504,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5248432,
-    DYNAMIC_BASE = 5248432,
-    DYNAMICTOP_PTR = 5296;
+    STACK_MAX = 5248384,
+    DYNAMIC_BASE = 5248384,
+    DYNAMICTOP_PTR = 5248;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1604,8 +1604,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 256,
-    'maximum': 256,
+    'initial': 200,
+    'maximum': 200,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
@@ -1624,7 +1624,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 4528;
+// STATICTOP = STATIC_BASE + 4480;
 /* global initializers */ /*__ATINIT__.push();*/
 
 
@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 5536
+var tempDoublePtr = 5488
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -2397,5 +2397,5 @@ run();
 
 module.exports.memoryBase = 1024
 module.exports.tableBase = 0
-module.exports.tableInitial = 256
-module.exports.tableMaximum = 256
+module.exports.tableInitial = 200
+module.exports.tableMaximum = 200

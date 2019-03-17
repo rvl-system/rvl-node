@@ -20,7 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef WASM_PLAFORM_H_
 #define WASM_PLAFORM_H_
 
-#include <RaverLightsMessaging.h>
+#include <RVLMessaging.h>
 
 namespace WASMPlatform {
 
@@ -37,22 +37,11 @@ class WASMLogging : public RVLLoggingInterface {
 
 class WASMPlatform : public RVLPlatformInterface {
  private:
-  uint32_t clockOffset;
   uint16_t deviceId;
-  RVLWaveSettings waveSettings;
-  RVLDeviceMode deviceMode = RVLDeviceMode::Controller;
 
  public:
   uint32_t getLocalTime();
-  uint32_t getClockOffset();
-  void setClockOffset(uint32_t newOffset);
-
-  void setDeviceMode(RVLDeviceMode newDeviceMode);
-  RVLDeviceMode getDeviceMode();
   uint16_t getDeviceId();
-
-  RVLWaveSettings* getWaveSettings();
-  void setWaveSettings(RVLWaveSettings* newWaveSettings);
 };
 
 }  // namespace WASMPlatform

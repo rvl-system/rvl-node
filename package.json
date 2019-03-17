@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nebrius/RaverLightsMessaging.git"
+    "url": "git+https://github.com/nebrius/RVLMessaging-Node.git"
   },
   "author": "Bryan Hughes <bryan@nebri.us>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/nebrius/RaverLightsMessaging/issues"
+    "url": "https://github.com/nebrius/RVLMessaging-Node/issues"
   },
-  "homepage": "https://github.com/nebrius/RaverLightsMessaging#readme",
+  "homepage": "https://github.com/nebrius/RVLMessaging-Node#readme",
   "devDependencies": {
     "@types/node": "^11.11.3",
     "@types/webassembly-js-api": "0.0.2",

@@ -62,33 +62,8 @@ uint32_t WASMPlatform::getLocalTime() {
   return jsGetRelativeTime();
 }
 
-uint32_t WASMPlatform::getClockOffset() {
-  return this->clockOffset;
-}
-void WASMPlatform::setClockOffset(uint32_t newOffset) {
-  this->clockOffset = newOffset;
-}
-
-// TODO: pull into base class
-void WASMPlatform::setDeviceMode(RVLDeviceMode newDeviceMode) {
-  this->deviceMode = newDeviceMode;
-}
-
-RVLDeviceMode WASMPlatform::getDeviceMode() {
-  return this->deviceMode;
-}
-
 uint16_t WASMPlatform::getDeviceId() {
   return jsGetDeviceId();
-}
-
-RVLWaveSettings* WASMPlatform::getWaveSettings() {
-  return &waveSettings;
-}
-
-void WASMPlatform::setWaveSettings(RVLWaveSettings* newWaveSettings) {
-  // TODO: expose to JS
-  memcpy(&(this->waveSettings), newWaveSettings, sizeof(RVLWaveSettings));
 }
 
 }  // namespace WASMPlatform
