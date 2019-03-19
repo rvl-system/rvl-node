@@ -34,12 +34,6 @@ function memoryToString(ptr, len) {
     }
     return string;
 }
-function handlePrintChar(charCode) {
-    process.stdout.write(String.fromCharCode(charCode));
-}
-function handlePrintlnChar(charCode) {
-    process.stdout.write(String.fromCharCode(charCode) + '\n');
-}
 function handlePrintString(ptr, len) {
     if (len > 0) {
         process.stdout.write(memoryToString(ptr, len));
@@ -101,9 +95,7 @@ function init(newIfaceName, cb) {
             __memory_base: output_1.memoryBase,
             STACKTOP: 0,
             STACK_MAX: memory.buffer.byteLength,
-            _jsPrintChar: handlePrintChar,
             _jsPrintString: handlePrintString,
-            _jsPrintlnChar: handlePrintlnChar,
             _jsPrintlnString: handlePrintlnString,
             _jsGetRelativeTime: handleGetRelativeTime,
             _jsGetDeviceId: handleGetDeviceId

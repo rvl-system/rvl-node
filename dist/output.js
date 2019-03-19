@@ -1131,11 +1131,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5504,
+    STACK_BASE = 5472,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5248384,
-    DYNAMIC_BASE = 5248384,
-    DYNAMICTOP_PTR = 5248;
+    STACK_MAX = 5248352,
+    DYNAMIC_BASE = 5248352,
+    DYNAMICTOP_PTR = 5216;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1604,8 +1604,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 200,
-    'maximum': 200,
+    'initial': 180,
+    'maximum': 180,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
@@ -1624,7 +1624,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 4480;
+// STATICTOP = STATIC_BASE + 4448;
 /* global initializers */ /*__ATINIT__.push();*/
 
 
@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 5488
+var tempDoublePtr = 5456
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1876,19 +1876,9 @@ function copyTempDouble(ptr) {
   err('missing function: jsGetRelativeTime'); abort(-1);
   }
 
-  function _jsPrintChar(
-  ) {
-  err('missing function: jsPrintChar'); abort(-1);
-  }
-
   function _jsPrintString(
   ) {
   err('missing function: jsPrintString'); abort(-1);
-  }
-
-  function _jsPrintlnChar(
-  ) {
-  err('missing function: jsPrintlnChar'); abort(-1);
   }
 
   function _jsPrintlnString(
@@ -1966,7 +1956,7 @@ function nullFunc_viiiiii(x) { err("Invalid function pointer called with signatu
 
 var asmGlobalArg = module.exports.asmGlobalArg = {}
 
-var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsPrintChar": _jsPrintChar, "_jsPrintString": _jsPrintString, "_jsPrintlnChar": _jsPrintlnChar, "_jsPrintlnString": _jsPrintlnString, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
+var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsPrintString": _jsPrintString, "_jsPrintlnString": _jsPrintlnString, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, asmLibraryArg, buffer);
@@ -2397,5 +2387,5 @@ run();
 
 module.exports.memoryBase = 1024
 module.exports.tableBase = 0
-module.exports.tableInitial = 200
-module.exports.tableMaximum = 200
+module.exports.tableInitial = 180
+module.exports.tableMaximum = 180

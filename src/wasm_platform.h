@@ -20,17 +20,15 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef WASM_PLAFORM_H_
 #define WASM_PLAFORM_H_
 
+#include <RVLLogging.h>
 #include <RVLMessaging.h>
 
 namespace WASMPlatform {
 
 class WASMLogging : public RVLLoggingInterface {
  public:
-  RVLLogLevel getLogLevel();
-  void print(const char s);
   void print(const char *s);
   void println();
-  void println(const char s);
   void println(const char *s);
 };
 
@@ -42,6 +40,22 @@ class WASMPlatform : public RVLPlatformInterface {
  public:
   uint32_t getLocalTime();
   uint16_t getDeviceId();
+};
+
+class WASMTransport : public RVLTransportInterface {
+ public:
+  void beginWrite();
+  void write8(uint8_t data);
+  void write16(uint16_t data);
+  void write32(uint32_t data);
+  void write(uint8_t* data, uint16_t length);
+  void endWrite();
+
+  uint16_t parsePacket();
+  uint8_t read8();
+  uint16_t read16();
+  uint32_t read32();
+  void read(uint8_t* buffer, uint16_t length);
 };
 
 }  // namespace WASMPlatform
