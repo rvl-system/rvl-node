@@ -1,7 +1,7 @@
 {
-  "name": "rvlmessaging-node",
+  "name": "rvl-node",
   "version": "1.0.0",
-  "description": "A Node.js implementation of RVLMessaging based on Web Assembly",
+  "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",
   "directories": {
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild-ts": "tslint src/**/*.ts",
     "build-ts": "tsc",
-    "build-cpp": "em++ -s WASM=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS=\"['_init','_loop','_setWaveParameters']\" -std=c++11 -Ilib/RVLMessaging/src -Isrc -g4 -o dist/output.js src/*.cpp",
+    "build-cpp": "em++ -s WASM=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS=\"['_init','_loop','_setWaveParameters']\" -std=c++11 -Ilib/RVLLogging/src -Ilib/RVLMessaging/src -Isrc -g4 -o dist/output.js src/*.cpp",
     "postbuild-cpp": "node scripts/hackOutput.js",
     "build": "npm run build-cpp && npm run build-ts"
   },

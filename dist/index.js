@@ -23,6 +23,7 @@ const path_1 = require("path");
 const os_1 = require("os");
 const output_1 = require("./output");
 const startTime = process.hrtime.bigint() / 1000000n;
+let ifaceName = '';
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 function memoryToString(ptr, len) {
@@ -57,23 +58,31 @@ function handleGetRelativeTime() {
 }
 function handleGetDeviceId() {
     const interfaces = os_1.networkInterfaces();
-    for (const interfaceId in interfaces) {
-        if (!interfaceId.startsWith('wlan') && !interfaceId.startsWith('wifi')) {
-            continue;
-        }
-        const interfaceAddresses = interfaces[interfaceId]
-            .filter((iface) => iface.family === 'IPv4')
-            .filter((iface) => iface.address.startsWith('192.168.1.'));
-        if (interfaceAddresses.length) {
-            // TODO: this is haaaaacky!
-            const address = interfaceAddresses[0].address;
-            const deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
-            return deviceId;
+    const iface = interfaces[ifaceName];
+    if (!iface) {
+        throw new Error(`Unknown network interface ${ifaceName}. ` +
+            `Valid options are ${Object.keys(interfaces).join(', ')}`);
+    }
+    let address;
+    for (const binding of iface) {
+        if (binding.family === 'IPv4') {
+            address = binding.address;
+            break;
         }
     }
-    throw new Error('Could not find a suitable IP address for the device ID');
+    if (!address) {
+        throw new Error(`Could not find an IPv4 address for interface "${ifaceName}"`);
+    }
+    return parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
 }
-function init(cb) {
+function init(newIfaceName, cb) {
+    ifaceName = newIfaceName;
+    const interfaces = os_1.networkInterfaces();
+    const iface = interfaces[ifaceName];
+    if (!iface) {
+        throw new Error(`Unknown network interface ${ifaceName}. ` +
+            `Valid options are ${Object.keys(interfaces).join(', ')}`);
+    }
     fs_1.readFile(path_1.join(__dirname, 'output.wasm'), (readErr, buf) => {
         if (readErr) {
             cb(readErr);

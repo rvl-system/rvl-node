@@ -20,7 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 import { init } from './index';
 
 console.log('Initializing');
-init((err) => {
+init('wifi0', (err) => {
   if (err) {
     console.error(err);
   } else {

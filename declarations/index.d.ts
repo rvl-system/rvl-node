@@ -16,7 +16,7 @@ export interface IWaveParameters {
     distancePeriod?: number;
     waves: IWave[];
 }
-export declare function init(cb: (err?: Error) => void): void;
+export declare function init(newIfaceName: string, cb: (err?: Error) => void): void;
 export declare function start(): void;
 export declare function stop(): void;
 export declare function setWaveParameters(params: IWaveParameters): void;
