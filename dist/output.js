@@ -1131,11 +1131,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5664,
+    STACK_BASE = 5744,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5248544,
-    DYNAMIC_BASE = 5248544,
-    DYNAMICTOP_PTR = 5408;
+    STACK_MAX = 5248624,
+    DYNAMIC_BASE = 5248624,
+    DYNAMICTOP_PTR = 5488;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1624,7 +1624,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 4640;
+// STATICTOP = STATIC_BASE + 4720;
 /* global initializers */ /*__ATINIT__.push();*/
 
 
@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 5648
+var tempDoublePtr = 5728
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1886,6 +1886,11 @@ function copyTempDouble(ptr) {
   err('missing function: jsGetRelativeTime'); abort(-1);
   }
 
+  function _jsParsePacket(
+  ) {
+  err('missing function: jsParsePacket'); abort(-1);
+  }
+
   function _jsPrintString(
   ) {
   err('missing function: jsPrintString'); abort(-1);
@@ -1894,6 +1899,26 @@ function copyTempDouble(ptr) {
   function _jsPrintlnString(
   ) {
   err('missing function: jsPrintlnString'); abort(-1);
+  }
+
+  function _jsRead(
+  ) {
+  err('missing function: jsRead'); abort(-1);
+  }
+
+  function _jsRead16(
+  ) {
+  err('missing function: jsRead16'); abort(-1);
+  }
+
+  function _jsRead32(
+  ) {
+  err('missing function: jsRead32'); abort(-1);
+  }
+
+  function _jsRead8(
+  ) {
+  err('missing function: jsRead8'); abort(-1);
   }
 
   function _jsWrite16(
@@ -1988,7 +2013,7 @@ function nullFunc_viiiiii(x) { err("Invalid function pointer called with signatu
 
 var asmGlobalArg = module.exports.asmGlobalArg = {}
 
-var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsBeginWrite": _jsBeginWrite, "_jsEndWrite": _jsEndWrite, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsPrintString": _jsPrintString, "_jsPrintlnString": _jsPrintlnString, "_jsWrite16": _jsWrite16, "_jsWrite32": _jsWrite32, "_jsWrite8": _jsWrite8, "_jsWriteBuffer": _jsWriteBuffer, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
+var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsBeginWrite": _jsBeginWrite, "_jsEndWrite": _jsEndWrite, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsParsePacket": _jsParsePacket, "_jsPrintString": _jsPrintString, "_jsPrintlnString": _jsPrintlnString, "_jsRead": _jsRead, "_jsRead16": _jsRead16, "_jsRead32": _jsRead32, "_jsRead8": _jsRead8, "_jsWrite16": _jsWrite16, "_jsWrite32": _jsWrite32, "_jsWrite8": _jsWrite8, "_jsWriteBuffer": _jsWriteBuffer, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, asmLibraryArg, buffer);

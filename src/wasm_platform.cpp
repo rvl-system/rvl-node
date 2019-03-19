@@ -32,6 +32,13 @@ extern "C" void jsWrite16(uint16_t val);
 extern "C" void jsWrite32(uint32_t val);
 extern "C" void jsWriteBuffer(uint8_t *buf, uint16_t len);
 extern "C" void jsEndWrite();
+
+extern "C" uint16_t jsParsePacket();
+extern "C" uint8_t jsRead8();
+extern "C" uint16_t jsRead16();
+extern "C" uint32_t jsRead32();
+extern "C" void jsRead(uint8_t *buf, uint16_t len);
+
 namespace WASMPlatform {
 
 // Logging implementation
@@ -84,25 +91,24 @@ void WASMTransport::endWrite() {
   jsEndWrite();
 }
 
-
 uint16_t WASMTransport::parsePacket() {
-  return 0;
+  return jsParsePacket();
 }
 
 uint8_t WASMTransport::read8() {
-  return 0;
+  return jsRead8();
 }
 
 uint16_t WASMTransport::read16() {
-  return 0;
+  return jsRead16();
 }
 
 uint32_t WASMTransport::read32() {
-  return 0;
+  return jsRead32();
 }
 
 void WASMTransport::read(uint8_t* buffer, uint16_t length) {
-
+  jsRead(buffer, length);
 }
 
 }  // namespace WASMPlatform

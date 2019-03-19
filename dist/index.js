@@ -85,6 +85,24 @@ function handleEndWrite() {
     socket.send(Buffer.from(writeBuffer), SERVER_PORT, broadcastAddress);
     writeBuffer = [];
 }
+function handleParsePacket() {
+    return 16;
+}
+function handleRead8() {
+    return 8;
+}
+function handleRead16() {
+    return 16;
+}
+function handleRead32() {
+    return 32;
+}
+function handleRead(ptr, len) {
+    const view = new Uint8Array(memory.buffer, ptr, len);
+    for (let i = 0; i < len; i++) {
+        view[i] = i + 2;
+    }
+}
 function init(ifaceName, cb) {
     const interfaces = os_1.networkInterfaces();
     const iface = interfaces[ifaceName];
@@ -130,13 +148,19 @@ function init(ifaceName, cb) {
             // Platform
             _jsGetRelativeTime: handleGetRelativeTime,
             _jsGetDeviceId: handleGetDeviceId,
-            // Transport
+            // Transport Write
             _jsBeginWrite: handleBeginWrite,
             _jsWrite8: handleWrite8,
             _jsWrite16: handleWrite16,
             _jsWrite32: handleWrite32,
             _jsWriteBuffer: handleWriteBuffer,
-            _jsEndWrite: handleEndWrite
+            _jsEndWrite: handleEndWrite,
+            // Transport read
+            _jsParsePacket: handleParsePacket,
+            _jsRead8: handleRead8,
+            _jsRead16: handleRead16,
+            _jsRead32: handleRead32,
+            _jsRead: handleRead
         };
         const global = {
             ...output_1.asmGlobalArg

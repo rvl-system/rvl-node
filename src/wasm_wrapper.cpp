@@ -44,6 +44,16 @@ extern "C" void init() {
   uint8_t data[8] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
   transport.write(data, 8);
   transport.endWrite();
+
+  uint8_t rl = transport.parsePacket();
+  uint8_t r8 = transport.read8();
+  uint16_t r16 = transport.read16();
+  uint32_t r32 = transport.read32();
+  uint8_t rbuf[8];
+  transport.read(rbuf, 8);
+  sprintf(buf, "rl: %d, r8: %d, r16: %d, r32: %d, rbuf: %d, %d, %d, %d, %d, %d, %d, %d",
+    rl, r8, r16, r32, rbuf[0], rbuf[1], rbuf[2], rbuf[3], rbuf[4], rbuf[5], rbuf[6], rbuf[7]);
+  logging.println(buf);
 }
 
 extern "C" void loop() {

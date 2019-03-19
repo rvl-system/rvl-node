@@ -124,6 +124,29 @@ function handleEndWrite(): void {
   writeBuffer = [];
 }
 
+function handleParsePacket(): number {
+  return 16;
+}
+
+function handleRead8(): number {
+  return 8;
+}
+
+function handleRead16(): number {
+  return 16;
+}
+
+function handleRead32(): number {
+  return 32;
+}
+
+function handleRead(ptr: number, len: number): void {
+  const view = new Uint8Array(memory.buffer, ptr, len);
+  for (let i = 0; i < len; i++) {
+    view[i] = i + 2;
+  }
+}
+
 export function init(ifaceName: string, cb: (err?: Error) => void) {
   const interfaces = networkInterfaces();
   const iface = interfaces[ifaceName];
@@ -173,13 +196,20 @@ export function init(ifaceName: string, cb: (err?: Error) => void) {
       _jsGetRelativeTime: handleGetRelativeTime,
       _jsGetDeviceId: handleGetDeviceId,
 
-      // Transport
+      // Transport Write
       _jsBeginWrite: handleBeginWrite,
       _jsWrite8: handleWrite8,
       _jsWrite16: handleWrite16,
       _jsWrite32: handleWrite32,
       _jsWriteBuffer: handleWriteBuffer,
-      _jsEndWrite: handleEndWrite
+      _jsEndWrite: handleEndWrite,
+
+      // Transport read
+      _jsParsePacket: handleParsePacket,
+      _jsRead8: handleRead8,
+      _jsRead16: handleRead16,
+      _jsRead32: handleRead32,
+      _jsRead: handleRead
     };
     const global = {
       ...asmGlobalArg
