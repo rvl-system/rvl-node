@@ -21,11 +21,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const path_1 = require("path");
 const os_1 = require("os");
+const dgram_1 = require("dgram");
 const output_1 = require("./output");
-const startTime = process.hrtime.bigint() / 1000000n;
-let ifaceName = '';
+const SERVER_PORT = 4978;
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+// Logging implementation methods
 function memoryToString(ptr, len) {
     const view = new Uint8Array(memory.buffer, ptr, len);
     let string = '';
@@ -47,10 +48,44 @@ function handlePrintlnString(ptr, len) {
         process.stdout.write('\n');
     }
 }
+// Platform implementation methods
+const startTime = process.hrtime.bigint() / 1000000n;
+let deviceId = 0;
 function handleGetRelativeTime() {
     return Math.round(Number(process.hrtime.bigint() / 1000000n - startTime));
 }
 function handleGetDeviceId() {
+    return deviceId;
+}
+// Transport implementation methods
+let socket;
+let broadcastAddress;
+let writeBuffer = [];
+function handleBeginWrite() {
+    writeBuffer = [];
+}
+function handleWrite8(val) {
+    writeBuffer.push(val);
+}
+function handleWrite16(val) {
+    const buf = Buffer.allocUnsafe(2);
+    buf.writeUInt16BE(val, 0);
+    writeBuffer.push(buf[0], buf[1]);
+}
+function handleWrite32(val) {
+    const buf = Buffer.allocUnsafe(4);
+    buf.writeUInt32BE(val, 0);
+    writeBuffer.push(buf[0], buf[1], buf[2], buf[3]);
+}
+function handleWriteBuffer(ptr, len) {
+    const data = new Uint8Array(memory.buffer, ptr, len);
+    writeBuffer.push(...Array.from(data));
+}
+function handleEndWrite() {
+    socket.send(Buffer.from(writeBuffer), SERVER_PORT, broadcastAddress);
+    writeBuffer = [];
+}
+function init(ifaceName, cb) {
     const interfaces = os_1.networkInterfaces();
     const iface = interfaces[ifaceName];
     if (!iface) {
@@ -67,16 +102,10 @@ function handleGetDeviceId() {
     if (!address) {
         throw new Error(`Could not find an IPv4 address for interface "${ifaceName}"`);
     }
-    return parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
-}
-function init(newIfaceName, cb) {
-    ifaceName = newIfaceName;
-    const interfaces = os_1.networkInterfaces();
-    const iface = interfaces[ifaceName];
-    if (!iface) {
-        throw new Error(`Unknown network interface ${ifaceName}. ` +
-            `Valid options are ${Object.keys(interfaces).join(', ')}`);
-    }
+    socket = dgram_1.createSocket('udp4');
+    socket.bind(SERVER_PORT, address);
+    deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
+    broadcastAddress = address.substring(0, address.lastIndexOf('.')) + '.255';
     fs_1.readFile(path_1.join(__dirname, 'output.wasm'), (readErr, buf) => {
         if (readErr) {
             cb(readErr);
@@ -95,10 +124,19 @@ function init(newIfaceName, cb) {
             __memory_base: output_1.memoryBase,
             STACKTOP: 0,
             STACK_MAX: memory.buffer.byteLength,
+            // Logging
             _jsPrintString: handlePrintString,
             _jsPrintlnString: handlePrintlnString,
+            // Platform
             _jsGetRelativeTime: handleGetRelativeTime,
-            _jsGetDeviceId: handleGetDeviceId
+            _jsGetDeviceId: handleGetDeviceId,
+            // Transport
+            _jsBeginWrite: handleBeginWrite,
+            _jsWrite8: handleWrite8,
+            _jsWrite16: handleWrite16,
+            _jsWrite32: handleWrite32,
+            _jsWriteBuffer: handleWriteBuffer,
+            _jsEndWrite: handleEndWrite
         };
         const global = {
             ...output_1.asmGlobalArg

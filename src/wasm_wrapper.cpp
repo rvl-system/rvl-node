@@ -28,11 +28,22 @@ int main() {
 extern "C" void init() {
   WASMPlatform::WASMLogging logging;
   WASMPlatform::WASMPlatform platform;
+  WASMPlatform::WASMTransport transport;
+
   char buf[40];
   sprintf(buf, "DeviceID: %d", platform.getDeviceId());
   logging.println(buf);
   sprintf(buf, "LocalTime: %d", platform.getLocalTime());
+
   logging.println(buf);
+  transport.beginWrite();
+  transport.write8(0x01);
+  transport.write16(0x0203);
+  transport.write32(0x04050607);
+  transport.write32(0x00000000);
+  uint8_t data[8] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+  transport.write(data, 8);
+  transport.endWrite();
 }
 
 extern "C" void loop() {

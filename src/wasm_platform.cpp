@@ -26,6 +26,12 @@ extern "C" void jsPrintlnString(const char *s, uint16_t len);
 extern "C" uint32_t jsGetRelativeTime();
 extern "C" uint16_t jsGetDeviceId();
 
+extern "C" void jsBeginWrite();
+extern "C" void jsWrite8(uint8_t val);
+extern "C" void jsWrite16(uint16_t val);
+extern "C" void jsWrite32(uint32_t val);
+extern "C" void jsWriteBuffer(uint8_t *buf, uint16_t len);
+extern "C" void jsEndWrite();
 namespace WASMPlatform {
 
 // Logging implementation
@@ -55,27 +61,27 @@ uint16_t WASMPlatform::getDeviceId() {
 // Transport implementation
 
 void WASMTransport::beginWrite() {
-
+  jsBeginWrite();
 }
 
 void WASMTransport::write8(uint8_t data) {
-
+  jsWrite8(data);
 }
 
 void WASMTransport::write16(uint16_t data) {
-
+  jsWrite16(data);
 }
 
 void WASMTransport::write32(uint32_t data) {
-
+  jsWrite32(data);
 }
 
 void WASMTransport::write(uint8_t* data, uint16_t length) {
-
+  jsWriteBuffer(data, length);
 }
 
 void WASMTransport::endWrite() {
-
+  jsEndWrite();
 }
 
 
