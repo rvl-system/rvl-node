@@ -32,7 +32,6 @@ class WASMLogging : public RVLLoggingInterface {
   void println(const char *s);
 };
 
-
 class WASMPlatform : public RVLPlatformInterface {
  private:
   uint16_t deviceId;

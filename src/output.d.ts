@@ -22,4 +22,4 @@ export declare const asmLibraryArg: {};
 export declare const memoryBase: number;
 export declare const tableBase: number;
 export declare const tableInitial: number;
-export declare const tableMaximum: number;
+export declare const tableMaximum: number | undefined;

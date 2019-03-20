@@ -1131,11 +1131,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5744,
+    STACK_BASE = 4704,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5248624,
-    DYNAMIC_BASE = 5248624,
-    DYNAMICTOP_PTR = 5488;
+    STACK_MAX = 5247584,
+    DYNAMIC_BASE = 5247584,
+    DYNAMICTOP_PTR = 4448;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1604,8 +1604,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 368,
-    'maximum': 368,
+    'initial': 336,
+    'maximum': 336,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
@@ -1624,8 +1624,8 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 4720;
-/* global initializers */ /*__ATINIT__.push();*/
+// STATICTOP = STATIC_BASE + 3680;
+/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_wasm_wrapper_cpp() } });
 
 
 
@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 5728
+var tempDoublePtr = 4688
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1658,6 +1658,21 @@ function copyTempDouble(ptr) {
 
 // {{PRE_LIBRARY}}
 
+
+  function __Z16RVLMessagingInitP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging(
+  ) {
+  err('missing function: _Z16RVLMessagingInitP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging'); abort(-1);
+  }
+
+  function __Z16RVLMessagingLoopv(
+  ) {
+  err('missing function: _Z16RVLMessagingLoopv'); abort(-1);
+  }
+
+  function __ZN10RVLLoggingC1EP19RVLLoggingInterface11RVLLogLevel(
+  ) {
+  err('missing function: _ZN10RVLLoggingC1EP19RVLLoggingInterface11RVLLogLevel'); abort(-1);
+  }
 
   function ___cxa_pure_virtual() {
       ABORT = true;
@@ -2013,10 +2028,16 @@ function nullFunc_viiiiii(x) { err("Invalid function pointer called with signatu
 
 var asmGlobalArg = module.exports.asmGlobalArg = {}
 
-var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsBeginWrite": _jsBeginWrite, "_jsEndWrite": _jsEndWrite, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsParsePacket": _jsParsePacket, "_jsPrintString": _jsPrintString, "_jsPrintlnString": _jsPrintlnString, "_jsRead": _jsRead, "_jsRead16": _jsRead16, "_jsRead32": _jsRead32, "_jsRead8": _jsRead8, "_jsWrite16": _jsWrite16, "_jsWrite32": _jsWrite32, "_jsWrite8": _jsWrite8, "_jsWriteBuffer": _jsWriteBuffer, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
+var asmLibraryArg = module.exports.asmLibraryArg = { "abort": abort, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "__Z16RVLMessagingInitP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging": __Z16RVLMessagingInitP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging, "__Z16RVLMessagingLoopv": __Z16RVLMessagingLoopv, "__ZN10RVLLoggingC1EP19RVLLoggingInterface11RVLLogLevel": __ZN10RVLLoggingC1EP19RVLLoggingInterface11RVLLogLevel, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_abort": _abort, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_jsBeginWrite": _jsBeginWrite, "_jsEndWrite": _jsEndWrite, "_jsGetDeviceId": _jsGetDeviceId, "_jsGetRelativeTime": _jsGetRelativeTime, "_jsParsePacket": _jsParsePacket, "_jsPrintString": _jsPrintString, "_jsPrintlnString": _jsPrintlnString, "_jsRead": _jsRead, "_jsRead16": _jsRead16, "_jsRead32": _jsRead32, "_jsRead8": _jsRead8, "_jsWrite16": _jsWrite16, "_jsWrite32": _jsWrite32, "_jsWrite8": _jsWrite8, "_jsWriteBuffer": _jsWriteBuffer, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "tempDoublePtr": tempDoublePtr, "DYNAMICTOP_PTR": DYNAMICTOP_PTR }
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, asmLibraryArg, buffer);
+
+var real___GLOBAL__sub_I_wasm_wrapper_cpp = asm["__GLOBAL__sub_I_wasm_wrapper_cpp"]; asm["__GLOBAL__sub_I_wasm_wrapper_cpp"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real___GLOBAL__sub_I_wasm_wrapper_cpp.apply(null, arguments);
+};
 
 var real____errno_location = asm["___errno_location"]; asm["___errno_location"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
@@ -2090,6 +2111,10 @@ var real_stackSave = asm["stackSave"]; asm["stackSave"] = function() {
   return real_stackSave.apply(null, arguments);
 };
 Module["asm"] = asm;
+var __GLOBAL__sub_I_wasm_wrapper_cpp = Module["__GLOBAL__sub_I_wasm_wrapper_cpp"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["__GLOBAL__sub_I_wasm_wrapper_cpp"].apply(null, arguments) };
 var ___errno_location = Module["___errno_location"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2448,5 +2473,5 @@ run();
 
 module.exports.memoryBase = 1024
 module.exports.tableBase = 0
-module.exports.tableInitial = 368
-module.exports.tableMaximum = 368
+module.exports.tableInitial = 336
+module.exports.tableMaximum = 336

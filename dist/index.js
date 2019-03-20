@@ -26,6 +26,9 @@ const output_1 = require("./output");
 const SERVER_PORT = 4978;
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+function createInternalErrorMessage(msg) {
+    return `Internal Error: ${msg}. 'This is a bug, please file an issue at https://github.com/nebrius/RVL-Node/issues.`;
+}
 // Logging implementation methods
 function memoryToString(ptr, len) {
     const view = new Uint8Array(memory.buffer, ptr, len);
@@ -85,25 +88,66 @@ function handleEndWrite() {
     socket.send(Buffer.from(writeBuffer), SERVER_PORT, broadcastAddress);
     writeBuffer = [];
 }
+let currentReadBuffer;
+let currentReadBufferIndex = 0;
+const readBuffers = [];
+function messageListener(msg, rinfo) {
+    if (rinfo.port !== SERVER_PORT) {
+        return;
+    }
+    readBuffers.push(msg);
+}
 function handleParsePacket() {
-    return 16;
+    currentReadBuffer = readBuffers.shift();
+    currentReadBufferIndex = 0;
+    return currentReadBuffer ? currentReadBuffer.length : 0;
 }
 function handleRead8() {
-    return 8;
+    if (!currentReadBuffer) {
+        throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+    }
+    if (currentReadBufferIndex > currentReadBuffer.length - 1) {
+        throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+    }
+    const value = currentReadBuffer.readUInt8(currentReadBufferIndex);
+    currentReadBufferIndex += 1;
+    return value;
 }
 function handleRead16() {
-    return 16;
+    if (!currentReadBuffer) {
+        throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+    }
+    if (currentReadBufferIndex > currentReadBuffer.length - 2) {
+        throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+    }
+    const value = currentReadBuffer.readUInt16BE(currentReadBufferIndex);
+    currentReadBufferIndex += 1;
+    return value;
 }
 function handleRead32() {
-    return 32;
+    if (!currentReadBuffer) {
+        throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+    }
+    if (currentReadBufferIndex > currentReadBuffer.length - 4) {
+        throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+    }
+    const value = currentReadBuffer.readUInt32BE(currentReadBufferIndex);
+    currentReadBufferIndex += 1;
+    return value;
 }
 function handleRead(ptr, len) {
+    if (!currentReadBuffer) {
+        throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+    }
+    if (currentReadBufferIndex > currentReadBuffer.length - len) {
+        throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+    }
     const view = new Uint8Array(memory.buffer, ptr, len);
     for (let i = 0; i < len; i++) {
-        view[i] = i + 2;
+        view[i] = currentReadBuffer[currentReadBufferIndex++];
     }
 }
-function init(ifaceName, cb) {
+function init(ifaceName, logLevel, cb) {
     const interfaces = os_1.networkInterfaces();
     const iface = interfaces[ifaceName];
     if (!iface) {
@@ -120,23 +164,38 @@ function init(ifaceName, cb) {
     if (!address) {
         throw new Error(`Could not find an IPv4 address for interface "${ifaceName}"`);
     }
-    socket = dgram_1.createSocket('udp4');
-    socket.bind(SERVER_PORT, address);
     deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
     broadcastAddress = address.substring(0, address.lastIndexOf('.')) + '.255';
+    let logLevelEnum = 0;
+    switch (logLevel) {
+        case 'error':
+            logLevelEnum = 1;
+            break;
+        case 'info':
+            logLevelEnum = 2;
+            break;
+        case 'debug':
+            logLevelEnum = 3;
+            break;
+        default:
+            throw new Error(`Invalid log level ${logLevel}`);
+    }
     fs_1.readFile(path_1.join(__dirname, 'output.wasm'), (readErr, buf) => {
         if (readErr) {
             cb(readErr);
             return;
         }
         const bytes = new Uint8Array(buf);
+        const tableArgs = {
+            initial: output_1.tableInitial,
+            element: 'anyfunc'
+        };
+        if (typeof output_1.tableMaximum === 'number') {
+            tableArgs.maximum = output_1.tableMaximum;
+        }
         const env = {
             ...output_1.asmLibraryArg,
-            table: new WebAssembly.Table({
-                initial: output_1.tableInitial,
-                maximum: output_1.tableMaximum,
-                element: 'anyfunc'
-            }),
+            table: new WebAssembly.Table(tableArgs),
             __table_base: output_1.tableBase,
             memory,
             __memory_base: output_1.memoryBase,
@@ -163,13 +222,17 @@ function init(ifaceName, cb) {
             _jsRead: handleRead
         };
         const global = {
-            ...output_1.asmGlobalArg
+            ...output_1.asmGlobalArg,
+            NaN,
+            Infinity
         };
-        WebAssembly.instantiate(bytes, { env, global })
+        WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math })
             .then((result) => {
             wasmExports = result;
-            wasmExports.instance.exports._init();
-            setImmediate(() => cb());
+            wasmExports.instance.exports._init(logLevelEnum);
+            socket = dgram_1.createSocket('udp4');
+            socket.on('message', messageListener);
+            socket.bind(SERVER_PORT, address, cb);
         })
             .catch((err) => setImmediate(() => cb(err)));
     });
@@ -180,7 +243,6 @@ function start() {
         throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
     }
     wasmExports.instance.exports._loop();
-    // console.log(wasmExports.instance.exports._add(9, 9));
     // TODO
 }
 exports.start = start;

@@ -38,7 +38,8 @@ let state = 'scanning';
 let initial;
 let maximum;
 let match;
-for (const line of source) {
+for (let i = 0; i < source.length; i++) {
+  const line = source[i];
   switch (state) {
     case 'scanning':
       if (line.indexOf(`env['table'] = wasmTable = new WebAssembly.Table({`) !== -1) {
@@ -62,7 +63,7 @@ for (const line of source) {
       if (match) {
         maximum = match[1];
       }
-      if (typeof initial !== 'undefined' && typeof maximum !== 'undefined') {
+      if (line === '  });') {
         state = 'scanning';
       }
       break;

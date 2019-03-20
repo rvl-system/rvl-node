@@ -19,45 +19,24 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 #include <stdio.h>
+#include <RVLMessaging.h>
+#include <RVLLogging.h>
 #include "wasm_platform.h"
 
-int main() {
-  return 0;
-}
+WASMPlatform::WASMLogging logging;
+WASMPlatform::WASMPlatform platform;
+WASMPlatform::WASMTransport transport;
+RVLLogging* logger;
 
-extern "C" void init() {
-  WASMPlatform::WASMLogging logging;
-  WASMPlatform::WASMPlatform platform;
-  WASMPlatform::WASMTransport transport;
-
-  char buf[40];
-  sprintf(buf, "DeviceID: %d", platform.getDeviceId());
-  logging.println(buf);
-  sprintf(buf, "LocalTime: %d", platform.getLocalTime());
-
-  logging.println(buf);
-  transport.beginWrite();
-  transport.write8(0x01);
-  transport.write16(0x0203);
-  transport.write32(0x04050607);
-  transport.write32(0x00000000);
-  uint8_t data[8] = { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
-  transport.write(data, 8);
-  transport.endWrite();
-
-  uint8_t rl = transport.parsePacket();
-  uint8_t r8 = transport.read8();
-  uint16_t r16 = transport.read16();
-  uint32_t r32 = transport.read32();
-  uint8_t rbuf[8];
-  transport.read(rbuf, 8);
-  sprintf(buf, "rl: %d, r8: %d, r16: %d, r32: %d, rbuf: %d, %d, %d, %d, %d, %d, %d, %d",
-    rl, r8, r16, r32, rbuf[0], rbuf[1], rbuf[2], rbuf[3], rbuf[4], rbuf[5], rbuf[6], rbuf[7]);
-  logging.println(buf);
+extern "C" void init(uint8_t logLevel) {
+  logger = new RVLLogging(&logging, static_cast<RVLLogLevel>(logLevel));
+  RVLMessagingInit(&platform, &transport, logger);
 }
 
 extern "C" void loop() {
+  RVLMessagingLoop();
 }
 
 extern "C" void setWaveParameters() {
+  // TODO
 }

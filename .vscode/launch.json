@@ -14,5 +14,12 @@
       ],
       "useWSL": true
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Hack Output",
+      "program": "${workspaceFolder}\\scripts\\hackOutput.js",
+      "useWSL": true
+    },
   ]
 }

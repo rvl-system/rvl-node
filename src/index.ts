@@ -20,7 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 import { readFile } from 'fs';
 import { join } from 'path';
 import { networkInterfaces } from 'os';
-import { createSocket, Socket } from 'dgram';
+import { createSocket, Socket, RemoteInfo } from 'dgram';
 
 import { asmGlobalArg, asmLibraryArg, memoryBase, tableBase, tableInitial, tableMaximum } from './output';
 
@@ -49,6 +49,10 @@ export interface IWaveParameters {
 
 let wasmExports: WebAssembly.ResultObject | undefined;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+
+function createInternalErrorMessage(msg: string): string {
+  return `Internal Error: ${msg}. 'This is a bug, please file an issue at https://github.com/nebrius/RVL-Node/issues.`;
+}
 
 // Logging implementation methods
 
@@ -124,30 +128,73 @@ function handleEndWrite(): void {
   writeBuffer = [];
 }
 
+let currentReadBuffer: Buffer | undefined;
+let currentReadBufferIndex = 0;
+const readBuffers: Buffer[] = [];
+
+function messageListener(msg: Buffer, rinfo: RemoteInfo): void {
+  if (rinfo.port !== SERVER_PORT) {
+    return;
+  }
+  readBuffers.push(msg);
+}
+
 function handleParsePacket(): number {
-  return 16;
+  currentReadBuffer = readBuffers.shift();
+  currentReadBufferIndex = 0;
+  return currentReadBuffer ? currentReadBuffer.length : 0;
 }
 
 function handleRead8(): number {
-  return 8;
+  if (!currentReadBuffer) {
+    throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+  }
+  if (currentReadBufferIndex > currentReadBuffer.length - 1) {
+    throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+  }
+  const value = currentReadBuffer.readUInt8(currentReadBufferIndex);
+  currentReadBufferIndex += 1;
+  return value;
 }
 
 function handleRead16(): number {
-  return 16;
+  if (!currentReadBuffer) {
+    throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+  }
+  if (currentReadBufferIndex > currentReadBuffer.length - 2) {
+    throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+  }
+  const value = currentReadBuffer.readUInt16BE(currentReadBufferIndex);
+  currentReadBufferIndex += 1;
+  return value;
 }
 
 function handleRead32(): number {
-  return 32;
+  if (!currentReadBuffer) {
+    throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+  }
+  if (currentReadBufferIndex > currentReadBuffer.length - 4) {
+    throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+  }
+  const value = currentReadBuffer.readUInt32BE(currentReadBufferIndex);
+  currentReadBufferIndex += 1;
+  return value;
 }
 
 function handleRead(ptr: number, len: number): void {
+  if (!currentReadBuffer) {
+    throw new Error(createInternalErrorMessage('Attempted to read a UDP packet when there is no UDP packet'));
+  }
+  if (currentReadBufferIndex > currentReadBuffer.length - len) {
+    throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
+  }
   const view = new Uint8Array(memory.buffer, ptr, len);
   for (let i = 0; i < len; i++) {
-    view[i] = i + 2;
+    view[i] = currentReadBuffer[currentReadBufferIndex++];
   }
 }
 
-export function init(ifaceName: string, cb: (err?: Error) => void) {
+export function init(ifaceName: string, logLevel: 'error' | 'info' | 'debug', cb: (err?: Error) => void) {
   const interfaces = networkInterfaces();
   const iface = interfaces[ifaceName];
   if (!iface) {
@@ -164,10 +211,23 @@ export function init(ifaceName: string, cb: (err?: Error) => void) {
   if (!address) {
     throw new Error(`Could not find an IPv4 address for interface "${ifaceName}"`);
   }
-  socket = createSocket('udp4');
-  socket.bind(SERVER_PORT, address);
   deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
   broadcastAddress = address.substring(0, address.lastIndexOf('.')) + '.255';
+
+  let logLevelEnum: number = 0;
+  switch (logLevel) {
+    case 'error':
+      logLevelEnum = 1;
+      break;
+    case 'info':
+      logLevelEnum = 2;
+      break;
+    case 'debug':
+      logLevelEnum = 3;
+      break;
+    default:
+      throw new Error(`Invalid log level ${logLevel}`);
+  }
 
   readFile(join(__dirname, 'output.wasm'), (readErr, buf) => {
     if (readErr) {
@@ -175,13 +235,16 @@ export function init(ifaceName: string, cb: (err?: Error) => void) {
       return;
     }
     const bytes = new Uint8Array(buf);
+    const tableArgs: WebAssembly.TableDescriptor = {
+      initial: tableInitial,
+      element: 'anyfunc'
+    };
+    if (typeof tableMaximum === 'number') {
+      tableArgs.maximum = tableMaximum;
+    }
     const env = {
       ...asmLibraryArg,
-      table: new WebAssembly.Table({
-        initial: tableInitial,
-        maximum: tableMaximum,
-        element: 'anyfunc'
-      }),
+      table: new WebAssembly.Table(tableArgs),
       __table_base: tableBase,
       memory,
       __memory_base: memoryBase,
@@ -212,13 +275,18 @@ export function init(ifaceName: string, cb: (err?: Error) => void) {
       _jsRead: handleRead
     };
     const global = {
-      ...asmGlobalArg
+      ...asmGlobalArg,
+      NaN,
+      Infinity
     };
-    WebAssembly.instantiate(bytes, { env, global })
+    WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math })
       .then((result) => {
         wasmExports = result;
-        wasmExports.instance.exports._init();
-        setImmediate(() => cb());
+        wasmExports.instance.exports._init(logLevelEnum);
+
+        socket = createSocket('udp4');
+        socket.on('message', messageListener);
+        socket.bind(SERVER_PORT, address, cb);
       })
       .catch((err) => setImmediate(() => cb(err)));
   });
@@ -229,7 +297,6 @@ export function start(): void {
     throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
   }
   wasmExports.instance.exports._loop();
-  // console.log(wasmExports.instance.exports._add(9, 9));
   // TODO
 }
 
