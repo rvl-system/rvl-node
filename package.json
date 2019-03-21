@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild-ts": "tslint src/**/*.ts",
     "build-ts": "tsc",
-    "build-cpp": "em++ -s WASM=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS=\"['_init','_loop','_setWaveParameters']\" -std=c++11 -Ilib/RVLLogging/src -Ilib/RVLMessaging/src -Isrc -g4 -o dist/output.js src/*.cpp",
+    "build-cpp": "node scripts/build.js",
     "postbuild-cpp": "node scripts/hackOutput.js",
     "build": "npm run build-cpp && npm run build-ts"
   },
