@@ -20,11 +20,13 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 import { readFile } from 'fs';
 import { join } from 'path';
 import { networkInterfaces } from 'os';
-import { createSocket, Socket, RemoteInfo } from 'dgram';
+import { createSocket, Socket } from 'dgram';
 
 import { asmGlobalArg, asmLibraryArg, memoryBase, tableBase, tableInitial, tableMaximum } from './output';
+import { AddressInfo } from 'net';
 
 const SERVER_PORT = 4978;
+const UPDATE_RATE = 33;
 
 export interface IWaveChannel {
   a: number; // Default 0
@@ -131,13 +133,6 @@ function handleEndWrite(): void {
 let currentReadBuffer: Buffer | undefined;
 let currentReadBufferIndex = 0;
 const readBuffers: Buffer[] = [];
-
-function messageListener(msg: Buffer, rinfo: RemoteInfo): void {
-  if (rinfo.port !== SERVER_PORT) {
-    return;
-  }
-  readBuffers.push(msg);
-}
 
 function handleParsePacket(): number {
   currentReadBuffer = readBuffers.shift();
@@ -279,32 +274,66 @@ export function init(ifaceName: string, logLevel: 'error' | 'info' | 'debug', cb
       NaN,
       Infinity
     };
-    WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math })
-      .then((result) => {
-        wasmExports = result;
-        wasmExports.instance.exports._init(logLevelEnum);
+    WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math }).then((result) => {
+      wasmExports = result;
+      setImmediate(() => {
+        result.instance.exports._init(logLevelEnum);
 
         socket = createSocket('udp4');
-        socket.on('message', messageListener);
-        socket.bind(SERVER_PORT, address, cb);
-      })
-      .catch((err) => setImmediate(() => cb(err)));
+
+        socket.on('message', (msg, rinfo) => {
+          if (rinfo.port !== SERVER_PORT) {
+            return;
+          }
+          readBuffers.push(msg);
+        });
+
+        socket.on('error', (err) => {
+          console.error(err);
+          socket.close();
+        });
+
+        socket.on('listening', () => {
+          const addressInfo = socket.address() as AddressInfo;
+          console.log(`UDP server listening on ${addressInfo.address}:${addressInfo.port}`);
+          socket.setBroadcast(true);
+          cb();
+        });
+
+        socket.bind(SERVER_PORT, address);
+      });
+    });
   });
 }
+
+let loopTimer: NodeJS.Timeout;
 
 export function start(): void {
   if (!wasmExports) {
     throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
   }
-  wasmExports.instance.exports._loop();
-  // TODO
+  function loop() {
+    const loopStartTime = process.hrtime.bigint();
+    if (wasmExports) {
+      wasmExports.instance.exports._loop();
+    }
+    const now = process.hrtime.bigint();
+    const timeConsumed = Number((now - loopStartTime) / 1000000n);
+    if (timeConsumed > UPDATE_RATE) {
+      console.log(`Warning: system loop took ${timeConsumed - UPDATE_RATE}ms longer than the update rate`);
+      setImmediate(loop);
+    } else {
+      loopTimer = setTimeout(loop, UPDATE_RATE - timeConsumed);
+    }
+  }
+  loop();
 }
 
 export function stop(): void {
   if (!wasmExports) {
     throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
   }
-  // TODO
+  clearTimeout(loopTimer);
 }
 
 export function setWaveParameters(params: IWaveParameters): void {

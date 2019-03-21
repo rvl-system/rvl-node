@@ -20,12 +20,13 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 console.log('Initializing');
-index_1.init('wifi0', 'debug', (err) => {
+index_1.init('Wi-Fi', 'debug', (err) => {
     if (err) {
         console.error(err);
     }
     else {
-        console.log('done');
+        console.log('Starting loop');
+        index_1.start();
     }
 });
 //# sourceMappingURL=test.js.map

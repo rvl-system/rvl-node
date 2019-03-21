@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { init } from './index';
+import { init, start } from './index';
 
 console.log('Initializing');
-init('wifi0', 'debug', (err) => {
+init('Wi-Fi', 'debug', (err) => {
   if (err) {
     console.error(err);
   } else {
-    console.log('done');
+    console.log('Starting loop');
+    start();
   }
 });

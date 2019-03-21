@@ -24,6 +24,7 @@ const os_1 = require("os");
 const dgram_1 = require("dgram");
 const output_1 = require("./output");
 const SERVER_PORT = 4978;
+const UPDATE_RATE = 33;
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 function createInternalErrorMessage(msg) {
@@ -91,12 +92,6 @@ function handleEndWrite() {
 let currentReadBuffer;
 let currentReadBufferIndex = 0;
 const readBuffers = [];
-function messageListener(msg, rinfo) {
-    if (rinfo.port !== SERVER_PORT) {
-        return;
-    }
-    readBuffers.push(msg);
-}
 function handleParsePacket() {
     currentReadBuffer = readBuffers.shift();
     currentReadBufferIndex = 0;
@@ -226,31 +221,61 @@ function init(ifaceName, logLevel, cb) {
             NaN,
             Infinity
         };
-        WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math })
-            .then((result) => {
+        WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math }).then((result) => {
             wasmExports = result;
-            wasmExports.instance.exports._init(logLevelEnum);
-            socket = dgram_1.createSocket('udp4');
-            socket.on('message', messageListener);
-            socket.bind(SERVER_PORT, address, cb);
-        })
-            .catch((err) => setImmediate(() => cb(err)));
+            setImmediate(() => {
+                result.instance.exports._init(logLevelEnum);
+                socket = dgram_1.createSocket('udp4');
+                socket.on('message', (msg, rinfo) => {
+                    if (rinfo.port !== SERVER_PORT) {
+                        return;
+                    }
+                    readBuffers.push(msg);
+                });
+                socket.on('error', (err) => {
+                    console.error(err);
+                    socket.close();
+                });
+                socket.on('listening', () => {
+                    const addressInfo = socket.address();
+                    console.log(`UDP server listening on ${addressInfo.address}:${addressInfo.port}`);
+                    socket.setBroadcast(true);
+                    cb();
+                });
+                socket.bind(SERVER_PORT, address);
+            });
+        });
     });
 }
 exports.init = init;
+let loopTimer;
 function start() {
     if (!wasmExports) {
         throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
     }
-    wasmExports.instance.exports._loop();
-    // TODO
+    function loop() {
+        const loopStartTime = process.hrtime.bigint();
+        if (wasmExports) {
+            wasmExports.instance.exports._loop();
+        }
+        const now = process.hrtime.bigint();
+        const timeConsumed = Number((now - loopStartTime) / 1000000n);
+        if (timeConsumed > UPDATE_RATE) {
+            console.log(`Warning: system loop took ${timeConsumed - UPDATE_RATE}ms longer than the update rate`);
+            setImmediate(loop);
+        }
+        else {
+            loopTimer = setTimeout(loop, UPDATE_RATE - timeConsumed);
+        }
+    }
+    loop();
 }
 exports.start = start;
 function stop() {
     if (!wasmExports) {
         throw new Error(`start called but the wasm module has not been loaded. Was init called?`);
     }
-    // TODO
+    clearTimeout(loopTimer);
 }
 exports.stop = stop;
 function setWaveParameters(params) {
