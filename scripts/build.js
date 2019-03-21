@@ -53,6 +53,7 @@ const args = [
   '-s', 'ENVIRONMENT=node',
   '-s', 'NODEJS_CATCH_EXIT=0',
   '-s', 'DEMANGLE_SUPPORT=1',
+  '-s', 'ASSERTIONS=2',
   '-s', `EXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
   '-std=c++11',
   '-g4',

@@ -23,14 +23,17 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 #include <RVLLogging.h>
 #include "wasm_platform.h"
 
-WASMPlatform::WASMLogging logging;
-WASMPlatform::WASMPlatform platform;
-WASMPlatform::WASMTransport transport;
+WASMPlatform::WASMLogging* loggingInterface;
+WASMPlatform::WASMPlatform* platform;
+WASMPlatform::WASMTransport* transport;
 RVLLogging* logger;
 
 extern "C" void init(uint8_t logLevel) {
-  logger = new RVLLogging(&logging, static_cast<RVLLogLevel>(logLevel));
-  RVLMessagingInit(&platform, &transport, logger);
+  loggingInterface = new WASMPlatform::WASMLogging();
+  platform = new WASMPlatform::WASMPlatform();
+  transport = new WASMPlatform::WASMTransport();
+  logger = new RVLLogging(loggingInterface, static_cast<RVLLogLevel>(logLevel));
+  RVLMessagingInit(platform, transport, logger);
 }
 
 extern "C" void loop() {
