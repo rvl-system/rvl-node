@@ -107,37 +107,60 @@ function handleGetDeviceId() {
     return deviceId;
 }
 function handleOnWaveSettingsUpdated() {
-    const view = new Uint8Array(memory.buffer, waveSettingsPointer, structData.totalSize);
+    const view = Buffer.from(memory.buffer, waveSettingsPointer, structData.totalSize);
     const waveSettings = createEmptyWaveParameters();
     for (const entryName in structData.entryDictionary) {
         if (!structData.entryDictionary.hasOwnProperty(entryName)) {
             continue;
         }
-        const entry = structData.entryDictionary[entryName];
-        switch (entry.path.length) {
+        const structEntry = structData.entryDictionary[entryName];
+        let value = 0;
+        switch (structEntry.type) {
+            case 'uint8_t':
+                value = view.readUInt8(structEntry.index);
+                break;
+            case 'int8_t':
+                value = view.readInt8(structEntry.index);
+                break;
+            case 'uint16_t':
+                value = view.readUInt16BE(structEntry.index);
+                break;
+            case 'int16_t':
+                value = view.readInt16BE(structEntry.index);
+                break;
+            case 'uint32_t':
+                value = view.readUInt32BE(structEntry.index);
+                break;
+            case 'int32_t':
+                value = view.readInt32BE(structEntry.index);
+                break;
+            default:
+                throw new Error(createInternalErrorMessage(`Encountered unexpected struct type "${structEntry.type}"`));
+        }
+        switch (structEntry.path.length) {
             case 1:
-                waveSettings[entry.path[0]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]]
+                    = value;
                 break;
             case 2:
-                waveSettings[entry.path[0]][entry.path[1]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]][structEntry.path[1]]
+                    = value;
                 break;
             case 3:
-                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]][structEntry.path[1]][structEntry.path[2]]
+                    = value;
                 break;
             case 4:
-                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]][structEntry.path[1]][structEntry.path[2]][structEntry.path[3]]
+                    = value;
                 break;
             case 5:
-                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]][entry.path[4]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]][structEntry.path[1]][structEntry.path[2]][structEntry.path[3]][structEntry.path[4]]
+                    = value;
                 break;
             case 6:
-                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]][entry.path[4]][entry.path[5]]
-                    = view[entry.index];
+                waveSettings[structEntry.path[0]][structEntry.path[1]][structEntry.path[2]][structEntry.path[3]][structEntry.path[4]][structEntry.path[5]]
+                    = value;
                 break;
         }
     }
@@ -369,29 +392,34 @@ function setWaveParameters(params) {
     if (!wasmExports) {
         throw new Error(createInternalErrorMessage(`start called but the wasm module has not been loaded`));
     }
-    const view = new Uint8Array(memory.buffer, waveSettingsPointer, structData.totalSize);
+    const view = Buffer.from(memory.buffer, waveSettingsPointer, structData.totalSize);
     function writeValue(path, value) {
         if (typeof value === 'number') {
             const structEntry = structData.entryDictionary[path];
             if (!structEntry) {
                 throw new Error(createInternalErrorMessage(`Uknown struct path "${path}"`));
             }
-            switch (structEntry.size) {
-                case 1:
-                    view[structEntry.index] = value & 0xFF;
+            switch (structEntry.type) {
+                case 'uint8_t':
+                    view.writeUInt8(value, structEntry.index);
                     break;
-                case 2:
-                    view[structEntry.index] = (value >> 8) & 0x00F;
-                    view[structEntry.index + 1] = value & 0x00FF;
+                case 'int8_t':
+                    view.writeInt8(value, structEntry.index);
                     break;
-                case 4:
-                    view[structEntry.index] = (value >> 24) & 0x000000FF;
-                    view[structEntry.index + 1] = (value >> 16) & 0x000000FF;
-                    view[structEntry.index + 2] = (value >> 8) & 0x000000FF;
-                    view[structEntry.index + 3] = value & 0x000000FF;
+                case 'uint16_t':
+                    view.writeUInt16BE(value, structEntry.index);
+                    break;
+                case 'int16_t':
+                    view.writeInt16BE(value, structEntry.index);
+                    break;
+                case 'uint32_t':
+                    view.writeUInt32BE(value, structEntry.index);
+                    break;
+                case 'int32_t':
+                    view.writeInt32BE(value, structEntry.index);
                     break;
                 default:
-                    throw new Error(createInternalErrorMessage(`Encountered unexepcted struct entry size ${structEntry.size}`));
+                    throw new Error(createInternalErrorMessage(`Encountered unexpected struct type "${structEntry.type}"`));
             }
         }
         else if (Array.isArray(value)) {
