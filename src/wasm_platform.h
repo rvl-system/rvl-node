@@ -36,6 +36,9 @@ class WASMPlatform : public RVLPlatformInterface {
  private:
   uint16_t deviceId;
 
+ protected:
+  void onWaveSettingsUpdated();
+
  public:
   uint32_t getLocalTime();
   uint16_t getDeviceId();

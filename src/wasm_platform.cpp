@@ -25,6 +25,7 @@ extern "C" void jsPrintlnString(const char *s, uint16_t len);
 
 extern "C" uint32_t jsGetRelativeTime();
 extern "C" uint16_t jsGetDeviceId();
+extern "C" void jsOnWaveSettingsUpdated();
 
 extern "C" void jsBeginWrite();
 extern "C" void jsWrite8(uint8_t val);
@@ -63,6 +64,11 @@ uint32_t WASMPlatform::getLocalTime() {
 
 uint16_t WASMPlatform::getDeviceId() {
   return jsGetDeviceId();
+}
+
+void WASMPlatform::onWaveSettingsUpdated() {
+  RVLPlatformInterface::onWaveSettingsUpdated();
+  jsOnWaveSettingsUpdated();
 }
 
 // Transport implementation

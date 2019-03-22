@@ -20,17 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const bridge_1 = require("./bridge");
-const DEFAULT_TIME_PERIOD = 255;
-const DEFAULT_DISTANCE_PERIOD = 32;
-exports.MAX_NUM_WAVES = 4; // Note: this MUST match the NUM_WAVES define in C++!
 let created = false;
-const emptyChannel = { a: 0, b: 0, w_x: 0, w_t: 0, phi: 0 };
-const emptyWave = {
-    h: { ...emptyChannel },
-    s: { ...emptyChannel },
-    v: { ...emptyChannel },
-    a: { ...emptyChannel }
-};
 class RVL extends events_1.EventEmitter {
     constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info' }) {
         super();
@@ -39,15 +29,7 @@ class RVL extends events_1.EventEmitter {
             throw new Error(`Currently the RVL class can only be instantiated once per process.`);
         }
         created = true;
-        const waves = [];
-        for (let i = 0; i < exports.MAX_NUM_WAVES; i++) {
-            waves.push({ ...emptyWave });
-        }
-        this._waveParameters = {
-            waves,
-            timePeriod: DEFAULT_TIME_PERIOD,
-            distancePeriod: DEFAULT_DISTANCE_PERIOD
-        };
+        this._waveParameters = bridge_1.createEmptyWaveParameters();
         bridge_1.listenForWaveParameterUpdates((newParameters) => {
             this._waveParameters = newParameters;
             this.emit('waveParametersUpdated', this._waveParameters);
@@ -73,21 +55,20 @@ class RVL extends events_1.EventEmitter {
         }
         bridge_1.stop();
     }
-    setWaveParameters({ waves, timePeriod = DEFAULT_TIME_PERIOD, distancePeriod = DEFAULT_DISTANCE_PERIOD }) {
+    setWaveParameters({ waves, timePeriod = bridge_1.DEFAULT_TIME_PERIOD, distancePeriod = bridge_1.DEFAULT_DISTANCE_PERIOD }) {
         if (!this._isInitialized) {
             throw new Error('Cannot call "setWaveParameters" until the platform has been initialized ' +
                 'and the "initialized" event has been emitted');
         }
-        if (waves.length > exports.MAX_NUM_WAVES) {
-            throw new Error(`Only ${exports.MAX_NUM_WAVES} waves are supported at a time`);
+        if (waves.length > bridge_1.MAX_NUM_WAVES) {
+            throw new Error(`Only ${bridge_1.MAX_NUM_WAVES} waves are supported at a time`);
         }
         waves = [...waves]; // Clone the array so we don't modify the user's array
-        for (let i = waves.length; i < exports.MAX_NUM_WAVES; i++) {
-            waves.push({ ...emptyWave });
+        for (let i = waves.length; i < bridge_1.MAX_NUM_WAVES; i++) {
+            waves.push({ ...bridge_1.createEmptyWave() });
         }
         this._waveParameters = { waves, timePeriod, distancePeriod };
         bridge_1.setWaveParameters(this._waveParameters);
-        this.emit('waveParametersUpdated', this._waveParameters);
     }
     getAnimationTime() {
         return bridge_1.getAnimationTime();

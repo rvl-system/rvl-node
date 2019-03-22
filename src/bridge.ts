@@ -46,15 +46,46 @@ export interface IWaveParameters {
   waves: IWave[];
 }
 
+export const DEFAULT_TIME_PERIOD = 255;
+export const DEFAULT_DISTANCE_PERIOD = 32;
+export const MAX_NUM_WAVES = 4; // Note: this MUST match the NUM_WAVES define in C++!
+
+export function createEmptyWave(): IWave {
+  const emptyChannel: IWaveChannel = { a: 0, b: 0, w_x: 0, w_t: 0, phi: 0 };
+  return {
+    h: { ...emptyChannel },
+    s: { ...emptyChannel },
+    v: { ...emptyChannel },
+    a: { ...emptyChannel }
+  };
+}
+
+export function createEmptyWaveParameters(): IWaveParameters {
+
+  const waves: IWave[] = [];
+  for (let i = 0; i < MAX_NUM_WAVES; i++) {
+    waves.push({ ...createEmptyWave() });
+  }
+  return {
+    waves,
+    timePeriod: DEFAULT_TIME_PERIOD,
+    distancePeriod: DEFAULT_DISTANCE_PERIOD
+  };
+}
+
 const UPDATE_RATE = 33;
 
 let wasmExports: WebAssembly.ResultObject | undefined;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 let waveSettingsPointer = 0;
 let serverPort: number = NaN;
+let waveSettingsUpdatedCallback: (parameters: IWaveParameters) => void = () => {
+  // Do nothing
+};
 
 interface IStructInfoEntry {
   name: string;
+  path: string[];
   type: string;
   initialValue: number;
   size: number;
@@ -67,6 +98,21 @@ interface IStructInfo {
 }
 
 const structData: IStructInfo = JSON.parse(readFileSync(join(__dirname, 'structInfo.json')).toString());
+const pathSegmentArrayRegex = /^(.*?)\[([0-9]*)\]$/;
+for (const entryName in structData.entryDictionary) {
+  if (!structData.entryDictionary.hasOwnProperty(entryName)) {
+    continue;
+  }
+  const entry = structData.entryDictionary[entryName];
+  const entryPath = entry.name.split('.');
+  for (let i = entryPath.length - 1; i >= 0; i--) {
+    const match = pathSegmentArrayRegex.exec(entryPath[i]);
+    if (match) {
+      entryPath.splice(i, 1, match[1], match[2]);
+    }
+  }
+  entry.path = entryPath;
+}
 
 function createInternalErrorMessage(msg: string): string {
   return `Internal Error: ${msg}. 'This is a bug, please file an issue at https://github.com/nebrius/RVL-Node/issues.`;
@@ -108,6 +154,53 @@ function handleGetRelativeTime(): number {
 
 function handleGetDeviceId(): number {
   return deviceId;
+}
+
+function handleOnWaveSettingsUpdated(): void {
+  const view = new Uint8Array(memory.buffer, waveSettingsPointer, structData.totalSize);
+  const waveSettings = createEmptyWaveParameters();
+  for (const entryName in structData.entryDictionary) {
+    if (!structData.entryDictionary.hasOwnProperty(entryName)) {
+      continue;
+    }
+    const entry = structData.entryDictionary[entryName];
+    switch (entry.path.length) {
+      case 1:
+        (waveSettings as any)
+          [entry.path[0]]
+          = view[entry.index];
+        break;
+      case 2:
+        (waveSettings as any)
+          [entry.path[0]][entry.path[1]]
+          = view[entry.index];
+        break;
+      case 3:
+        (waveSettings as any)
+          [entry.path[0]][entry.path[1]][entry.path[2]]
+          = view[entry.index];
+        break;
+      case 4:
+        (waveSettings as any)
+          [entry.path[0]][entry.path[1]][entry.path[2]]
+          [entry.path[3]]
+          = view[entry.index];
+        break;
+      case 5:
+        (waveSettings as any)
+          [entry.path[0]][entry.path[1]][entry.path[2]]
+          [entry.path[3]][entry.path[4]]
+          = view[entry.index];
+        break;
+      case 6:
+        (waveSettings as any)
+          [entry.path[0]][entry.path[1]][entry.path[2]]
+          [entry.path[3]][entry.path[4]][entry.path[5]]
+          = view[entry.index];
+        break;
+    }
+  }
+  waveSettingsUpdatedCallback(waveSettings);
 }
 
 // Transport implementation methods
@@ -277,6 +370,7 @@ export function init(
       // Platform
       _jsGetRelativeTime: handleGetRelativeTime,
       _jsGetDeviceId: handleGetDeviceId,
+      _jsOnWaveSettingsUpdated: handleOnWaveSettingsUpdated,
 
       // Transport Write
       _jsBeginWrite: handleBeginWrite,
@@ -421,5 +515,5 @@ export function getAnimationTime(): number {
 }
 
 export function listenForWaveParameterUpdates(cb: (parameters: IWaveParameters) => void): void {
-  // TODO
+  waveSettingsUpdatedCallback = cb;
 }

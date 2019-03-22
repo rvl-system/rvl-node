@@ -62,7 +62,7 @@ rvl.on('initialized', () => {
 });
 rvl.on('waveParametersUpdated', (parameters) => {
     console.log('Wave Parameters Updated:');
-    console.log(parameters);
+    console.log(JSON.stringify(parameters, null, '  '));
     console.log();
 });
 //# sourceMappingURL=test.js.map

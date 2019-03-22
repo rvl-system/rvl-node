@@ -28,16 +28,17 @@ import {
   getAnimationTime,
   listenForWaveParameterUpdates,
 
-  IWaveParameters,
-  IWave,
-  IWaveChannel
+  createEmptyWave,
+  createEmptyWaveParameters,
+
+  DEFAULT_DISTANCE_PERIOD,
+  DEFAULT_TIME_PERIOD,
+  MAX_NUM_WAVES,
+
+  IWaveParameters
 } from './bridge';
 
 export { IWave, IWaveChannel, IWaveParameters } from './bridge';
-
-const DEFAULT_TIME_PERIOD = 255;
-const DEFAULT_DISTANCE_PERIOD = 32;
-export const MAX_NUM_WAVES = 4; // Note: this MUST match the NUM_WAVES define in C++!
 
 export interface IRVLOptions {
   networkInterface: string;
@@ -53,14 +54,6 @@ interface IEvents {
 type RVLEmitter = StrictEventEmitter<EventEmitter, IEvents>;
 
 let created = false;
-
-const emptyChannel: IWaveChannel = { a: 0, b: 0, w_x: 0, w_t: 0, phi: 0 };
-const emptyWave: IWave = {
-  h: { ...emptyChannel },
-  s: { ...emptyChannel },
-  v: { ...emptyChannel },
-  a: { ...emptyChannel }
-};
 
 export class RVL extends (EventEmitter as new() => RVLEmitter) {
 
@@ -78,15 +71,7 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     }
     created = true;
 
-    const waves: IWave[] = [];
-    for (let i = 0; i < MAX_NUM_WAVES; i++) {
-      waves.push({ ...emptyWave });
-    }
-    this._waveParameters = {
-      waves,
-      timePeriod: DEFAULT_TIME_PERIOD,
-      distancePeriod: DEFAULT_DISTANCE_PERIOD
-    };
+    this._waveParameters = createEmptyWaveParameters();
 
     listenForWaveParameterUpdates((newParameters) => {
       this._waveParameters = newParameters;
@@ -130,11 +115,10 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     }
     waves = [ ...waves ]; // Clone the array so we don't modify the user's array
     for (let i = waves.length; i < MAX_NUM_WAVES; i++) {
-      waves.push({ ...emptyWave });
+      waves.push({ ...createEmptyWave() });
     }
     this._waveParameters = { waves, timePeriod, distancePeriod };
     setWaveParameters(this._waveParameters);
-    this.emit('waveParametersUpdated', this._waveParameters);
   }
 
   public getAnimationTime(): number {

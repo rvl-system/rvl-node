@@ -3,7 +3,6 @@ import { EventEmitter } from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
 import { IWaveParameters } from './bridge';
 export { IWave, IWaveChannel, IWaveParameters } from './bridge';
-export declare const MAX_NUM_WAVES = 4;
 export interface IRVLOptions {
     networkInterface: string;
     port?: number;

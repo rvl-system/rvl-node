@@ -23,12 +23,55 @@ const path_1 = require("path");
 const os_1 = require("os");
 const dgram_1 = require("dgram");
 const output_1 = require("./output");
+exports.DEFAULT_TIME_PERIOD = 255;
+exports.DEFAULT_DISTANCE_PERIOD = 32;
+exports.MAX_NUM_WAVES = 4; // Note: this MUST match the NUM_WAVES define in C++!
+function createEmptyWave() {
+    const emptyChannel = { a: 0, b: 0, w_x: 0, w_t: 0, phi: 0 };
+    return {
+        h: { ...emptyChannel },
+        s: { ...emptyChannel },
+        v: { ...emptyChannel },
+        a: { ...emptyChannel }
+    };
+}
+exports.createEmptyWave = createEmptyWave;
+function createEmptyWaveParameters() {
+    const waves = [];
+    for (let i = 0; i < exports.MAX_NUM_WAVES; i++) {
+        waves.push({ ...createEmptyWave() });
+    }
+    return {
+        waves,
+        timePeriod: exports.DEFAULT_TIME_PERIOD,
+        distancePeriod: exports.DEFAULT_DISTANCE_PERIOD
+    };
+}
+exports.createEmptyWaveParameters = createEmptyWaveParameters;
 const UPDATE_RATE = 33;
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 let waveSettingsPointer = 0;
 let serverPort = NaN;
+let waveSettingsUpdatedCallback = () => {
+    // Do nothing
+};
 const structData = JSON.parse(fs_1.readFileSync(path_1.join(__dirname, 'structInfo.json')).toString());
+const pathSegmentArrayRegex = /^(.*?)\[([0-9]*)\]$/;
+for (const entryName in structData.entryDictionary) {
+    if (!structData.entryDictionary.hasOwnProperty(entryName)) {
+        continue;
+    }
+    const entry = structData.entryDictionary[entryName];
+    const entryPath = entry.name.split('.');
+    for (let i = entryPath.length - 1; i >= 0; i--) {
+        const match = pathSegmentArrayRegex.exec(entryPath[i]);
+        if (match) {
+            entryPath.splice(i, 1, match[1], match[2]);
+        }
+    }
+    entry.path = entryPath;
+}
 function createInternalErrorMessage(msg) {
     return `Internal Error: ${msg}. 'This is a bug, please file an issue at https://github.com/nebrius/RVL-Node/issues.`;
 }
@@ -62,6 +105,43 @@ function handleGetRelativeTime() {
 }
 function handleGetDeviceId() {
     return deviceId;
+}
+function handleOnWaveSettingsUpdated() {
+    const view = new Uint8Array(memory.buffer, waveSettingsPointer, structData.totalSize);
+    const waveSettings = createEmptyWaveParameters();
+    for (const entryName in structData.entryDictionary) {
+        if (!structData.entryDictionary.hasOwnProperty(entryName)) {
+            continue;
+        }
+        const entry = structData.entryDictionary[entryName];
+        switch (entry.path.length) {
+            case 1:
+                waveSettings[entry.path[0]]
+                    = view[entry.index];
+                break;
+            case 2:
+                waveSettings[entry.path[0]][entry.path[1]]
+                    = view[entry.index];
+                break;
+            case 3:
+                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]]
+                    = view[entry.index];
+                break;
+            case 4:
+                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]]
+                    = view[entry.index];
+                break;
+            case 5:
+                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]][entry.path[4]]
+                    = view[entry.index];
+                break;
+            case 6:
+                waveSettings[entry.path[0]][entry.path[1]][entry.path[2]][entry.path[3]][entry.path[4]][entry.path[5]]
+                    = view[entry.index];
+                break;
+        }
+    }
+    waveSettingsUpdatedCallback(waveSettings);
 }
 // Transport implementation methods
 let socket;
@@ -205,6 +285,7 @@ function init(networkInterface, port, mode, logLevel, cb) {
             // Platform
             _jsGetRelativeTime: handleGetRelativeTime,
             _jsGetDeviceId: handleGetDeviceId,
+            _jsOnWaveSettingsUpdated: handleOnWaveSettingsUpdated,
             // Transport Write
             _jsBeginWrite: handleBeginWrite,
             _jsWrite8: handleWrite8,
@@ -345,7 +426,7 @@ function getAnimationTime() {
 }
 exports.getAnimationTime = getAnimationTime;
 function listenForWaveParameterUpdates(cb) {
-    // TODO
+    waveSettingsUpdatedCallback = cb;
 }
 exports.listenForWaveParameterUpdates = listenForWaveParameterUpdates;
 //# sourceMappingURL=bridge.js.map
