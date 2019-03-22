@@ -225,7 +225,10 @@ function init(ifaceName, logLevel, cb) {
             wasmExports = result;
             setImmediate(() => {
                 result.instance.exports._init(logLevelEnum);
-                socket = dgram_1.createSocket('udp4');
+                socket = dgram_1.createSocket({
+                    type: 'udp4',
+                    reuseAddr: true
+                });
                 socket.on('message', (msg, rinfo) => {
                     if (rinfo.port !== SERVER_PORT) {
                         return;

@@ -2214,9 +2214,7 @@
   (local $$36 i32)
   (local $$37 i32)
   (local $$38 i32)
-  (local $$39 i32)
   (local $$4 i32)
-  (local $$40 i32)
   (local $$5 i32)
   (local $$6 i32)
   (local $$7 i32)
@@ -2320,31 +2318,22 @@
    )
   )
   (local.set $$10
-   (local.get $$0)
-  )
-  (local.set $$11
-   (i32.and
-    (local.get $$10)
-    (i32.const 255)
-   )
-  )
-  (local.set $$12
    (i32.ne
     (local.get $$9)
-    (local.get $$11)
+    (i32.const 1)
    )
   )
   (if
-   (local.get $$12)
+   (local.get $$10)
    (block
     ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:49:0
-    (local.set $$13
+    (local.set $$11
      (i32.load
       (i32.const 6404)
      )
     )
     (call $__ZN10RVLLogging5errorEPKcz
-     (local.get $$13)
+     (local.get $$11)
      (i32.const 2610)
      (local.get $$vararg_buffer1)
     )
@@ -2356,9 +2345,20 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:52:0
-  (local.set $$14
+  (local.set $$12
    (i32.load
     (i32.const 6400)
+   )
+  )
+  (local.set $$13
+   (i32.load
+    (local.get $$12)
+   )
+  )
+  (local.set $$14
+   (i32.add
+    (local.get $$13)
+    (i32.const 32)
    )
   )
   (local.set $$15
@@ -2366,23 +2366,12 @@
     (local.get $$14)
    )
   )
-  (local.set $$16
-   (i32.add
-    (local.get $$15)
-    (i32.const 32)
-   )
-  )
-  (local.set $$17
-   (i32.load
-    (local.get $$16)
-   )
-  )
   (drop
    (call_indirect (type $FUNCSIG$ii)
-    (local.get $$14)
+    (local.get $$12)
     (i32.add
      (i32.and
-      (local.get $$17)
+      (local.get $$15)
       (i32.const 31)
      )
      (i32.const 0)
@@ -2390,9 +2379,20 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:53:0
-  (local.set $$18
+  (local.set $$16
    (i32.load
     (i32.const 6400)
+   )
+  )
+  (local.set $$17
+   (i32.load
+    (local.get $$16)
+   )
+  )
+  (local.set $$18
+   (i32.add
+    (local.get $$17)
+    (i32.const 28)
    )
   )
   (local.set $$19
@@ -2401,22 +2401,11 @@
    )
   )
   (local.set $$20
-   (i32.add
-    (local.get $$19)
-    (i32.const 28)
-   )
-  )
-  (local.set $$21
-   (i32.load
-    (local.get $$20)
-   )
-  )
-  (local.set $$22
    (call_indirect (type $FUNCSIG$ii)
-    (local.get $$18)
+    (local.get $$16)
     (i32.add
      (i32.and
-      (local.get $$21)
+      (local.get $$19)
       (i32.const 31)
      )
      (i32.const 0)
@@ -2424,12 +2413,23 @@
    )
   )
   (local.set $$1
-   (local.get $$22)
+   (local.get $$20)
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:54:0
-  (local.set $$23
+  (local.set $$21
    (i32.load
     (i32.const 6400)
+   )
+  )
+  (local.set $$22
+   (i32.load
+    (local.get $$21)
+   )
+  )
+  (local.set $$23
+   (i32.add
+    (local.get $$22)
+    (i32.const 28)
    )
   )
   (local.set $$24
@@ -2437,23 +2437,12 @@
     (local.get $$23)
    )
   )
-  (local.set $$25
-   (i32.add
-    (local.get $$24)
-    (i32.const 28)
-   )
-  )
-  (local.set $$26
-   (i32.load
-    (local.get $$25)
-   )
-  )
   (drop
    (call_indirect (type $FUNCSIG$ii)
-    (local.get $$23)
+    (local.get $$21)
     (i32.add
      (i32.and
-      (local.get $$26)
+      (local.get $$24)
       (i32.const 31)
      )
      (i32.const 0)
@@ -2461,9 +2450,20 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:55:0
-  (local.set $$27
+  (local.set $$25
    (i32.load
     (i32.const 6400)
+   )
+  )
+  (local.set $$26
+   (i32.load
+    (local.get $$25)
+   )
+  )
+  (local.set $$27
+   (i32.add
+    (local.get $$26)
+    (i32.const 28)
    )
   )
   (local.set $$28
@@ -2471,23 +2471,12 @@
     (local.get $$27)
    )
   )
-  (local.set $$29
-   (i32.add
-    (local.get $$28)
-    (i32.const 28)
-   )
-  )
-  (local.set $$30
-   (i32.load
-    (local.get $$29)
-   )
-  )
   (drop
    (call_indirect (type $FUNCSIG$ii)
-    (local.get $$27)
+    (local.get $$25)
     (i32.add
      (i32.and
-      (local.get $$30)
+      (local.get $$28)
       (i32.const 31)
      )
      (i32.const 0)
@@ -2495,9 +2484,20 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:56:0
-  (local.set $$31
+  (local.set $$29
    (i32.load
     (i32.const 6400)
+   )
+  )
+  (local.set $$30
+   (i32.load
+    (local.get $$29)
+   )
+  )
+  (local.set $$31
+   (i32.add
+    (local.get $$30)
+    (i32.const 32)
    )
   )
   (local.set $$32
@@ -2505,23 +2505,12 @@
     (local.get $$31)
    )
   )
-  (local.set $$33
-   (i32.add
-    (local.get $$32)
-    (i32.const 32)
-   )
-  )
-  (local.set $$34
-   (i32.load
-    (local.get $$33)
-   )
-  )
   (drop
    (call_indirect (type $FUNCSIG$ii)
-    (local.get $$31)
+    (local.get $$29)
     (i32.add
      (i32.and
-      (local.get $$34)
+      (local.get $$32)
       (i32.const 31)
      )
      (i32.const 0)
@@ -2529,24 +2518,24 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:59:0
-  (local.set $$35
+  (local.set $$33
    (i32.load
     (i32.const 6408)
    )
   )
-  (local.set $$36
+  (local.set $$34
    (call $__ZN20RVLPlatformInterface13getDeviceModeEv
-    (local.get $$35)
+    (local.get $$33)
    )
   )
-  (local.set $$37
+  (local.set $$35
    (i32.eq
-    (local.get $$36)
+    (local.get $$34)
     (i32.const 0)
    )
   )
   (if
-   (local.get $$37)
+   (local.get $$35)
    (block
     (global.set $STACKTOP
      (local.get $sp)
@@ -2556,18 +2545,18 @@
    )
   )
   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:63:0
-  (local.set $$38
+  (local.set $$36
    (local.get $$1)
   )
-  (local.set $$39
+  (local.set $$37
    (i32.and
-    (local.get $$38)
+    (local.get $$36)
     (i32.const 255)
    )
   )
   (local.set $$cond
    (i32.eq
-    (local.get $$39)
+    (local.get $$37)
     (i32.const 2)
    )
   )
@@ -2584,13 +2573,13 @@
    )
    (block
     ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:68:0
-    (local.set $$40
+    (local.set $$38
      (i32.load
       (i32.const 6404)
      )
     )
     (call $__ZN10RVLLogging5errorEPKcz
-     (local.get $$40)
+     (local.get $$38)
      (i32.const 2667)
      (local.get $$vararg_buffer3)
     )

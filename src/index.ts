@@ -279,7 +279,10 @@ export function init(ifaceName: string, logLevel: 'error' | 'info' | 'debug', cb
       setImmediate(() => {
         result.instance.exports._init(logLevelEnum);
 
-        socket = createSocket('udp4');
+        socket = createSocket({
+          type: 'udp4',
+          reuseAddr: true
+        });
 
         socket.on('message', (msg, rinfo) => {
           if (rinfo.port !== SERVER_PORT) {

@@ -11,7 +11,8 @@
       "program": "${workspaceFolder}\\dist\\test.js",
       "outFiles": [
         "${workspaceFolder}/**/*"
-      ]
+      ],
+      "useWSL": true
     },
     {
       "type": "node",
