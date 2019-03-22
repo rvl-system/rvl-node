@@ -28,11 +28,16 @@ WASMPlatform::WASMPlatform* platform;
 WASMPlatform::WASMTransport* transport;
 RVLLogging* logger;
 
-extern "C" void init(uint8_t logLevel) {
+extern "C" void init(uint8_t logLevel, bool isController) {
   loggingInterface = new WASMPlatform::WASMLogging();
   platform = new WASMPlatform::WASMPlatform();
   transport = new WASMPlatform::WASMTransport();
   logger = new RVLLogging(loggingInterface, static_cast<RVLLogLevel>(logLevel));
+  if (isController) {
+    platform->setDeviceMode(RVLDeviceMode::Controller);
+  } else {
+    platform->setDeviceMode(RVLDeviceMode::Receiver);
+  }
   RVLMessagingInit(platform, transport, logger);
 }
 

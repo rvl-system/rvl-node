@@ -17,14 +17,22 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { init, start } from './index';
+import { RVL } from './index';
 
 console.log('Initializing');
-init('wlan0', 'debug', (err) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('Starting loop');
-    start();
-  }
+
+const rvl = new RVL({
+  networkInterface: 'eth0',
+  logLevel: 'debug'
+});
+
+rvl.on('initialized', () => {
+  console.log('Starting loop');
+  rvl.start();
+});
+
+rvl.on('waveParametersUpdated', (parameters) => {
+  console.log('Wave Parameters Updated:');
+  console.log(parameters);
+  console.log();
 });

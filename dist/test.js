@@ -20,13 +20,17 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 console.log('Initializing');
-index_1.init('wlan0', 'debug', (err) => {
-    if (err) {
-        console.error(err);
-    }
-    else {
-        console.log('Starting loop');
-        index_1.start();
-    }
+const rvl = new index_1.RVL({
+    networkInterface: 'eth0',
+    logLevel: 'debug'
+});
+rvl.on('initialized', () => {
+    console.log('Starting loop');
+    rvl.start();
+});
+rvl.on('waveParametersUpdated', (parameters) => {
+    console.log('Wave Parameters Updated:');
+    console.log(parameters);
+    console.log();
 });
 //# sourceMappingURL=test.js.map
