@@ -20,7 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 console.log('Initializing');
-index_1.init('eth3', 'debug', (err) => {
+index_1.init('wlan0', 'debug', (err) => {
     if (err) {
         console.error(err);
     }

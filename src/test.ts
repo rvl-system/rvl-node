@@ -20,7 +20,7 @@ along with Raver Lights Messaging.  If not, see <http://www.gnu.org/licenses/>.
 import { init, start } from './index';
 
 console.log('Initializing');
-init('eth3', 'debug', (err) => {
+init('wlan0', 'debug', (err) => {
   if (err) {
     console.error(err);
   } else {

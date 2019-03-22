@@ -245,7 +245,7 @@ function init(ifaceName, logLevel, cb) {
                     socket.setBroadcast(true);
                     cb();
                 });
-                socket.bind(SERVER_PORT, address);
+                socket.bind(SERVER_PORT);
             });
         });
     });

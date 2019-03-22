@@ -303,7 +303,7 @@ export function init(ifaceName: string, logLevel: 'error' | 'info' | 'debug', cb
           cb();
         });
 
-        socket.bind(SERVER_PORT, address);
+        socket.bind(SERVER_PORT);
       });
     });
   });
