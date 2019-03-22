@@ -116,7 +116,7 @@ function handleRead16() {
         throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
     }
     const value = currentReadBuffer.readUInt16BE(currentReadBufferIndex);
-    currentReadBufferIndex += 1;
+    currentReadBufferIndex += 2;
     return value;
 }
 function handleRead32() {
@@ -127,7 +127,7 @@ function handleRead32() {
         throw new Error(createInternalErrorMessage('Attempted to read more of a UDP packet than is available'));
     }
     const value = currentReadBuffer.readUInt32BE(currentReadBufferIndex);
-    currentReadBufferIndex += 1;
+    currentReadBufferIndex += 4;
     return value;
 }
 function handleRead(ptr, len) {

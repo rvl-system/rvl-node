@@ -7,12 +7,25 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Debug Locally",
       "program": "${workspaceFolder}\\dist\\test.js",
       "outFiles": [
         "${workspaceFolder}/**/*"
       ],
       "useWSL": true
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Debug Remotely",
+      "address": "192.168.1.184",
+      "port": 9229,
+      "localRoot": "${workspaceRoot}",
+      "remoteRoot": "/home/pi/RVL-Node",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/**/*"
+      ]
     },
     {
       "type": "node",
