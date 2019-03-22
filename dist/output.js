@@ -1065,11 +1065,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 8336,
+    STACK_BASE = 9584,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5251216,
-    DYNAMIC_BASE = 5251216,
-    DYNAMICTOP_PTR = 8080;
+    STACK_MAX = 5252464,
+    DYNAMIC_BASE = 5252464,
+    DYNAMICTOP_PTR = 9328;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1558,7 +1558,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 7312;
+// STATICTOP = STATIC_BASE + 8560;
 /* global initializers */ /*__ATINIT__.push();*/
 
 
@@ -1569,7 +1569,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 8320
+var tempDoublePtr = 9568
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -2044,10 +2044,10 @@ var real__sbrk = asm["_sbrk"]; asm["_sbrk"] = function() {
   return real__sbrk.apply(null, arguments);
 };
 
-var real__setWaveParameters = asm["_setWaveParameters"]; asm["_setWaveParameters"] = function() {
+var real__waveParametersUpdated = asm["_waveParametersUpdated"]; asm["_waveParametersUpdated"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real__setWaveParameters.apply(null, arguments);
+  return real__waveParametersUpdated.apply(null, arguments);
 };
 
 var real_establishStackSpace = asm["establishStackSpace"]; asm["establishStackSpace"] = function() {
@@ -2118,10 +2118,10 @@ var _sbrk = Module["_sbrk"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_sbrk"].apply(null, arguments) };
-var _setWaveParameters = Module["_setWaveParameters"] = function() {
+var _waveParametersUpdated = Module["_waveParametersUpdated"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_setWaveParameters"].apply(null, arguments) };
+  return Module["asm"]["_waveParametersUpdated"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');

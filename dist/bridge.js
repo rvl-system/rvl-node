@@ -26,7 +26,9 @@ const output_1 = require("./output");
 const UPDATE_RATE = 33;
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+let waveSettingsPointer = 0;
 let serverPort = NaN;
+const structData = JSON.parse(fs_1.readFileSync(path_1.join(__dirname, 'structInfo.json')).toString());
 function createInternalErrorMessage(msg) {
     return `Internal Error: ${msg}. 'This is a bug, please file an issue at https://github.com/nebrius/RVL-Node/issues.`;
 }
@@ -225,7 +227,7 @@ function init(networkInterface, port, mode, logLevel, cb) {
         WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math }).then((result) => {
             wasmExports = result;
             setImmediate(() => {
-                result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0);
+                waveSettingsPointer = result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0);
                 socket = dgram_1.createSocket({
                     type: 'udp4',
                     reuseAddr: true
@@ -286,8 +288,55 @@ function setWaveParameters(params) {
     if (!wasmExports) {
         throw new Error(createInternalErrorMessage(`start called but the wasm module has not been loaded`));
     }
-    // wasmExports.instance.exports._setWaveParameters();
-    // TODO
+    const view = new Uint8Array(memory.buffer, waveSettingsPointer, structData.totalSize);
+    function writeValue(path, value) {
+        if (typeof value === 'number') {
+            const structEntry = structData.entryDictionary[path];
+            if (!structEntry) {
+                throw new Error(createInternalErrorMessage(`Uknown struct path "${path}"`));
+            }
+            switch (structEntry.size) {
+                case 1:
+                    view[structEntry.index] = value & 0xFF;
+                    break;
+                case 2:
+                    view[structEntry.index] = (value >> 8) & 0x00F;
+                    view[structEntry.index + 1] = value & 0x00FF;
+                    break;
+                case 4:
+                    view[structEntry.index] = (value >> 24) & 0x000000FF;
+                    view[structEntry.index + 1] = (value >> 16) & 0x000000FF;
+                    view[structEntry.index + 2] = (value >> 8) & 0x000000FF;
+                    view[structEntry.index + 3] = value & 0x000000FF;
+                    break;
+                default:
+                    throw new Error(createInternalErrorMessage(`Encountered unexepcted struct entry size ${structEntry.size}`));
+            }
+        }
+        else if (Array.isArray(value)) {
+            for (let i = 0; i < value.length; i++) {
+                writeValue(`${path}[${i}]`, value[i]);
+            }
+        }
+        else if (typeof value === 'object') {
+            for (const entry in value) {
+                if (!value.hasOwnProperty(entry)) {
+                    continue;
+                }
+                writeValue(`${path}.${entry}`, value[entry]);
+            }
+        }
+        else {
+            throw new Error(createInternalErrorMessage(`Unsupported value type `));
+        }
+    }
+    for (const param in params) {
+        if (!params.hasOwnProperty(param)) {
+            continue;
+        }
+        writeValue(param, params[param]);
+    }
+    wasmExports.instance.exports._waveParametersUpdated();
 }
 exports.setWaveParameters = setWaveParameters;
 function getAnimationTime() {
