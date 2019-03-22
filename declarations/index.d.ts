@@ -17,7 +17,9 @@ declare const RVL_base: new () => StrictEventEmitter<EventEmitter, IEvents, IEve
 export declare class RVL extends RVL_base {
     private _isInitialized;
     private _waveParameters;
+    private _mode;
     readonly waveParameters: IWaveParameters;
+    readonly mode: "controller" | "receiver";
     constructor({ networkInterface, port, mode, logLevel }: IRVLOptions);
     start(): void;
     stop(): void;

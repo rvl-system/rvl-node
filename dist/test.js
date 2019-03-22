@@ -22,7 +22,8 @@ const index_1 = require("./index");
 console.log('Initializing');
 const rvl = new index_1.RVL({
     networkInterface: 'eth0',
-    logLevel: 'debug'
+    logLevel: 'debug',
+    mode: 'controller'
 });
 rvl.on('initialized', () => {
     console.log('Starting loop');

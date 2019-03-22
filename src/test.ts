@@ -23,7 +23,8 @@ console.log('Initializing');
 
 const rvl = new RVL({
   networkInterface: 'eth0',
-  logLevel: 'debug'
+  logLevel: 'debug',
+  mode: 'controller'
 });
 
 rvl.on('initialized', () => {

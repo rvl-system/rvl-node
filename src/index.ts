@@ -59,9 +59,14 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
 
   private _isInitialized = false;
   private _waveParameters: IWaveParameters;
+  private _mode: 'controller' | 'receiver';
 
   public get waveParameters() {
     return this._waveParameters;
+  }
+
+  public get mode() {
+    return this._mode;
   }
 
   constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info' }: IRVLOptions) {
@@ -71,6 +76,7 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     }
     created = true;
 
+    this._mode = mode;
     this._waveParameters = createEmptyWaveParameters();
 
     listenForWaveParameterUpdates((newParameters) => {
@@ -109,6 +115,9 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     if (!this._isInitialized) {
       throw new Error('Cannot call "setWaveParameters" until the platform has been initialized ' +
         'and the "initialized" event has been emitted');
+    }
+    if (this._mode !== 'controller') {
+      throw new Error(`Cannot set wave parameters while in ${this._mode} mode`);
     }
     if (waves.length > MAX_NUM_WAVES) {
       throw new Error(`Only ${MAX_NUM_WAVES} waves are supported at a time`);

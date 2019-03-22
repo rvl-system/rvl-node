@@ -29,6 +29,7 @@ class RVL extends events_1.EventEmitter {
             throw new Error(`Currently the RVL class can only be instantiated once per process.`);
         }
         created = true;
+        this._mode = mode;
         this._waveParameters = bridge_1.createEmptyWaveParameters();
         bridge_1.listenForWaveParameterUpdates((newParameters) => {
             this._waveParameters = newParameters;
@@ -42,6 +43,9 @@ class RVL extends events_1.EventEmitter {
     }
     get waveParameters() {
         return this._waveParameters;
+    }
+    get mode() {
+        return this._mode;
     }
     start() {
         if (!this._isInitialized) {
@@ -59,6 +63,9 @@ class RVL extends events_1.EventEmitter {
         if (!this._isInitialized) {
             throw new Error('Cannot call "setWaveParameters" until the platform has been initialized ' +
                 'and the "initialized" event has been emitted');
+        }
+        if (this._mode !== 'controller') {
+            throw new Error(`Cannot set wave parameters while in ${this._mode} mode`);
         }
         if (waves.length > bridge_1.MAX_NUM_WAVES) {
             throw new Error(`Only ${bridge_1.MAX_NUM_WAVES} waves are supported at a time`);

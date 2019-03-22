@@ -284,7 +284,7 @@
   (local.set $$11
    (i32.mul
     (local.get $$10)
-    (i32.const 5)
+    (i32.const 3)
    )
   )
   (local.set $$6
