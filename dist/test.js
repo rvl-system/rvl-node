@@ -30,8 +30,6 @@ rvl.on('initialized', () => {
     rvl.start();
     setTimeout(() => {
         rvl.setWaveParameters({
-            timePeriod: 100,
-            distancePeriod: 200,
             waves: [
                 {
                     h: { a: 255, b: 0, w_t: 4, w_x: 2, phi: 0 },
