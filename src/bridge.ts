@@ -426,7 +426,7 @@ export function init(
         });
 
         socket.on('message', (msg, rinfo) => {
-          if (rinfo.port !== port) {
+          if (rinfo.port !== port || rinfo.address === address) {
             return;
           }
           readBuffers.push(msg);
