@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild-ts": "tslint src/**/*.ts",
     "build-ts": "tsc",
+    "prebuild-cpp": "cpplint --quiet --linelength=120 --recursive --repository=src src/*",
     "build-cpp": "node scripts/build.js",
     "postbuild-cpp": "node scripts/hackOutput.js",
     "build": "npm run build-cpp && npm run build-ts"

@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WASM_PLAFORM_H_
-#define WASM_PLAFORM_H_
+#ifndef WASM_PLATFORM_H_
+#define WASM_PLATFORM_H_
 
 #include <RVLLogging.h>
 #include <RVLMessaging.h>
@@ -62,4 +62,4 @@ class WASMTransport : public RVLTransportInterface {
 
 }  // namespace WASMPlatform
 
-#endif
+#endif  // WASM_PLATFORM_H_

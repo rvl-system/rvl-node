@@ -5130,7 +5130,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ src/wasm_platform.h:28:0
+  ;;@ src/./wasm_platform.h:28:0
   (call $__ZN19RVLLoggingInterfaceC2Ev
    (local.get $$2)
   )
@@ -5172,7 +5172,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ src/wasm_platform.h:35:0
+  ;;@ src/./wasm_platform.h:35:0
   (call $__ZN20RVLPlatformInterfaceC2Ev
    (local.get $$2)
   )
@@ -5214,7 +5214,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ src/wasm_platform.h:47:0
+  ;;@ src/./wasm_platform.h:47:0
   (call $__ZN21RVLTransportInterfaceC2Ev
    (local.get $$2)
   )
