@@ -34,7 +34,13 @@ rvl.on('initialized', () => {
     rvl.setWaveParameters({
       waves: [
         {
-          h: { a: 255, b: 0, w_t: 4, w_x: 2, phi: 0 },
+          h: { a: 0, b: 190, w_t: 0, w_x: 0, phi: 0 },
+          s: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
+          v: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
+          a: { a: 255, b: 0, w_t: 2, w_x: 0, phi: 0 },
+        },
+        {
+          h: { a: 0, b: 80, w_t: 0, w_x: 0, phi: 0 },
           s: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
           v: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
           a: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
