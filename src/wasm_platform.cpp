@@ -66,6 +66,10 @@ uint16_t WASMPlatform::getDeviceId() {
   return jsGetDeviceId();
 }
 
+bool WASMPlatform::isNetworkAvailable() {
+  return true;
+}
+
 void WASMPlatform::onWaveSettingsUpdated() {
   RVLPlatformInterface::onWaveSettingsUpdated();
   jsOnWaveSettingsUpdated();
