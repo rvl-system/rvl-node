@@ -190,7 +190,7 @@
   (local.set $$6
    (local.get $$3)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:26:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:26:0
   (local.set $$7
    (local.get $$4)
   )
@@ -204,7 +204,7 @@
    (local.get $$8)
    (local.get $$7)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:27:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:27:0
   (local.set $$9
    (local.get $$5)
   )
@@ -215,7 +215,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:28:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:28:0
   (return)
  )
  (func $__ZN10RVLLogging3logEPKcPi (; 47 ;) (param $$0 i32) (param $$1 i32) (param $$2 i32)
@@ -272,7 +272,7 @@
   (local.set $$8
    (local.get $$3)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:35:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:35:0
   (local.set $$9
    (local.get $$4)
   )
@@ -290,7 +290,7 @@
   (local.set $$6
    (local.get $$11)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:36:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:36:0
   (local.set $$12
    (local.get $$6)
   )
@@ -339,7 +339,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:37:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:37:0
   (local.set $$15
    (local.get $$6)
   )
@@ -357,7 +357,7 @@
     (local.get $$17)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:38:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:38:0
   (local.set $$18
    (i32.add
     (local.get $$8)
@@ -390,7 +390,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:39:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:39:0
   (local.set $$22
    (local.get $$7)
   )
@@ -451,7 +451,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:42:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:42:0
   (local.set $$6
    (i32.load
     (local.get $$5)
@@ -471,11 +471,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:49:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:49:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:43:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:43:0
   (local.set $$8
    (i32.add
     (local.get $$5)
@@ -508,12 +508,12 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:45:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:45:0
   (i32.store
    (local.get $$4)
    (local.get $$varargs)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:46:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:46:0
   (local.set $$12
    (local.get $$3)
   )
@@ -522,7 +522,7 @@
    (local.get $$12)
    (local.get $$4)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:47:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:47:0
   (local.set $$13
    (i32.add
     (local.get $$5)
@@ -563,7 +563,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:49:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:49:0
   (return)
  )
  (func $__ZN10RVLLogging5debugEPKcz (; 49 ;) (param $$0 i32) (param $$1 i32) (param $$varargs i32)
@@ -615,7 +615,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:62:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:62:0
   (local.set $$6
    (i32.load
     (local.get $$5)
@@ -635,11 +635,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:69:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:69:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:63:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:63:0
   (local.set $$8
    (i32.add
     (local.get $$5)
@@ -672,12 +672,12 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:65:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:65:0
   (i32.store
    (local.get $$4)
    (local.get $$varargs)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:66:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:66:0
   (local.set $$12
    (local.get $$3)
   )
@@ -686,7 +686,7 @@
    (local.get $$12)
    (local.get $$4)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:67:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:67:0
   (local.set $$13
    (i32.add
     (local.get $$5)
@@ -727,7 +727,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:69:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLLogging/src/RVLogging.cpp:69:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface21onWaveSettingsUpdatedEv (; 50 ;) (param $$0 i32)
@@ -755,12 +755,12 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:73:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:73:0
   (call $__ZN11GigglePixel4syncEv)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:74:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:74:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface19onDeviceModeUpdatedEv (; 51 ;) (param $$0 i32)
@@ -791,7 +791,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:78:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:78:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface20onClockOffsetUpdatedEv (; 52 ;) (param $$0 i32)
@@ -822,7 +822,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:82:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:82:0
   (return)
  )
  (func $__Z16RVLMessagingInitP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging (; 53 ;) (param $$0 i32) (param $$1 i32) (param $$2 i32)
@@ -862,7 +862,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:35:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:35:0
   (local.set $$6
    (local.get $$3)
   )
@@ -870,7 +870,7 @@
    (i32.const 6448)
    (local.get $$6)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:36:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:36:0
   (local.set $$7
    (local.get $$3)
   )
@@ -885,14 +885,14 @@
    (local.get $$8)
    (local.get $$9)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:37:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:37:0
   (call $__ZN9ClockSync4initEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:38:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:38:0
   (call $__ZN11GigglePixel4initEv)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:39:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:39:0
   (return)
  )
  (func $__Z16RVLMessagingLoopv (; 54 ;)
@@ -992,7 +992,7 @@
     (i32.const 4)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:42:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:42:0
   (local.set $$2
    (i32.load
     (i32.const 6448)
@@ -1036,7 +1036,7 @@
     (local.get $$6)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:43:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:43:0
   (local.set $$7
    (i32.load
     (i32.const 6448)
@@ -1078,11 +1078,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:70:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:70:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:46:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:47:0
   (local.set $$12
    (i32.load
     (i32.const 6452)
@@ -1125,398 +1125,378 @@
   (local.set $$0
    (local.get $$17)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:47:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:48:0
   (local.set $$18
    (local.get $$0)
   )
   (local.set $$19
-   (i32.eq
+   (i32.ne
     (local.get $$18)
     (i32.const 0)
    )
   )
-  (if
-   (local.get $$19)
-   (block
-    (global.set $STACKTOP
-     (local.get $sp)
-    )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:70:0
-    (return)
-   )
-  )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:51:0
-  (local.set $$20
-   (i32.load
-    (i32.const 6452)
-   )
-  )
-  (local.set $$21
-   (i32.load
-    (local.get $$20)
-   )
-  )
-  (local.set $$22
-   (i32.add
-    (local.get $$21)
-    (i32.const 40)
-   )
-  )
-  (local.set $$23
-   (i32.load
-    (local.get $$22)
-   )
-  )
-  (call_indirect (type $FUNCSIG$viii)
-   (local.get $$20)
-   (local.get $$1)
-   (i32.const 4)
-   (i32.add
-    (i32.and
-     (local.get $$23)
-     (i32.const 31)
-    )
-    (i32.const 240)
-   )
-  )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:53:0
-  (local.set $$24
-   (i32.load8_s
-    (local.get $$1)
-   )
-  )
-  (local.set $$25
-   (i32.and
-    (local.get $$24)
-    (i32.const 255)
-   )
-  )
-  (local.set $$26
-   (i32.load8_s
-    (i32.const 2604)
-   )
-  )
-  (local.set $$27
-   (i32.and
-    (local.get $$26)
-    (i32.const 255)
-   )
-  )
-  (local.set $$28
-   (i32.eq
-    (local.get $$25)
-    (local.get $$27)
-   )
-  )
-  (if
-   (local.get $$28)
-   (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:54:0
-    (local.set $$29
-     (i32.add
+  (block $do-once
+   (if
+    (local.get $$19)
+    (block
+     ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:50:0
+     (local.set $$20
+      (i32.load
+       (i32.const 6452)
+      )
+     )
+     (local.set $$21
+      (i32.load
+       (local.get $$20)
+      )
+     )
+     (local.set $$22
+      (i32.add
+       (local.get $$21)
+       (i32.const 40)
+      )
+     )
+     (local.set $$23
+      (i32.load
+       (local.get $$22)
+      )
+     )
+     (call_indirect (type $FUNCSIG$viii)
+      (local.get $$20)
       (local.get $$1)
-      (i32.const 1)
-     )
-    )
-    (local.set $$30
-     (i32.load8_s
-      (local.get $$29)
-     )
-    )
-    (local.set $$31
-     (i32.and
-      (local.get $$30)
-      (i32.const 255)
-     )
-    )
-    (local.set $$32
-     (i32.load8_s
-      (i32.const 2605)
-     )
-    )
-    (local.set $$33
-     (i32.and
-      (local.get $$32)
-      (i32.const 255)
-     )
-    )
-    (local.set $$34
-     (i32.eq
-      (local.get $$31)
-      (local.get $$33)
-     )
-    )
-    (if
-     (local.get $$34)
-     (block
-      ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:55:0
-      (local.set $$35
-       (i32.add
-        (local.get $$1)
-        (i32.const 2)
-       )
-      )
-      (local.set $$36
-       (i32.load8_s
-        (local.get $$35)
-       )
-      )
-      (local.set $$37
+      (i32.const 4)
+      (i32.add
        (i32.and
-        (local.get $$36)
-        (i32.const 255)
+        (local.get $$23)
+        (i32.const 31)
        )
+       (i32.const 240)
       )
-      (local.set $$38
-       (i32.load8_s
-        (i32.const 2606)
-       )
+     )
+     ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:52:0
+     (local.set $$24
+      (i32.load8_s
+       (local.get $$1)
       )
-      (local.set $$39
-       (i32.and
-        (local.get $$38)
-        (i32.const 255)
-       )
+     )
+     (local.set $$25
+      (i32.and
+       (local.get $$24)
+       (i32.const 255)
       )
-      (local.set $$40
-       (i32.eq
-        (local.get $$37)
-        (local.get $$39)
-       )
+     )
+     (local.set $$26
+      (i32.load8_s
+       (i32.const 2604)
       )
-      (if
-       (local.get $$40)
-       (block
-        ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:56:0
-        (local.set $$41
-         (i32.add
-          (local.get $$1)
-          (i32.const 3)
-         )
-        )
-        (local.set $$42
-         (i32.load8_s
-          (local.get $$41)
-         )
-        )
-        (local.set $$43
-         (i32.and
-          (local.get $$42)
-          (i32.const 255)
-         )
-        )
-        (local.set $$44
-         (i32.load8_s
-          (i32.const 2607)
-         )
-        )
-        (local.set $$45
-         (i32.and
-          (local.get $$44)
-          (i32.const 255)
-         )
-        )
-        (local.set $$46
-         (i32.eq
-          (local.get $$43)
-          (local.get $$45)
-         )
-        )
-        (if
-         (local.get $$46)
-         ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:58:0
-         (drop
-          (call $__ZN9ClockSync11parsePacketEv)
-         )
-         (local.set $label
-          (i32.const 8)
-         )
+     )
+     (local.set $$27
+      (i32.and
+       (local.get $$26)
+       (i32.const 255)
+      )
+     )
+     (local.set $$28
+      (i32.eq
+       (local.get $$25)
+       (local.get $$27)
+      )
+     )
+     (if
+      (local.get $$28)
+      (block
+       ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:53:0
+       (local.set $$29
+        (i32.add
+         (local.get $$1)
+         (i32.const 1)
         )
        )
-       (local.set $label
-        (i32.const 8)
+       (local.set $$30
+        (i32.load8_s
+         (local.get $$29)
+        )
+       )
+       (local.set $$31
+        (i32.and
+         (local.get $$30)
+         (i32.const 255)
+        )
+       )
+       (local.set $$32
+        (i32.load8_s
+         (i32.const 2605)
+        )
+       )
+       (local.set $$33
+        (i32.and
+         (local.get $$32)
+         (i32.const 255)
+        )
+       )
+       (local.set $$34
+        (i32.eq
+         (local.get $$31)
+         (local.get $$33)
+        )
+       )
+       (if
+        (local.get $$34)
+        (block
+         ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:54:0
+         (local.set $$35
+          (i32.add
+           (local.get $$1)
+           (i32.const 2)
+          )
+         )
+         (local.set $$36
+          (i32.load8_s
+           (local.get $$35)
+          )
+         )
+         (local.set $$37
+          (i32.and
+           (local.get $$36)
+           (i32.const 255)
+          )
+         )
+         (local.set $$38
+          (i32.load8_s
+           (i32.const 2606)
+          )
+         )
+         (local.set $$39
+          (i32.and
+           (local.get $$38)
+           (i32.const 255)
+          )
+         )
+         (local.set $$40
+          (i32.eq
+           (local.get $$37)
+           (local.get $$39)
+          )
+         )
+         (if
+          (local.get $$40)
+          (block
+           ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:55:0
+           (local.set $$41
+            (i32.add
+             (local.get $$1)
+             (i32.const 3)
+            )
+           )
+           (local.set $$42
+            (i32.load8_s
+             (local.get $$41)
+            )
+           )
+           (local.set $$43
+            (i32.and
+             (local.get $$42)
+             (i32.const 255)
+            )
+           )
+           (local.set $$44
+            (i32.load8_s
+             (i32.const 2607)
+            )
+           )
+           (local.set $$45
+            (i32.and
+             (local.get $$44)
+             (i32.const 255)
+            )
+           )
+           (local.set $$46
+            (i32.eq
+             (local.get $$43)
+             (local.get $$45)
+            )
+           )
+           (if
+            (local.get $$46)
+            (block
+             ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:57:0
+             (drop
+              (call $__ZN9ClockSync11parsePacketEv)
+             )
+             (br $do-once)
+            )
+           )
+          )
+         )
+        )
        )
       )
      )
-     (local.set $label
-      (i32.const 8)
+     ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:59:0
+     (local.set $$47
+      (i32.load8_s
+       (local.get $$1)
+      )
+     )
+     (local.set $$48
+      (i32.and
+       (local.get $$47)
+       (i32.const 255)
+      )
+     )
+     (local.set $$49
+      (i32.load8_s
+       (i32.const 2608)
+      )
+     )
+     (local.set $$50
+      (i32.and
+       (local.get $$49)
+       (i32.const 255)
+      )
+     )
+     (local.set $$51
+      (i32.eq
+       (local.get $$48)
+       (local.get $$50)
+      )
+     )
+     (if
+      (local.get $$51)
+      (block
+       ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:60:0
+       (local.set $$52
+        (i32.add
+         (local.get $$1)
+         (i32.const 1)
+        )
+       )
+       (local.set $$53
+        (i32.load8_s
+         (local.get $$52)
+        )
+       )
+       (local.set $$54
+        (i32.and
+         (local.get $$53)
+         (i32.const 255)
+        )
+       )
+       (local.set $$55
+        (i32.load8_s
+         (i32.const 2609)
+        )
+       )
+       (local.set $$56
+        (i32.and
+         (local.get $$55)
+         (i32.const 255)
+        )
+       )
+       (local.set $$57
+        (i32.eq
+         (local.get $$54)
+         (local.get $$56)
+        )
+       )
+       (if
+        (local.get $$57)
+        (block
+         ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:61:0
+         (local.set $$58
+          (i32.add
+           (local.get $$1)
+           (i32.const 2)
+          )
+         )
+         (local.set $$59
+          (i32.load8_s
+           (local.get $$58)
+          )
+         )
+         (local.set $$60
+          (i32.and
+           (local.get $$59)
+           (i32.const 255)
+          )
+         )
+         (local.set $$61
+          (i32.load8_s
+           (i32.const 2610)
+          )
+         )
+         (local.set $$62
+          (i32.and
+           (local.get $$61)
+           (i32.const 255)
+          )
+         )
+         (local.set $$63
+          (i32.eq
+           (local.get $$60)
+           (local.get $$62)
+          )
+         )
+         (if
+          (local.get $$63)
+          (block
+           ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:62:0
+           (local.set $$64
+            (i32.add
+             (local.get $$1)
+             (i32.const 3)
+            )
+           )
+           (local.set $$65
+            (i32.load8_s
+             (local.get $$64)
+            )
+           )
+           (local.set $$66
+            (i32.and
+             (local.get $$65)
+             (i32.const 255)
+            )
+           )
+           (local.set $$67
+            (i32.load8_s
+             (i32.const 2611)
+            )
+           )
+           (local.set $$68
+            (i32.and
+             (local.get $$67)
+             (i32.const 255)
+            )
+           )
+           (local.set $$69
+            (i32.eq
+             (local.get $$66)
+             (local.get $$68)
+            )
+           )
+           (if
+            (local.get $$69)
+            ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:64:0
+            (call $__ZN11GigglePixel11parsePacketEv)
+           )
+          )
+         )
+        )
+       )
+      )
      )
     )
-   )
-   (local.set $label
-    (i32.const 8)
    )
   )
-  (if
-   (i32.eq
-    (local.get $label)
-    (i32.const 8)
-   )
-   (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:60:0
-    (local.set $$47
-     (i32.load8_s
-      (local.get $$1)
-     )
-    )
-    (local.set $$48
-     (i32.and
-      (local.get $$47)
-      (i32.const 255)
-     )
-    )
-    (local.set $$49
-     (i32.load8_s
-      (i32.const 2608)
-     )
-    )
-    (local.set $$50
-     (i32.and
-      (local.get $$49)
-      (i32.const 255)
-     )
-    )
-    (local.set $$51
-     (i32.eq
-      (local.get $$48)
-      (local.get $$50)
-     )
-    )
-    (if
-     (local.get $$51)
-     (block
-      ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:61:0
-      (local.set $$52
-       (i32.add
-        (local.get $$1)
-        (i32.const 1)
-       )
-      )
-      (local.set $$53
-       (i32.load8_s
-        (local.get $$52)
-       )
-      )
-      (local.set $$54
-       (i32.and
-        (local.get $$53)
-        (i32.const 255)
-       )
-      )
-      (local.set $$55
-       (i32.load8_s
-        (i32.const 2609)
-       )
-      )
-      (local.set $$56
-       (i32.and
-        (local.get $$55)
-        (i32.const 255)
-       )
-      )
-      (local.set $$57
-       (i32.eq
-        (local.get $$54)
-        (local.get $$56)
-       )
-      )
-      (if
-       (local.get $$57)
-       (block
-        ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:62:0
-        (local.set $$58
-         (i32.add
-          (local.get $$1)
-          (i32.const 2)
-         )
-        )
-        (local.set $$59
-         (i32.load8_s
-          (local.get $$58)
-         )
-        )
-        (local.set $$60
-         (i32.and
-          (local.get $$59)
-          (i32.const 255)
-         )
-        )
-        (local.set $$61
-         (i32.load8_s
-          (i32.const 2610)
-         )
-        )
-        (local.set $$62
-         (i32.and
-          (local.get $$61)
-          (i32.const 255)
-         )
-        )
-        (local.set $$63
-         (i32.eq
-          (local.get $$60)
-          (local.get $$62)
-         )
-        )
-        (if
-         (local.get $$63)
-         (block
-          ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:63:0
-          (local.set $$64
-           (i32.add
-            (local.get $$1)
-            (i32.const 3)
-           )
-          )
-          (local.set $$65
-           (i32.load8_s
-            (local.get $$64)
-           )
-          )
-          (local.set $$66
-           (i32.and
-            (local.get $$65)
-            (i32.const 255)
-           )
-          )
-          (local.set $$67
-           (i32.load8_s
-            (i32.const 2611)
-           )
-          )
-          (local.set $$68
-           (i32.and
-            (local.get $$67)
-            (i32.const 255)
-           )
-          )
-          (local.set $$69
-           (i32.eq
-            (local.get $$66)
-            (local.get $$68)
-           )
-          )
-          (if
-           (local.get $$69)
-           ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:65:0
-           (call $__ZN11GigglePixel11parsePacketEv)
-          )
-         )
-        )
-       )
-      )
-     )
-    )
-   )
-  )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:68:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:68:0
   (call $__ZN9ClockSync4loopEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:69:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:69:0
   (call $__ZN11GigglePixel4loopEv)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:70:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:70:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface14getClockOffsetEv (; 55 ;) (param $$0 i32) (result i32)
@@ -1550,7 +1530,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:85:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:85:0
   (local.set $$3
    (i32.add
     (local.get $$2)
@@ -1604,7 +1584,7 @@
   (local.set $$4
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:88:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:88:0
   (local.set $$5
    (local.get $$3)
   )
@@ -1621,7 +1601,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:89:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:89:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface13getDeviceModeEv (; 57 ;) (param $$0 i32) (result i32)
@@ -1655,7 +1635,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:96:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:96:0
   (local.set $$3
    (i32.add
     (local.get $$2)
@@ -1709,7 +1689,7 @@
   (local.set $$4
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:100:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:100:0
   (local.set $$5
    (local.get $$3)
   )
@@ -1726,7 +1706,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:101:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:101:0
   (return)
  )
  (func $__ZN20RVLPlatformInterface15getWaveSettingsEv (; 59 ;) (param $$0 i32) (result i32)
@@ -1759,7 +1739,7 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:104:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:104:0
   (local.set $$3
    (i32.add
     (local.get $$2)
@@ -1810,7 +1790,7 @@
   (local.set $$4
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:108:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:108:0
   (local.set $$5
    (i32.add
     (local.get $$4)
@@ -1946,7 +1926,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:109:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:109:0
   (local.set $$7
    (i32.load
     (local.get $$4)
@@ -1970,7 +1950,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:110:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/RVLMessaging.cpp:110:0
   (return)
  )
  (func $__ZN8Platform4initEP20RVLPlatformInterfaceP21RVLTransportInterfaceP10RVLLogging (; 61 ;) (param $$0 i32) (param $$1 i32) (param $$2 i32)
@@ -2009,7 +1989,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:32:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:32:0
   (local.set $$6
    (local.get $$3)
   )
@@ -2017,7 +1997,7 @@
    (i32.const 6460)
    (local.get $$6)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:33:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:33:0
   (local.set $$7
    (local.get $$4)
   )
@@ -2025,7 +2005,7 @@
    (i32.const 6452)
    (local.get $$7)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:34:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:34:0
   (local.set $$8
    (local.get $$5)
   )
@@ -2036,7 +2016,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:35:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/platform.cpp:35:0
   (return)
  )
  (func $__ZN9ClockSync4initEv (; 62 ;)
@@ -2045,7 +2025,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:30:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:30:0
   (return)
  )
  (func $__ZN9ClockSync4loopEv (; 63 ;)
@@ -2054,7 +2034,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:34:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:34:0
   (return)
  )
  (func $__ZN9ClockSync11parsePacketEv (; 64 ;) (result i32)
@@ -2129,7 +2109,7 @@
     (i32.const 9)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:46:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:46:0
   (local.set $$3
    (i32.load
     (i32.const 6456)
@@ -2140,7 +2120,7 @@
    (i32.const 2612)
    (local.get $$vararg_buffer)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:47:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:47:0
   (local.set $$4
    (i32.load
     (i32.const 6452)
@@ -2177,7 +2157,7 @@
   (local.set $$1
    (local.get $$8)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:48:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:48:0
   (local.set $$9
    (local.get $$1)
   )
@@ -2196,7 +2176,7 @@
   (if
    (local.get $$11)
    (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:49:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:49:0
     (local.set $$$expand_i1_val
      (i32.const 0)
     )
@@ -2204,7 +2184,7 @@
      (local.get $$0)
      (local.get $$$expand_i1_val)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:61:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:61:0
     (local.set $$$pre_trunc
      (i32.load8_s
       (local.get $$0)
@@ -2224,7 +2204,7 @@
     )
    )
    (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:51:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:51:0
     (local.set $$12
      (i32.load
       (i32.const 6452)
@@ -2258,7 +2238,7 @@
       )
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:52:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:52:0
     (local.set $$16
      (i32.load
       (i32.const 6452)
@@ -2292,7 +2272,7 @@
       )
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:53:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:53:0
     (local.set $$20
      (i32.load
       (i32.const 6452)
@@ -2329,7 +2309,7 @@
     (local.set $$2
      (local.get $$24)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:54:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:54:0
     (local.set $$25
      (i32.load
       (i32.const 6452)
@@ -2363,17 +2343,17 @@
       )
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:56:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:56:0
     (local.set $$29
      (i32.load
       (i32.const 6460)
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:57:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:57:0
     (local.set $$30
      (local.get $$2)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:58:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:58:0
     (local.set $$31
      (i32.load
       (i32.const 6460)
@@ -2407,19 +2387,19 @@
       )
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:57:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:57:0
     (local.set $$36
      (i32.sub
       (local.get $$30)
       (local.get $$35)
      )
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:56:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:56:0
     (call $__ZN20RVLPlatformInterface14setClockOffsetEj
      (local.get $$29)
      (local.get $$36)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:60:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:60:0
     (local.set $$$expand_i1_val2
      (i32.const 1)
     )
@@ -2427,7 +2407,7 @@
      (local.get $$0)
      (local.get $$$expand_i1_val2)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:61:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/clock_sync/clock_sync.cpp:61:0
     (local.set $$$pre_trunc
      (i32.load8_s
       (local.get $$0)
@@ -2454,11 +2434,11 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:32:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:32:0
   (call $__ZN4Wave4initEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:33:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:33:0
   (call $__ZN7Palette4initEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:34:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:34:0
   (return)
  )
  (func $__ZN11GigglePixel4loopEv (; 66 ;)
@@ -2467,9 +2447,9 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:37:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:37:0
   (call $__ZN4Wave4loopEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:38:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:38:0
   (return)
  )
  (func $__ZN11GigglePixel4syncEv (; 67 ;)
@@ -2478,9 +2458,9 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:42:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:42:0
   (call $__ZN4Wave4syncEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:43:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:43:0
   (return)
  )
  (func $__ZN11GigglePixel11parsePacketEv (; 68 ;)
@@ -2566,7 +2546,7 @@
   (local.set $$vararg_buffer
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:46:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:46:0
   (local.set $$2
    (i32.load
     (i32.const 6456)
@@ -2577,7 +2557,7 @@
    (i32.const 2638)
    (local.get $$vararg_buffer)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:47:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:47:0
   (local.set $$3
    (i32.load
     (i32.const 6452)
@@ -2614,7 +2594,7 @@
   (local.set $$0
    (local.get $$7)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:48:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:48:0
   (local.set $$8
    (local.get $$0)
   )
@@ -2633,7 +2613,7 @@
   (if
    (local.get $$10)
    (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:49:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:49:0
     (local.set $$11
      (i32.load
       (i32.const 6456)
@@ -2660,11 +2640,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:52:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:52:0
   (local.set $$14
    (i32.load
     (i32.const 6452)
@@ -2698,7 +2678,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:53:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:53:0
   (local.set $$18
    (i32.load
     (i32.const 6452)
@@ -2735,7 +2715,7 @@
   (local.set $$1
    (local.get $$22)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:54:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:54:0
   (local.set $$23
    (i32.load
     (i32.const 6452)
@@ -2769,7 +2749,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:55:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:55:0
   (local.set $$27
    (i32.load
     (i32.const 6452)
@@ -2803,7 +2783,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:56:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:56:0
   (local.set $$31
    (i32.load
     (i32.const 6452)
@@ -2837,7 +2817,7 @@
     )
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:59:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:59:0
   (local.set $$35
    (i32.load
     (i32.const 6460)
@@ -2860,11 +2840,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:63:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:63:0
   (local.set $$38
    (local.get $$1)
   )
@@ -2883,16 +2863,16 @@
   (if
    (local.get $$cond)
    (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:65:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:65:0
     (call $__ZN4Wave11parsePacketEv)
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
     (return)
    )
    (block
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:68:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:68:0
     (local.set $$40
      (i32.load
       (i32.const 6456)
@@ -2919,7 +2899,7 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:70:0
     (return)
    )
   )
@@ -2995,11 +2975,11 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:73:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:73:0
   (local.set $$6
    (i32.const 2773)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:74:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:74:0
   (local.set $$7
    (i32.load
     (i32.const 6452)
@@ -3036,7 +3016,7 @@
     (i32.const 240)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:75:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:75:0
   (local.set $$12
    (i32.load
     (i32.const 6452)
@@ -3069,7 +3049,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:76:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:76:0
   (local.set $$16
    (i32.load
     (i32.const 6452)
@@ -3105,7 +3085,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:77:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:77:0
   (local.set $$21
    (i32.load
     (i32.const 6452)
@@ -3141,7 +3121,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:78:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:78:0
   (local.set $$26
    (i32.load
     (i32.const 6452)
@@ -3177,7 +3157,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:79:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:79:0
   (local.set $$31
    (i32.load
     (i32.const 6452)
@@ -3210,7 +3190,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:80:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:80:0
   (local.set $$35
    (i32.load
     (i32.const 6452)
@@ -3279,7 +3259,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:81:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/giggle_pixel.cpp:81:0
   (return)
  )
  (func $__ZN7Palette4initEv (; 70 ;)
@@ -3288,7 +3268,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/palette.cpp:26:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/palette.cpp:26:0
   (return)
  )
  (func $__ZN4Wave4initEv (; 71 ;)
@@ -3302,7 +3282,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:36:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:36:0
   (local.set $$0
    (i32.load
     (i32.const 6460)
@@ -3340,7 +3320,7 @@
    (i32.const 1672)
    (local.get $$4)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:37:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:37:0
   (return)
  )
  (func $__ZN4Wave4loopEv (; 72 ;)
@@ -3362,7 +3342,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:40:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:40:0
   (local.set $$0
    (i32.load
     (i32.const 6460)
@@ -3409,10 +3389,10 @@
   )
   (if
    (local.get $$6)
-   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:45:0
+   ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:45:0
    (return)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:43:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:43:0
   (local.set $$7
    (i32.load
     (i32.const 6460)
@@ -3456,9 +3436,9 @@
    (i32.const 1672)
    (local.get $$12)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:44:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:44:0
   (call $__ZN4Wave4syncEv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:45:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:45:0
   (return)
  )
  (func $__ZN4Wave4syncEv (; 73 ;)
@@ -3525,7 +3505,7 @@
   (local.set $$vararg_buffer
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:48:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:48:0
   (local.set $$2
    (i32.load
     (i32.const 6460)
@@ -3548,11 +3528,11 @@
     (global.set $STACKTOP
      (local.get $sp)
     )
-    ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:63:0
+    ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:63:0
     (return)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:51:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:51:0
   (local.set $$5
    (i32.load
     (i32.const 6456)
@@ -3563,7 +3543,7 @@
    (i32.const 2778)
    (local.get $$vararg_buffer)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:52:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:52:0
   (local.set $$6
    (i32.load
     (i32.const 6460)
@@ -3577,11 +3557,11 @@
   (local.set $$0
    (local.get $$7)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:53:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:53:0
   (local.set $$1
    (i32.const 80)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:54:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:54:0
   (local.set $$8
    (i32.load
     (i32.const 6452)
@@ -3607,7 +3587,7 @@
     (i32.const 160)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:58:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:58:0
   (local.set $$11
    (local.get $$1)
   )
@@ -3629,13 +3609,13 @@
     (i32.const 65535)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:55:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:55:0
   (call $__ZN11GigglePixel15broadcastHeaderEhht
    (i32.const 2)
    (i32.const 0)
    (local.get $$14)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:59:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:59:0
   (local.set $$15
    (i32.load
     (i32.const 6452)
@@ -3676,7 +3656,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:60:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:60:0
   (local.set $$21
    (i32.load
     (i32.const 6452)
@@ -3723,7 +3703,7 @@
     (i32.const 224)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:61:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:61:0
   (local.set $$28
    (i32.load
     (i32.const 6452)
@@ -3769,7 +3749,7 @@
     (i32.const 240)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:62:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:62:0
   (local.set $$35
    (i32.load
     (i32.const 6452)
@@ -3804,7 +3784,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:63:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:63:0
   (return)
  )
  (func $__ZN4Wave11parsePacketEv (; 74 ;)
@@ -3857,7 +3837,7 @@
     (i32.const 4)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:66:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:66:0
   (local.set $$1
    (i32.load
     (i32.const 6456)
@@ -3868,11 +3848,11 @@
    (i32.const 2793)
    (local.get $$vararg_buffer)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:67:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:67:0
   (call $__ZN15RVLWaveSettingsC2Ev
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:68:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:68:0
   (local.set $$2
    (i32.load
     (i32.const 6452)
@@ -3910,7 +3890,7 @@
    (local.get $$0)
    (local.get $$6)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:69:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:69:0
   (local.set $$7
    (i32.load
     (i32.const 6452)
@@ -3954,7 +3934,7 @@
    (local.get $$12)
    (local.get $$11)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:70:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:70:0
   (local.set $$13
    (i32.load
     (i32.const 6452)
@@ -3994,7 +3974,7 @@
     (i32.const 240)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:71:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:71:0
   (local.set $$18
    (i32.load
     (i32.const 6460)
@@ -4007,7 +3987,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:72:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/lib/RVLMessaging/src/rvl_messaging/protocols/giggle_pixel/wave.cpp:72:0
   (return)
  )
  (func $__ZN15RVLWaveSettingsC2Ev (; 75 ;) (param $$0 i32)
@@ -4298,7 +4278,7 @@
   (local.set $$3
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:48:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:48:0
   (local.set $$4
    (local.get $$3)
   )
@@ -4323,7 +4303,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:49:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:49:0
   (return)
  )
  (func $__ZN12WASMPlatform11WASMLogging7printlnEv (; 79 ;) (param $$0 i32)
@@ -4351,7 +4331,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:52:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:52:0
   (call $_jsPrintlnString
    (i32.const 7076)
    (i32.const 0)
@@ -4359,7 +4339,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:53:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:53:0
   (return)
  )
  (func $__ZN12WASMPlatform11WASMLogging7printlnEPKc (; 80 ;) (param $$0 i32) (param $$1 i32)
@@ -4395,7 +4375,7 @@
   (local.set $$3
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:56:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:56:0
   (local.set $$4
    (local.get $$3)
   )
@@ -4420,7 +4400,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:57:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:57:0
   (return)
  )
  (func $__ZN12WASMPlatform12WASMPlatform21onWaveSettingsUpdatedEv (; 81 ;) (param $$0 i32)
@@ -4452,16 +4432,16 @@
   (local.set $$2
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:74:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:74:0
   (call $__ZN20RVLPlatformInterface21onWaveSettingsUpdatedEv
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:75:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:75:0
   (call $_jsOnWaveSettingsUpdated)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:76:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:76:0
   (return)
  )
  (func $__ZN12WASMPlatform12WASMPlatform12getLocalTimeEv (; 82 ;) (param $$0 i32) (result i32)
@@ -4490,7 +4470,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:62:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:62:0
   (local.set $$2
    (call $_jsGetRelativeTime)
   )
@@ -4527,7 +4507,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:66:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:66:0
   (local.set $$2
    (call $_jsGetDeviceId)
   )
@@ -4566,7 +4546,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:70:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:70:0
   (return
    (i32.const 1)
   )
@@ -4596,12 +4576,12 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:81:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:81:0
   (call $_jsBeginWrite)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:82:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:82:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport6write8Eh (; 86 ;) (param $$0 i32) (param $$1 i32)
@@ -4634,7 +4614,7 @@
   (local.set $$3
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:85:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:85:0
   (local.set $$4
    (local.get $$3)
   )
@@ -4644,7 +4624,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:86:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:86:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport7write16Et (; 87 ;) (param $$0 i32) (param $$1 i32)
@@ -4677,7 +4657,7 @@
   (local.set $$3
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:89:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:89:0
   (local.set $$4
    (local.get $$3)
   )
@@ -4687,7 +4667,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:90:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:90:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport7write32Ej (; 88 ;) (param $$0 i32) (param $$1 i32)
@@ -4720,7 +4700,7 @@
   (local.set $$3
    (local.get $$1)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:93:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:93:0
   (local.set $$4
    (local.get $$3)
   )
@@ -4730,7 +4710,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:94:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:94:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport5writeEPht (; 89 ;) (param $$0 i32) (param $$1 i32) (param $$2 i32)
@@ -4768,7 +4748,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:97:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:97:0
   (local.set $$6
    (local.get $$4)
   )
@@ -4782,7 +4762,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:98:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:98:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport8endWriteEv (; 90 ;) (param $$0 i32)
@@ -4810,12 +4790,12 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:101:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:101:0
   (call $_jsEndWrite)
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:102:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:102:0
   (return)
  )
  (func $__ZN12WASMPlatform13WASMTransport11parsePacketEv (; 91 ;) (param $$0 i32) (result i32)
@@ -4844,7 +4824,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:105:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:105:0
   (local.set $$2
    (call $_jsParsePacket)
   )
@@ -4881,7 +4861,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:109:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:109:0
   (local.set $$2
    (call $_jsRead8)
   )
@@ -4918,7 +4898,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:113:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:113:0
   (local.set $$2
    (call $_jsRead16)
   )
@@ -4955,7 +4935,7 @@
   (local.set $$1
    (local.get $$0)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:117:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:117:0
   (local.set $$2
    (call $_jsRead32)
   )
@@ -5001,7 +4981,7 @@
   (local.set $$5
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:121:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:121:0
   (local.set $$6
    (local.get $$4)
   )
@@ -5015,7 +4995,7 @@
   (global.set $STACKTOP
    (local.get $sp)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_platform.cpp:122:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_platform.cpp:122:0
   (return)
  )
  (func $_init (; 96 ;) (param $$0 i32) (param $$1 i32) (result i32)
@@ -5069,7 +5049,7 @@
   (local.set $$3
    (local.get $$4)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:32:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:32:0
   (local.set $$5
    (call $__Znwm
     (i32.const 4)
@@ -5086,7 +5066,7 @@
    (i32.const 6464)
    (local.get $$5)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:33:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:33:0
   (local.set $$6
    (call $__Znwm
     (i32.const 96)
@@ -5180,7 +5160,7 @@
    (i32.const 6468)
    (local.get $$6)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:34:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:34:0
   (local.set $$7
    (call $__Znwm
     (i32.const 4)
@@ -5197,7 +5177,7 @@
    (i32.const 6472)
    (local.get $$7)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:35:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:35:0
   (local.set $$8
    (call $__Znwm
     (i32.const 8)
@@ -5226,7 +5206,7 @@
    (i32.const 6476)
    (local.get $$8)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:36:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:36:0
   (local.set $$12
    (local.get $$3)
   )
@@ -5243,18 +5223,18 @@
   )
   (if
    (local.get $$13)
-   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:37:0
+   ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:37:0
    (call $__ZN20RVLPlatformInterface13setDeviceModeE13RVLDeviceMode
     (local.get $$14)
     (i32.const 0)
    )
-   ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:39:0
+   ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:39:0
    (call $__ZN20RVLPlatformInterface13setDeviceModeE13RVLDeviceMode
     (local.get $$14)
     (i32.const 1)
    )
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:41:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:41:0
   (local.set $$15
    (i32.load
     (i32.const 6468)
@@ -5275,7 +5255,7 @@
    (local.get $$16)
    (local.get $$17)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:42:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:42:0
   (local.set $$18
    (i32.load
     (i32.const 6468)
@@ -5565,9 +5545,9 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:46:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:46:0
   (call $__Z16RVLMessagingLoopv)
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:47:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:47:0
   (return)
  )
  (func $_waveParametersUpdated (; 104 ;)
@@ -5579,7 +5559,7 @@
   (local.set $sp
    (global.get $STACKTOP)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:54:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:54:0
   (local.set $$0
    (i32.load
     (i32.const 6468)
@@ -5599,7 +5579,7 @@
    (local.get $$0)
    (local.get $$2)
   )
-  ;;@ /mnt/c/Users/brhugh/Documents/GitHub/RVL-Node/src/wasm_wrapper.cpp:55:0
+  ;;@ /mnt/c/Users/nebri/Projects/led-art/RVL-Node/src/wasm_wrapper.cpp:55:0
   (return)
  )
  (func $___stdio_close (; 105 ;) (param $$0 i32) (result i32)
