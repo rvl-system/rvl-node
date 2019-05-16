@@ -19,6 +19,7 @@ along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import { EventEmitter } from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
+import { IWaveParameters } from 'rvl-node-types';
 import {
   init,
   start,
@@ -34,11 +35,9 @@ import {
   DEFAULT_DISTANCE_PERIOD,
   DEFAULT_TIME_PERIOD,
   MAX_NUM_WAVES,
-
-  IWaveParameters
 } from './bridge';
 
-export { IWave, IWaveChannel, IWaveParameters } from './bridge';
+export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
 
 export interface IRVLOptions {
   networkInterface: string;

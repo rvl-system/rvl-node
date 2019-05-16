@@ -1,4 +1,4 @@
-# RVLMessaging-Node
+# RVL-Node
 
 A Node.js implementation of RVLMessaging based on Web Assembly
 

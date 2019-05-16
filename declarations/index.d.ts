@@ -1,8 +1,8 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
-import { IWaveParameters } from './bridge';
-export { IWave, IWaveChannel, IWaveParameters } from './bridge';
+import { IWaveParameters } from 'rvl-node-types';
+export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
 export interface IRVLOptions {
     networkInterface: string;
     port?: number;

@@ -1,6 +1,6 @@
 {
   "name": "rvl-node",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",
@@ -27,13 +27,14 @@
   },
   "homepage": "https://github.com/nebrius/RVLMessaging-Node#readme",
   "devDependencies": {
-    "@types/node": "^11.11.3",
+    "@types/node": "^11.13.10",
     "@types/webassembly-js-api": "0.0.2",
     "clone-deep": "^4.0.1",
-    "tslint": "^5.13.1",
-    "typescript": "^3.3.3333"
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
   },
   "dependencies": {
+    "rvl-node-types": "^1.0.0",
     "strict-event-emitter-types": "^2.0.0"
   }
 }

@@ -21,30 +21,9 @@ import { readFile, readFileSync } from 'fs';
 import { join } from 'path';
 import { networkInterfaces } from 'os';
 import { createSocket, Socket } from 'dgram';
-
 import { asmGlobalArg, asmLibraryArg, memoryBase, tableBase, tableInitial, tableMaximum } from './output';
 import { AddressInfo } from 'net';
-
-export interface IWaveChannel {
-  a: number; // Default 0
-  b: number; // Default 0
-  w_t: number; // Default 0
-  w_x: number; // Default 0
-  phi: number; // Default 0
-}
-
-export interface IWave {
-  h: IWaveChannel;
-  s: IWaveChannel;
-  v: IWaveChannel;
-  a: IWaveChannel;
-}
-
-export interface IWaveParameters {
-  timePeriod?: number; // Default 255
-  distancePeriod?: number; // Default 32
-  waves: IWave[];
-}
+import { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
 
 export const DEFAULT_TIME_PERIOD = 255;
 export const DEFAULT_DISTANCE_PERIOD = 32;
