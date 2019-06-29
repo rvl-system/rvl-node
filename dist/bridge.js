@@ -248,7 +248,7 @@ function handleRead(ptr, len) {
     }
 }
 // External interface methods
-function init(networkInterface, port, mode, logLevel, cb) {
+function init(networkInterface, port, mode, channel, logLevel, cb) {
     const interfaces = os_1.networkInterfaces();
     const iface = interfaces[networkInterface];
     if (!iface) {
@@ -264,6 +264,9 @@ function init(networkInterface, port, mode, logLevel, cb) {
     }
     if (!address) {
         throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
+    }
+    if (channel < 0 || channel > 7) {
+        throw new Error('Channel must be an integer between 0 and 7');
     }
     deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
     broadcastAddress = address.substring(0, address.lastIndexOf('.')) + '.255';
@@ -331,7 +334,7 @@ function init(networkInterface, port, mode, logLevel, cb) {
         WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math }).then((result) => {
             wasmExports = result;
             setImmediate(() => {
-                waveSettingsPointer = result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0);
+                waveSettingsPointer = result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0, channel);
                 socket = dgram_1.createSocket({
                     type: 'udp4',
                     reuseAddr: true

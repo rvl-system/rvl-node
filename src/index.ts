@@ -41,6 +41,7 @@ export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
 
 export interface IRVLOptions {
   networkInterface: string;
+  channel: number;
   port?: number;
   mode?: 'controller' | 'receiver';
   logLevel?: 'error' | 'info' | 'debug';
@@ -68,7 +69,7 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     return this._mode;
   }
 
-  constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info' }: IRVLOptions) {
+  constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel }: IRVLOptions) {
     super();
     if (created) {
       throw new Error(`Currently the RVL class can only be instantiated once per process.`);
@@ -83,7 +84,7 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
       this.emit('waveParametersUpdated', this._waveParameters);
     });
 
-    init(networkInterface, port, mode, logLevel, () => {
+    init(networkInterface, port, mode, channel, logLevel, () => {
       setWaveParameters(this._waveParameters);
       this._isInitialized = true;
       this.emit('initialized');

@@ -23,7 +23,8 @@ console.log('Initializing');
 const rvl = new index_1.RVL({
     networkInterface: 'wlan0',
     logLevel: 'debug',
-    mode: 'controller'
+    mode: 'controller',
+    channel: 0
 });
 rvl.on('initialized', () => {
     console.log('Starting loop');

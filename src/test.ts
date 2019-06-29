@@ -24,7 +24,8 @@ console.log('Initializing');
 const rvl = new RVL({
   networkInterface: 'wlan0',
   logLevel: 'debug',
-  mode: 'controller'
+  mode: 'controller',
+  channel: 0
 });
 
 rvl.on('initialized', () => {

@@ -28,7 +28,7 @@ WASMPlatform::WASMPlatform* platform;
 WASMPlatform::WASMTransport* transport;
 RVLLogging* logger;
 
-extern "C" RVLWaveSettings* init(uint8_t logLevel, bool isController) {
+extern "C" RVLWaveSettings* init(uint8_t logLevel, bool isController, uint8_t channel) {
   loggingInterface = new WASMPlatform::WASMLogging();
   platform = new WASMPlatform::WASMPlatform();
   transport = new WASMPlatform::WASMTransport();
@@ -38,6 +38,8 @@ extern "C" RVLWaveSettings* init(uint8_t logLevel, bool isController) {
   } else {
     platform->setDeviceMode(RVLDeviceMode::Receiver);
   }
+  logger->debug("Setting channel %d", channel);
+  platform->setChannel(channel);
   RVLMessagingInit(platform, transport, logger);
   return platform->getWaveSettings();
 }

@@ -306,6 +306,7 @@ export function init(
   networkInterface: string,
   port: number,
   mode: 'controller' | 'receiver',
+  channel: number,
   logLevel: 'error' | 'info' | 'debug',
   cb: (err?: Error) => void
 ) {
@@ -324,6 +325,9 @@ export function init(
   }
   if (!address) {
     throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
+  }
+  if (channel < 0 || channel > 7) {
+    throw new Error('Channel must be an integer between 0 and 7');
   }
   deviceId = parseInt(address.substring(address.lastIndexOf('.') + 1), 10);
   broadcastAddress = address.substring(0, address.lastIndexOf('.')) + '.255';
@@ -397,7 +401,7 @@ export function init(
     WebAssembly.instantiate(bytes, { env, global, 'global.Math': Math }).then((result) => {
       wasmExports = result;
       setImmediate(() => {
-        waveSettingsPointer = result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0);
+        waveSettingsPointer = result.instance.exports._init(logLevelEnum, mode === 'controller' ? 1 : 0, channel);
 
         socket = createSocket({
           type: 'udp4',

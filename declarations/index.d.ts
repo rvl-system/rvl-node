@@ -5,6 +5,7 @@ import { IWaveParameters } from 'rvl-node-types';
 export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
 export interface IRVLOptions {
     networkInterface: string;
+    channel: number;
     port?: number;
     mode?: 'controller' | 'receiver';
     logLevel?: 'error' | 'info' | 'debug';
@@ -20,7 +21,7 @@ export declare class RVL extends RVL_base {
     private _mode;
     readonly waveParameters: IWaveParameters;
     readonly mode: "controller" | "receiver";
-    constructor({ networkInterface, port, mode, logLevel }: IRVLOptions);
+    constructor({ networkInterface, port, mode, logLevel, channel }: IRVLOptions);
     start(): void;
     stop(): void;
     setWaveParameters({ waves, timePeriod, distancePeriod }: IWaveParameters): void;
