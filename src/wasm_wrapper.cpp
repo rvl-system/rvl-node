@@ -19,8 +19,7 @@ along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 #include <stdio.h>
-#include <RVLMessaging.h>
-#include <RVLLogging.h>
+#include <rvl.h>
 #include "./wasm_platform.h"
 
 WASMPlatform::WASMLogging* loggingInterface;

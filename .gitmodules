@@ -1,0 +1,3 @@
+[submodule "lib/rvl"]
+	path = lib/rvl
+	url = https://github.com/nebrius/rvl.git

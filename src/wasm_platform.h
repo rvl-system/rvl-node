@@ -20,8 +20,7 @@ along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef WASM_PLATFORM_H_
 #define WASM_PLATFORM_H_
 
-#include <RVLLogging.h>
-#include <RVLMessaging.h>
+#include <rvl.h>
 
 namespace WASMPlatform {
 
