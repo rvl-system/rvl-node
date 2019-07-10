@@ -1,6 +1,0 @@
-[submodule "lib/RVLMessaging"]
-	path = lib/RVLMessaging
-	url = https://github.com/nebrius/RVLMessaging.git
-[submodule "lib/RVLLogging"]
-	path = lib/RVLLogging
-	url = https://github.com/nebrius/RVLLogging.git
