@@ -1,6 +1,6 @@
 {
   "name": "rvl-node",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",

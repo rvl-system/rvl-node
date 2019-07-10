@@ -22,7 +22,7 @@ const events_1 = require("events");
 const bridge_1 = require("./bridge");
 let created = false;
 class RVL extends events_1.EventEmitter {
-    constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel }) {
+    constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel, enableClockSync = false }) {
         super();
         this._isInitialized = false;
         if (created) {
@@ -35,7 +35,7 @@ class RVL extends events_1.EventEmitter {
             this._waveParameters = newParameters;
             this.emit('waveParametersUpdated', this._waveParameters);
         });
-        bridge_1.init(networkInterface, port, mode, channel, logLevel, () => {
+        bridge_1.init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
             bridge_1.setWaveParameters(this._waveParameters);
             this._isInitialized = true;
             this.emit('initialized');

@@ -9,6 +9,7 @@ export interface IRVLOptions {
     port?: number;
     mode?: 'controller' | 'receiver';
     logLevel?: 'error' | 'info' | 'debug';
+    enableClockSync?: boolean;
 }
 interface IEvents {
     initialized: void;
@@ -21,7 +22,7 @@ export declare class RVL extends RVL_base {
     private _mode;
     readonly waveParameters: IWaveParameters;
     readonly mode: "controller" | "receiver";
-    constructor({ networkInterface, port, mode, logLevel, channel }: IRVLOptions);
+    constructor({ networkInterface, port, mode, logLevel, channel, enableClockSync }: IRVLOptions);
     start(): void;
     stop(): void;
     setWaveParameters({ waves, timePeriod, distancePeriod }: IWaveParameters): void;

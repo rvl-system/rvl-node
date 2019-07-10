@@ -49,10 +49,13 @@ function createEmptyWaveParameters() {
 }
 exports.createEmptyWaveParameters = createEmptyWaveParameters;
 const UPDATE_RATE = 33;
+const CLOCK_SYNC_INTERVAL = 2000;
+const CLOCK_SYNC_SIGNATURE = ['C'.charCodeAt(0), 'L'.charCodeAt(0), 'K'.charCodeAt(0), 'S'.charCodeAt(0)];
 let wasmExports;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 let waveSettingsPointer = 0;
 let serverPort = NaN;
+let running = false;
 let waveSettingsUpdatedCallback = () => {
     // Do nothing
 };
@@ -248,7 +251,7 @@ function handleRead(ptr, len) {
     }
 }
 // External interface methods
-function init(networkInterface, port, mode, channel, logLevel, cb) {
+function init(networkInterface, port, mode, channel, logLevel, enableClockSync, cb) {
     const interfaces = os_1.networkInterfaces();
     const iface = interfaces[networkInterface];
     if (!iface) {
@@ -353,6 +356,30 @@ function init(networkInterface, port, mode, channel, logLevel, cb) {
                     const addressInfo = socket.address();
                     console.log(`UDP server listening on ${addressInfo.address}:${addressInfo.port}`);
                     socket.setBroadcast(true);
+                    if (enableClockSync) {
+                        console.log('Enabling clock sync server');
+                        const clockStartTime = Date.now();
+                        let seq = 0;
+                        setInterval(() => {
+                            if (!running) {
+                                return;
+                            }
+                            const clockTime = Date.now() - clockStartTime;
+                            console.log(`Pinging clock time ${clockTime}`);
+                            const msg = new Uint8Array(14);
+                            const view = new DataView(msg.buffer);
+                            // Signature: 4 bytes = "CLKS"
+                            for (let i = 0; i < 4; i++) {
+                                view.setUint8(i, CLOCK_SYNC_SIGNATURE[i]);
+                            }
+                            view.setUint8(4, 1); // Version: 1 byte = 1
+                            view.setUint8(5, 1); // Type: 1 byte = 1:reference, 2:response
+                            view.setUint16(6, ++seq); // Sequence: 2 bytes = always incrementing
+                            view.setUint32(8, clockTime); // Clock: 4 bytes = running clock, relative to app start
+                            view.setUint16(12, 0); // ClientID: 2 bytes = 0 in this case because this is not an LED device/client
+                            socket.send(msg, port, broadcastAddress);
+                        }, CLOCK_SYNC_INTERVAL);
+                    }
                     cb();
                 });
                 socket.bind(port);
@@ -366,6 +393,10 @@ function start() {
     if (!wasmExports) {
         throw new Error(createInternalErrorMessage(`start called but the wasm module has not been loaded`));
     }
+    if (running) {
+        return;
+    }
+    running = true;
     function loop() {
         const loopStartTime = process.hrtime.bigint();
         if (wasmExports) {
@@ -388,6 +419,7 @@ function stop() {
     if (!wasmExports) {
         throw new Error(createInternalErrorMessage(`start called but the wasm module has not been loaded`));
     }
+    running = false;
     clearTimeout(loopTimer);
 }
 exports.stop = stop;

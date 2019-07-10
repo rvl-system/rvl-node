@@ -4,7 +4,7 @@ export declare const DEFAULT_DISTANCE_PERIOD = 32;
 export declare const MAX_NUM_WAVES = 4;
 export declare function createEmptyWave(): IWave;
 export declare function createEmptyWaveParameters(): IWaveParameters;
-export declare function init(networkInterface: string, port: number, mode: 'controller' | 'receiver', channel: number, logLevel: 'error' | 'info' | 'debug', cb: (err?: Error) => void): void;
+export declare function init(networkInterface: string, port: number, mode: 'controller' | 'receiver', channel: number, logLevel: 'error' | 'info' | 'debug', enableClockSync: boolean, cb: (err?: Error) => void): void;
 export declare function start(): void;
 export declare function stop(): void;
 export declare function setWaveParameters(params: IWaveParameters): void;

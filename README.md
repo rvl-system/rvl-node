@@ -1,6 +1,6 @@
 # RVL-Node
 
-A Node.js implementation of RVLMessaging based on Web Assembly
+A Node.js implementation of [rvl](https://github.com/nebrius/rvl) based on Web Assembly. Documentation coming soon!
 
 # License
 

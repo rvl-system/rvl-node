@@ -45,6 +45,7 @@ export interface IRVLOptions {
   port?: number;
   mode?: 'controller' | 'receiver';
   logLevel?: 'error' | 'info' | 'debug';
+  enableClockSync?: boolean;
 }
 
 interface IEvents {
@@ -69,7 +70,14 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     return this._mode;
   }
 
-  constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel }: IRVLOptions) {
+  constructor({
+    networkInterface,
+    port = 4978,
+    mode = 'receiver',
+    logLevel = 'info',
+    channel,
+    enableClockSync = false
+  }: IRVLOptions) {
     super();
     if (created) {
       throw new Error(`Currently the RVL class can only be instantiated once per process.`);
@@ -84,7 +92,7 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
       this.emit('waveParametersUpdated', this._waveParameters);
     });
 
-    init(networkInterface, port, mode, channel, logLevel, () => {
+    init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
       setWaveParameters(this._waveParameters);
       this._isInitialized = true;
       this.emit('initialized');
