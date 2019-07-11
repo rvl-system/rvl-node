@@ -33,7 +33,7 @@ rvl.on('initialized', () => {
 });
 ```
 
-To create a receiver that listens for changes to the animation, we can run the below code:
+To create a receiver that listens for changes to the animation on channel 1 , we can run the below code:
 
 ```typescript
 import { RVL } from 'rvl-node';
@@ -50,9 +50,108 @@ rvl.on('initialized', () => {
 });
 
 rvl.on('waveParametersUpdated', (waveParameters) => {
-  console.log('Wave parameters updated', waveParameters);
+  console.log('Wave parameters updated', waveParameters); // Prints the animation set by the controller
 });
 ```
+
+## API
+
+Note: the signatures below use the [TypeScript](https://www.typescriptlang.org/) definitions for clarity. The types are _not_ enforced in pure JavaScript, so in theory you can mix and match, but honestly I never tested that scenario and have no idea what will happen.
+
+If you're not familiar with TypeScript syntax, there are basically three things you need to know:
+
+1. A variables type is specified after the variable name, and separated by a `:`. For example, `x: number` means we have a variable named `x`, and it's a number.
+2. A `?` after the variable name and before the `:` means that the variable is optional. For example, `{ x?: number }` means the `x` property in this object can be left out.
+
+### new RVL(options)
+
+Instantiates a new RVL instance.
+
+**Warning**: although it has never been tested, instantiating more than one RVL instance at a time will _probably_ break.
+
+_Signature:_
+
+```typescript
+interface IRVLOptions {
+  networkInterface: string;
+  channel: number;
+  port?: number;
+  mode?: 'controller' | 'receiver';
+  logLevel?: 'error' | 'info' | 'debug';
+  enableClockSync?: boolean;
+}
+
+class RVL {
+  constructor(options: IRVLOptions)
+}
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>options</td>
+    <td>Object</td>
+    <td>The options to instantiate the RVL instance with</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td colspan="2">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>networkInterface</td>
+            <td>string</td>
+            <td>The network interface to send/receive RVL packets on, e.g. "wlan0"</td>
+          </tr>
+          <tr>
+            <td>channel</td>
+            <td>number</td>
+            <td>The channel to communicate on, an integer between <code>0</code> and <code>7</code>.</td>
+          </tr>
+          <tr>
+            <td>port (optional)</td>
+            <td>number</td>
+            <td>The UDP port to bind to. Default is <code>4978</code>.</td>
+          </tr>
+          <tr>
+            <td>mode (optional)</td>
+            <td><code>'controller'</code> | <code>'receiver'</code></td>
+            <td>The mode to operate in. Default is <code>'controller'</code></td>
+          </tr>
+          <tr>
+            <td>logLevel (optional)</td>
+            <td><code>'error'</code> | <code>'info'</code> | <code>'debug'</code></td>
+            <td>The log level for RVL to log with. Default is <code>'info'</code>.</td>
+          </tr>
+          <tr>
+            <td>enableClockSync (optional)</td>
+            <td>boolean</td>
+            <td>Enables the clock sync server. Defaults to <code>false</code>. Note: this will likely be deprecated soon because there are plans to move away from a centralized clock server to a fully decentralized one.</td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+ <tr>
+</table>
+
+  </tbody>
+</table>
 
 # License
 
