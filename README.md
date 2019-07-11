@@ -63,7 +63,7 @@ If you're not familiar with TypeScript syntax, there are basically three things 
 1. A variables type is specified after the variable name, and separated by a `:`. For example, `x: number` means we have a variable named `x`, and it's a number.
 2. A `?` after the variable name and before the `:` means that the variable is optional. For example, `{ x?: number }` means the `x` property in this object can be left out.
 
-### new RVL(options)
+#### new RVL(options)
 
 Instantiates a new RVL instance.
 
@@ -150,6 +150,136 @@ _Arguments_:
     <tr>
   </tbody>
 </table>
+
+### RVL Instance Properties
+
+#### waveParameters
+
+_Signature:_
+
+```typescript
+class RVL {
+  public get waveParameters(): IWaveParameters
+}
+```
+
+#### mode
+
+_Signature:_
+
+```typescript
+class RVL {
+  public get mode(): 'controller' | 'receiver'
+}
+```
+
+### RVL Instance Methods
+
+#### start()
+
+_Signature:_
+
+```typescript
+class RVL {
+  public start(): void
+}
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</body>
+
+_Returns:_ none.
+
+#### stop()
+
+_Signature:_
+
+```typescript
+class RVL {
+  stop(): void
+}
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</body>
+
+_Returns:_ none.
+
+#### setWaveParameters(parameters)
+
+_Signature:_
+
+```typescript
+class RVL {
+  setWaveParameters(parameters: IWaveParameters): void
+}
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</body>
+
+_Returns:_ none.
+
+#### getAnimationTime()
+
+_Signature:_
+
+```typescript
+class RVL {
+  getAnimationTime(): number
+}
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</body>
+
+_Returns:_ The current animation time across all devices (not based on wall-time).
+
+### RVL Instance Events
 
 # License
 
