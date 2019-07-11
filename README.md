@@ -97,59 +97,57 @@ _Arguments_:
     </tr>
   </thead>
   <tbody>
-  <tr>
-    <td>options</td>
-    <td>Object</td>
-    <td>The options to instantiate the RVL instance with</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2">
-      <table>
-        <thead>
-          <tr>
-            <th>Property</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>networkInterface</td>
-            <td>string</td>
-            <td>The network interface to send/receive RVL packets on, e.g. "wlan0"</td>
-          </tr>
-          <tr>
-            <td>channel</td>
-            <td>number</td>
-            <td>The channel to communicate on, an integer between <code>0</code> and <code>7</code>.</td>
-          </tr>
-          <tr>
-            <td>port (optional)</td>
-            <td>number</td>
-            <td>The UDP port to bind to. Default is <code>4978</code>.</td>
-          </tr>
-          <tr>
-            <td>mode (optional)</td>
-            <td><code>'controller'</code> | <code>'receiver'</code></td>
-            <td>The mode to operate in. Default is <code>'controller'</code></td>
-          </tr>
-          <tr>
-            <td>logLevel (optional)</td>
-            <td><code>'error'</code> | <code>'info'</code> | <code>'debug'</code></td>
-            <td>The log level for RVL to log with. Default is <code>'info'</code>.</td>
-          </tr>
-          <tr>
-            <td>enableClockSync (optional)</td>
-            <td>boolean</td>
-            <td>Enables the clock sync server. Defaults to <code>false</code>. Note: this will likely be deprecated soon because there are plans to move away from a centralized clock server to a fully decentralized one.</td>
-          </tr>
-        </tbody>
-      </table>
-    </td>
- <tr>
-</table>
-
+    <tr>
+      <td>options</td>
+      <td>Object</td>
+      <td>The options to instantiate the RVL instance with</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td colspan="2">
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>networkInterface</td>
+              <td>string</td>
+              <td>The network interface to send/receive RVL packets on, e.g. "wlan0"</td>
+            </tr>
+            <tr>
+              <td>channel</td>
+              <td>number</td>
+              <td>The channel to communicate on, an integer between <code>0</code> and <code>7</code>.</td>
+            </tr>
+            <tr>
+              <td>port (optional)</td>
+              <td>number</td>
+              <td>The UDP port to bind to. Default is <code>4978</code>.</td>
+            </tr>
+            <tr>
+              <td>mode (optional)</td>
+              <td><code>'controller'</code> | <code>'receiver'</code></td>
+              <td>The mode to operate in. Default is <code>'controller'</code></td>
+            </tr>
+            <tr>
+              <td>logLevel (optional)</td>
+              <td><code>'error'</code> | <code>'info'</code> | <code>'debug'</code></td>
+              <td>The log level for RVL to log with. Default is <code>'info'</code>.</td>
+            </tr>
+            <tr>
+              <td>enableClockSync (optional)</td>
+              <td>boolean</td>
+              <td>Enables the clock sync server. Defaults to <code>false</code>. Note: this will likely be deprecated soon because there are plans to move away from a centralized clock server to a fully decentralized one.</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    <tr>
   </tbody>
 </table>
 
