@@ -227,7 +227,7 @@ _Arguments_:
   </thead>
   <tbody>
   </tbody>
-</body>
+</table>
 
 _Returns:_ none.
 
@@ -277,7 +277,7 @@ _Arguments_:
   </thead>
   <tbody>
   </tbody>
-</body>
+</table>
 
 **Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
 
