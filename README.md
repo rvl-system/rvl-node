@@ -315,7 +315,7 @@ _Arguments_:
 
 **Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
 
-# License
+## License
 
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
