@@ -1,6 +1,6 @@
 # RVL Node
 
-A Node.js implementation of [rvl](https://github.com/nebrius/rvl) based on Web Assembly.
+A Node.js implementation of [rvl](https://github.com/nebrius/rvl) based on Web Assembly. For a fully functioning example, take a look at the [Home Lights server](https://github.com/nebrius/home-lights/blob/master/server/src/index.ts) I wrote.
 
 ## Installation
 
