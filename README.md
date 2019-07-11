@@ -155,6 +155,8 @@ _Arguments_:
 
 #### waveParameters
 
+This read-only property returns the currently active wave parameters, whether set locally or by a remote controller.
+
 _Signature:_
 
 ```typescript
@@ -167,6 +169,8 @@ class RVL {
 
 #### mode
 
+This read-only property returns the current mode, either `'controller'` or `'receiver'`.
+
 _Signature:_
 
 ```typescript
@@ -178,6 +182,10 @@ class RVL {
 ### RVL Instance Methods
 
 #### start()
+
+Starts the RVL system. In practice, this is somewhat analogous to various `listen()` methods in other libraries. There are some technical differences, however. RVL binds to the UDP port supplied as soon as the constructor is instantiated, but the internal system loop that process messages, etc. is not started until this method is called.
+
+This method cannot be called until the `initialized` event is emitted.
 
 _Signature:_
 
@@ -193,6 +201,10 @@ _Returns:_ none.
 
 #### stop()
 
+Stops the RVL system. Note that the UDP port is still bound after calling this method.
+
+This method cannot be called until the `initialized` event is emitted.
+
 _Signature:_
 
 ```typescript
@@ -206,6 +218,10 @@ _Arguments_: none.
 _Returns:_ none.
 
 #### setWaveParameters(parameters)
+
+Sets the wave parameters for the system. These parameters will be synced to any other RVL devices on this channel within 2 seconds at most. You _can_ craft animation parameters by hand, but it's recommended to use the [rvl-node-animations](https://github.com/nebrius/rvl-node-animations) helper libraries instead. Crafting parameters by hand is a pain.
+
+This method can only be called when the device is in controller mode, and cannot be called until the `initialized` event is emitted.
 
 _Signature:_
 
@@ -226,12 +242,21 @@ _Arguments_:
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>parameters</td>
+      <td>IWaveParameters</td>
+      <td>The wave parameters to set in the system.</td>
+    </tr>
   </tbody>
 </table>
+
+**Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
 
 _Returns:_ none.
 
 #### getAnimationTime()
+
+Gets the current animation time in the system in milliseconds. This "time" is not wall time, and is not relative to anything useful (0 is relative to when the clock sync server started). This "time" _is_ synchronized across all devices however, and can be used for relative timing that's accurate across all RVL systems on the network.
 
 _Signature:_
 
@@ -249,6 +274,8 @@ _Returns:_ The current animation time across all devices (not based on wall-time
 
 #### initialized
 
+This event is emitted once the system has been initialized. Once this event has been emitted, it is safe to call any instance methods.
+
 _Signature:_
 
 ```typescript
@@ -259,10 +286,12 @@ _Arguments_: none.
 
 #### waveParametersUpdated
 
+This event is emitted whenever the wave parameters are updated. Wave parameters are updated either by a call to `setWaveParameters` if this device is a controller, or are synced from another controller on the network and the same channel as this device if this device is a receiver.
+
 _Signature:_
 
 ```typescript
-rvl.on('initialized', (waveParameters: IWaveParameters) => void): void;
+rvl.on('waveParametersUpdated', (waveParameters: IWaveParameters) => void): void;
 ```
 
 _Arguments_:
@@ -275,6 +304,11 @@ _Arguments_:
       <th>Description</th>
     </tr>
   </thead>
+    <tr>
+      <td>waveParameters</td>
+      <td>IWaveParameters</td>
+      <td>The recently updated wave parameters</td>
+    </tr>
   <tbody>
   </tbody>
 </table>
