@@ -163,6 +163,8 @@ class RVL {
 }
 ```
 
+**Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
+
 #### mode
 
 _Signature:_
@@ -185,19 +187,7 @@ class RVL {
 }
 ```
 
-_Arguments_:
-
-<table>
-  <thead>
-    <tr>
-      <th>Argument</th>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</body>
+_Arguments_: none.
 
 _Returns:_ none.
 
@@ -207,23 +197,11 @@ _Signature:_
 
 ```typescript
 class RVL {
-  stop(): void
+  public stop(): void
 }
 ```
 
-_Arguments_:
-
-<table>
-  <thead>
-    <tr>
-      <th>Argument</th>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</body>
+_Arguments_: none.
 
 _Returns:_ none.
 
@@ -233,7 +211,7 @@ _Signature:_
 
 ```typescript
 class RVL {
-  setWaveParameters(parameters: IWaveParameters): void
+  public setWaveParameters(parameters: IWaveParameters): void
 }
 ```
 
@@ -259,8 +237,32 @@ _Signature:_
 
 ```typescript
 class RVL {
-  getAnimationTime(): number
+  public getAnimationTime(): number
 }
+```
+
+_Arguments_: none.
+
+_Returns:_ The current animation time across all devices (not based on wall-time).
+
+### RVL Instance Events
+
+#### initialized
+
+_Signature:_
+
+```typescript
+rvl.on('initialized', () => void): void;
+```
+
+_Arguments_: none.
+
+#### waveParametersUpdated
+
+_Signature:_
+
+```typescript
+rvl.on('initialized', (waveParameters: IWaveParameters) => void): void;
 ```
 
 _Arguments_:
@@ -277,9 +279,7 @@ _Arguments_:
   </tbody>
 </body>
 
-_Returns:_ The current animation time across all devices (not based on wall-time).
-
-### RVL Instance Events
+**Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
 
 # License
 
