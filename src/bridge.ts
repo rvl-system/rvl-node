@@ -591,7 +591,7 @@ export function setPowerState(powerState: boolean): void {
   if (!wasmExports) {
     throw new Error(createInternalErrorMessage(`setPowerState called but the wasm module has not been loaded`));
   }
-  wasmExports.instance.exports._setBrightness(powerState ? 1 : 0);
+  wasmExports.instance.exports._setPowerState(powerState ? 1 : 0);
 }
 
 export function listenForWaveParameterUpdates(cb: (parameters: IWaveParameters) => void): void {
