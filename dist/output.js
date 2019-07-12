@@ -1153,11 +1153,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 8400,
+    STACK_BASE = 8448,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5251280,
-    DYNAMIC_BASE = 5251280,
-    DYNAMICTOP_PTR = 8368;
+    STACK_MAX = 5251328,
+    DYNAMIC_BASE = 5251328,
+    DYNAMICTOP_PTR = 8416;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1649,7 +1649,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 7376;
+// STATICTOP = STATIC_BASE + 7424;
 /* global initializers */ /*__ATINIT__.push();*/
 
 
@@ -1660,7 +1660,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 8384
+var tempDoublePtr = 8432
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1914,6 +1914,14 @@ function copyTempDouble(ptr) {
   err('missing function: jsGetRelativeTime'); abort(-1);
   }
 
+  function _jsOnBrightnessUpdated() {
+  err('missing function: jsOnBrightnessUpdated'); abort(-1);
+  }
+
+  function _jsOnPowerStateUpdated() {
+  err('missing function: jsOnPowerStateUpdated'); abort(-1);
+  }
+
   function _jsOnWaveSettingsUpdated() {
   err('missing function: jsOnWaveSettingsUpdated'); abort(-1);
   }
@@ -2030,17 +2038,17 @@ function intArrayToString(array) {
 // ASM_LIBRARY EXTERN PRIMITIVES: Int8Array,Int32Array
 
 
-var debug_table_ii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform12WASMPlatform12getLocalTimeEv", "__ZN12WASMPlatform12WASMPlatform11getDeviceIdEv", "__ZN12WASMPlatform12WASMPlatform18isNetworkAvailableEv", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport11parsePacketEv", "__ZN12WASMPlatform13WASMTransport5read8Ev", "__ZN12WASMPlatform13WASMTransport6read16Ev", "__ZN12WASMPlatform13WASMTransport6read32Ev", "0", "___stdio_close", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_iidiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "_fmt_fp", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_iiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "___stdio_write", "0", "___stdout_write", "_sn_write", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info9can_catchEPKNS_16__shim_type_infoERPv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_jiji = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "___stdio_seek", "0", "0", "0", "0", "0"];
-var debug_table_v = ["0", "0", "0", "0", "0", "___cxa_pure_virtual", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZL25default_terminate_handlerv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv112_GLOBAL__N_110construct_Ev", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_vi = ["0", "__ZN20RVLPlatformInterface21onWaveSettingsUpdatedEv", "__ZN20RVLPlatformInterface19onDeviceModeUpdatedEv", "__ZN20RVLPlatformInterface20onClockOffsetUpdatedEv", "__ZN20RVLPlatformInterface16onChannelUpdatedEv", "0", "0", "__ZN12WASMPlatform11WASMLogging7printlnEv", "0", "__ZN12WASMPlatform12WASMPlatform21onWaveSettingsUpdatedEv", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport10beginWriteEv", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport8endWriteEv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv116__shim_type_infoD2Ev", "__ZN10__cxxabiv117__class_type_infoD0Ev", "__ZNK10__cxxabiv116__shim_type_info5noop1Ev", "__ZNK10__cxxabiv116__shim_type_info5noop2Ev", "0", "0", "0", "0", "__ZN10__cxxabiv120__si_class_type_infoD0Ev", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv112_GLOBAL__N_19destruct_EPv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_vii = ["0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform11WASMLogging5printEPKc", "0", "__ZN12WASMPlatform11WASMLogging7printlnEPKc", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport6write8Eh", "__ZN12WASMPlatform13WASMTransport7write16Et", "__ZN12WASMPlatform13WASMTransport7write32Ej", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "_pop_arg_long_double", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_viii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport5writeEPht", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport4readEPht", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_viiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info27has_unambiguous_public_baseEPNS_19__dynamic_cast_infoEPvi", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info27has_unambiguous_public_baseEPNS_19__dynamic_cast_infoEPvi", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_viiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info16search_below_dstEPNS_19__dynamic_cast_infoEPKvib", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info16search_below_dstEPNS_19__dynamic_cast_infoEPKvib", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-var debug_table_viiiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info16search_above_dstEPNS_19__dynamic_cast_infoEPKvS4_ib", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info16search_above_dstEPNS_19__dynamic_cast_infoEPKvS4_ib", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_ii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform12WASMPlatform12getLocalTimeEv", "__ZN12WASMPlatform12WASMPlatform11getDeviceIdEv", "__ZN12WASMPlatform12WASMPlatform18isNetworkAvailableEv", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport11parsePacketEv", "__ZN12WASMPlatform13WASMTransport5read8Ev", "__ZN12WASMPlatform13WASMTransport6read16Ev", "__ZN12WASMPlatform13WASMTransport6read32Ev", "0", "___stdio_close", "0", "0", "0"];
+var debug_table_iidiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "_fmt_fp", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_iiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "___stdio_write", "0", "___stdout_write", "_sn_write", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info9can_catchEPKNS_16__shim_type_infoERPv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_jiji = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "___stdio_seek", "0"];
+var debug_table_v = ["0", "0", "0", "0", "0", "0", "0", "___cxa_pure_virtual", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZL25default_terminate_handlerv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv112_GLOBAL__N_110construct_Ev", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_vi = ["0", "__ZN20RVLPlatformInterface21onWaveSettingsUpdatedEv", "__ZN20RVLPlatformInterface19onDeviceModeUpdatedEv", "__ZN20RVLPlatformInterface20onClockOffsetUpdatedEv", "__ZN20RVLPlatformInterface16onChannelUpdatedEv", "__ZN20RVLPlatformInterface19onPowerStateUpdatedEv", "__ZN20RVLPlatformInterface19onBrightnessUpdatedEv", "0", "0", "__ZN12WASMPlatform11WASMLogging7printlnEv", "0", "__ZN12WASMPlatform12WASMPlatform21onWaveSettingsUpdatedEv", "__ZN12WASMPlatform12WASMPlatform19onPowerStateUpdatedEv", "__ZN12WASMPlatform12WASMPlatform19onBrightnessUpdatedEv", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport10beginWriteEv", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport8endWriteEv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv116__shim_type_infoD2Ev", "__ZN10__cxxabiv117__class_type_infoD0Ev", "__ZNK10__cxxabiv116__shim_type_info5noop1Ev", "__ZNK10__cxxabiv116__shim_type_info5noop2Ev", "0", "0", "0", "0", "__ZN10__cxxabiv120__si_class_type_infoD0Ev", "0", "0", "0", "0", "0", "0", "__ZN10__cxxabiv112_GLOBAL__N_19destruct_EPv", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_vii = ["0", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform11WASMLogging5printEPKc", "0", "__ZN12WASMPlatform11WASMLogging7printlnEPKc", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport6write8Eh", "__ZN12WASMPlatform13WASMTransport7write16Et", "__ZN12WASMPlatform13WASMTransport7write32Ej", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "_pop_arg_long_double", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_viii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport5writeEPht", "0", "0", "0", "0", "0", "__ZN12WASMPlatform13WASMTransport4readEPht", "0", "0", "0", "0"];
+var debug_table_viiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info27has_unambiguous_public_baseEPNS_19__dynamic_cast_infoEPvi", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info27has_unambiguous_public_baseEPNS_19__dynamic_cast_infoEPvi", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_viiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info16search_below_dstEPNS_19__dynamic_cast_infoEPKvib", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info16search_below_dstEPNS_19__dynamic_cast_infoEPKvib", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+var debug_table_viiiiii = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "__ZNK10__cxxabiv117__class_type_info16search_above_dstEPNS_19__dynamic_cast_infoEPKvS4_ib", "0", "0", "0", "__ZNK10__cxxabiv120__si_class_type_info16search_above_dstEPNS_19__dynamic_cast_infoEPKvS4_ib", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
 function nullFunc_ii(x) { err("Invalid function pointer '" + x + "' called with signature 'ii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  err("This pointer might make sense in another type signature: iiii: " + debug_table_iiii[x] + "  iidiiii: " + debug_table_iidiiii[x] + "  vii: " + debug_table_vii[x] + "  vi: " + debug_table_vi[x] + "  jiji: " + debug_table_jiji[x] + "  viii: " + debug_table_viii[x] + "  v: " + debug_table_v[x] + "  viiii: " + debug_table_viiii[x] + "  viiiii: " + debug_table_viiiii[x] + "  viiiiii: " + debug_table_viiiiii[x] + "  "); abort(x) }
 
 function nullFunc_iidiiii(x) { err("Invalid function pointer '" + x + "' called with signature 'iidiiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  err("This pointer might make sense in another type signature: ii: " + debug_table_ii[x] + "  iiii: " + debug_table_iiii[x] + "  viiii: " + debug_table_viiii[x] + "  viii: " + debug_table_viii[x] + "  vii: " + debug_table_vii[x] + "  viiiii: " + debug_table_viiiii[x] + "  jiji: " + debug_table_jiji[x] + "  vi: " + debug_table_vi[x] + "  viiiiii: " + debug_table_viiiiii[x] + "  v: " + debug_table_v[x] + "  "); abort(x) }
@@ -2103,6 +2111,8 @@ var asmLibraryArg = module.exports.asmLibraryArg = {
   "_jsEndWrite": _jsEndWrite,
   "_jsGetDeviceId": _jsGetDeviceId,
   "_jsGetRelativeTime": _jsGetRelativeTime,
+  "_jsOnBrightnessUpdated": _jsOnBrightnessUpdated,
+  "_jsOnPowerStateUpdated": _jsOnPowerStateUpdated,
   "_jsOnWaveSettingsUpdated": _jsOnWaveSettingsUpdated,
   "_jsParsePacket": _jsParsePacket,
   "_jsPrintString": _jsPrintString,
@@ -2180,6 +2190,18 @@ var real__sbrk = asm["_sbrk"]; asm["_sbrk"] = function() {
   return real__sbrk.apply(null, arguments);
 };
 
+var real__setBrightness = asm["_setBrightness"]; asm["_setBrightness"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__setBrightness.apply(null, arguments);
+};
+
+var real__setPowerState = asm["_setPowerState"]; asm["_setPowerState"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__setPowerState.apply(null, arguments);
+};
+
 var real__waveParametersUpdated = asm["_waveParametersUpdated"]; asm["_waveParametersUpdated"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2254,6 +2276,14 @@ var _sbrk = Module["_sbrk"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_sbrk"].apply(null, arguments) };
+var _setBrightness = Module["_setBrightness"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_setBrightness"].apply(null, arguments) };
+var _setPowerState = Module["_setPowerState"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_setPowerState"].apply(null, arguments) };
 var _waveParametersUpdated = Module["_waveParametersUpdated"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');

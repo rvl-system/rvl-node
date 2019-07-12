@@ -37,6 +37,8 @@ class WASMPlatform : public RVLPlatformInterface {
 
  protected:
   void onWaveSettingsUpdated();
+  void onPowerStateUpdated();
+  void onBrightnessUpdated();
 
  public:
   uint32_t getLocalTime();

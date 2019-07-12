@@ -54,3 +54,11 @@ extern "C" void waveParametersUpdated() {
   // *actually* set the settings here
   platform->setWaveSettings(platform->getWaveSettings());
 }
+
+extern "C" void setPowerState(bool newPowerState) {
+  platform->setPowerState(newPowerState);
+}
+
+extern "C" void setBrightness(uint8_t newBrightness) {
+  platform->setBrightness(newBrightness);
+}

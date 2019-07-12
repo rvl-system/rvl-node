@@ -59,6 +59,12 @@ let running = false;
 let waveSettingsUpdatedCallback = () => {
     // Do nothing
 };
+let powerStateUpdatedCallback = () => {
+    // Do nothing
+};
+let brightnessUpdatedCallback = () => {
+    // Do nothing
+};
 const structData = JSON.parse(fs_1.readFileSync(path_1.join(__dirname, 'structInfo.json')).toString());
 const pathSegmentArrayRegex = /^(.*?)\[([0-9]*)\]$/;
 for (const entryName in structData.entryDictionary) {
@@ -168,6 +174,12 @@ function handleOnWaveSettingsUpdated() {
         }
     }
     waveSettingsUpdatedCallback(waveSettings);
+}
+function handleOnPowerStateUpdated(powerState) {
+    powerStateUpdatedCallback(!!powerState);
+}
+function handleOnBrightnessUpdated(brightness) {
+    brightnessUpdatedCallback(brightness);
 }
 // Transport implementation methods
 let socket;
@@ -315,6 +327,8 @@ function init(networkInterface, port, mode, channel, logLevel, enableClockSync, 
             _jsGetRelativeTime: handleGetRelativeTime,
             _jsGetDeviceId: handleGetDeviceId,
             _jsOnWaveSettingsUpdated: handleOnWaveSettingsUpdated,
+            _jsOnPowerStateUpdated: handleOnPowerStateUpdated,
+            _jsOnBrightnessUpdated: handleOnBrightnessUpdated,
             // Transport Write
             _jsBeginWrite: handleBeginWrite,
             _jsWrite8: handleWrite8,
@@ -488,8 +502,30 @@ function getAnimationTime() {
     return 0;
 }
 exports.getAnimationTime = getAnimationTime;
+function setBrightness(brightness) {
+    if (!wasmExports) {
+        throw new Error(createInternalErrorMessage(`setBrightness called but the wasm module has not been loaded`));
+    }
+    wasmExports.instance.exports._setBrightness(brightness);
+}
+exports.setBrightness = setBrightness;
+function setPowerState(powerState) {
+    if (!wasmExports) {
+        throw new Error(createInternalErrorMessage(`setPowerState called but the wasm module has not been loaded`));
+    }
+    wasmExports.instance.exports._setBrightness(powerState ? 1 : 0);
+}
+exports.setPowerState = setPowerState;
 function listenForWaveParameterUpdates(cb) {
     waveSettingsUpdatedCallback = cb;
 }
 exports.listenForWaveParameterUpdates = listenForWaveParameterUpdates;
+function listenForPowerStateUpdates(cb) {
+    powerStateUpdatedCallback = cb;
+}
+exports.listenForPowerStateUpdates = listenForPowerStateUpdates;
+function listenForBrightnessUpdates(cb) {
+    brightnessUpdatedCallback = cb;
+}
+exports.listenForBrightnessUpdates = listenForBrightnessUpdates;
 //# sourceMappingURL=bridge.js.map

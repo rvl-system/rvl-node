@@ -9,4 +9,8 @@ export declare function start(): void;
 export declare function stop(): void;
 export declare function setWaveParameters(params: IWaveParameters): void;
 export declare function getAnimationTime(): number;
+export declare function setBrightness(brightness: number): void;
+export declare function setPowerState(powerState: boolean): void;
 export declare function listenForWaveParameterUpdates(cb: (parameters: IWaveParameters) => void): void;
+export declare function listenForPowerStateUpdates(cb: (powerState: boolean) => void): void;
+export declare function listenForBrightnessUpdates(cb: (brightness: number) => void): void;

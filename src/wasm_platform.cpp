@@ -26,6 +26,8 @@ extern "C" void jsPrintlnString(const char *s, uint16_t len);
 extern "C" uint32_t jsGetRelativeTime();
 extern "C" uint16_t jsGetDeviceId();
 extern "C" void jsOnWaveSettingsUpdated();
+extern "C" void jsOnPowerStateUpdated(bool powerState);
+extern "C" void jsOnBrightnessUpdated(uint8_t brightness);
 
 extern "C" void jsBeginWrite();
 extern "C" void jsWrite8(uint8_t val);
@@ -73,6 +75,16 @@ bool WASMPlatform::isNetworkAvailable() {
 void WASMPlatform::onWaveSettingsUpdated() {
   RVLPlatformInterface::onWaveSettingsUpdated();
   jsOnWaveSettingsUpdated();
+}
+
+void WASMPlatform::onPowerStateUpdated() {
+  RVLPlatformInterface::onPowerStateUpdated();
+  jsOnPowerStateUpdated(this->getPowerState());
+}
+
+void WASMPlatform::onBrightnessUpdated() {
+  RVLPlatformInterface::onBrightnessUpdated();
+  jsOnBrightnessUpdated(this->getBrightness());
 }
 
 // Transport implementation

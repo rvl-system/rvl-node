@@ -26,6 +26,8 @@ import {
   stop,
 
   setWaveParameters,
+  setPowerState,
+  setBrightness,
   getAnimationTime,
   listenForWaveParameterUpdates,
 
@@ -35,6 +37,8 @@ import {
   DEFAULT_DISTANCE_PERIOD,
   DEFAULT_TIME_PERIOD,
   MAX_NUM_WAVES,
+  listenForBrightnessUpdates,
+  listenForPowerStateUpdates,
 } from './bridge';
 
 export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
@@ -51,6 +55,8 @@ export interface IRVLOptions {
 interface IEvents {
   initialized: void;
   waveParametersUpdated: IWaveParameters;
+  powerStateUpdated: boolean;
+  brightnessUpdated: number;
 }
 type RVLEmitter = StrictEventEmitter<EventEmitter, IEvents>;
 
@@ -61,6 +67,8 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
   private _isInitialized = false;
   private _waveParameters: IWaveParameters;
   private _mode: 'controller' | 'receiver';
+  private _brightness = 0;
+  private _powerState = false;
 
   public get waveParameters() {
     return this._waveParameters;
@@ -68,6 +76,18 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
 
   public get mode() {
     return this._mode;
+  }
+
+  public get animationTime() {
+    return getAnimationTime();
+  }
+
+  public get powerState() {
+    return this._powerState;
+  }
+
+  public get brightness() {
+    return this._brightness;
   }
 
   constructor({
@@ -90,6 +110,16 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     listenForWaveParameterUpdates((newParameters) => {
       this._waveParameters = newParameters;
       this.emit('waveParametersUpdated', this._waveParameters);
+    });
+
+    listenForPowerStateUpdates((newPowerState) => {
+      this._powerState = newPowerState;
+      this.emit('powerStateUpdated', this._powerState);
+    });
+
+    listenForBrightnessUpdates((newBrightness) => {
+      this._brightness = newBrightness;
+      this.emit('brightnessUpdated', this._brightness);
     });
 
     init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
@@ -138,7 +168,11 @@ export class RVL extends (EventEmitter as new() => RVLEmitter) {
     setWaveParameters(this._waveParameters);
   }
 
-  public getAnimationTime(): number {
-    return getAnimationTime();
+  public setPowerState(newPowerState: boolean): void {
+    setPowerState(newPowerState);
+  }
+
+  public setBrightness(newBrightness: number): void {
+    setBrightness(newBrightness);
   }
 }

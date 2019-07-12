@@ -61,7 +61,16 @@ const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
 let waveSettingsPointer = 0;
 let serverPort: number = NaN;
 let running = false;
+
 let waveSettingsUpdatedCallback: (parameters: IWaveParameters) => void = () => {
+  // Do nothing
+};
+
+let powerStateUpdatedCallback: (powerState: boolean) => void = () => {
+  // Do nothing
+};
+
+let brightnessUpdatedCallback: (brightness: number) => void = () => {
   // Do nothing
 };
 
@@ -206,6 +215,14 @@ function handleOnWaveSettingsUpdated(): void {
     }
   }
   waveSettingsUpdatedCallback(waveSettings);
+}
+
+function handleOnPowerStateUpdated(powerState: number): void {
+  powerStateUpdatedCallback(!!powerState);
+}
+
+function handleOnBrightnessUpdated(brightness: number): void {
+  brightnessUpdatedCallback(brightness);
 }
 
 // Transport implementation methods
@@ -381,6 +398,8 @@ export function init(
       _jsGetRelativeTime: handleGetRelativeTime,
       _jsGetDeviceId: handleGetDeviceId,
       _jsOnWaveSettingsUpdated: handleOnWaveSettingsUpdated,
+      _jsOnPowerStateUpdated: handleOnPowerStateUpdated,
+      _jsOnBrightnessUpdated: handleOnBrightnessUpdated,
 
       // Transport Write
       _jsBeginWrite: handleBeginWrite,
@@ -561,6 +580,28 @@ export function getAnimationTime(): number {
   return 0;
 }
 
+export function setBrightness(brightness: number): void {
+  if (!wasmExports) {
+    throw new Error(createInternalErrorMessage(`setBrightness called but the wasm module has not been loaded`));
+  }
+  wasmExports.instance.exports._setBrightness(brightness);
+}
+
+export function setPowerState(powerState: boolean): void {
+  if (!wasmExports) {
+    throw new Error(createInternalErrorMessage(`setPowerState called but the wasm module has not been loaded`));
+  }
+  wasmExports.instance.exports._setBrightness(powerState ? 1 : 0);
+}
+
 export function listenForWaveParameterUpdates(cb: (parameters: IWaveParameters) => void): void {
   waveSettingsUpdatedCallback = cb;
+}
+
+export function listenForPowerStateUpdates(cb: (powerState: boolean) => void): void {
+  powerStateUpdatedCallback = cb;
+}
+
+export function listenForBrightnessUpdates(cb: (brightness: number) => void): void {
+  brightnessUpdatedCallback = cb;
 }

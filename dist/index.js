@@ -25,6 +25,8 @@ class RVL extends events_1.EventEmitter {
     constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel, enableClockSync = false }) {
         super();
         this._isInitialized = false;
+        this._brightness = 0;
+        this._powerState = false;
         if (created) {
             throw new Error(`Currently the RVL class can only be instantiated once per process.`);
         }
@@ -34,6 +36,14 @@ class RVL extends events_1.EventEmitter {
         bridge_1.listenForWaveParameterUpdates((newParameters) => {
             this._waveParameters = newParameters;
             this.emit('waveParametersUpdated', this._waveParameters);
+        });
+        bridge_1.listenForPowerStateUpdates((newPowerState) => {
+            this._powerState = newPowerState;
+            this.emit('powerStateUpdated', this._powerState);
+        });
+        bridge_1.listenForBrightnessUpdates((newBrightness) => {
+            this._brightness = newBrightness;
+            this.emit('brightnessUpdated', this._brightness);
         });
         bridge_1.init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
             bridge_1.setWaveParameters(this._waveParameters);
@@ -46,6 +56,15 @@ class RVL extends events_1.EventEmitter {
     }
     get mode() {
         return this._mode;
+    }
+    get animationTime() {
+        return bridge_1.getAnimationTime();
+    }
+    get powerState() {
+        return this._powerState;
+    }
+    get brightness() {
+        return this._brightness;
     }
     start() {
         if (!this._isInitialized) {
@@ -77,8 +96,11 @@ class RVL extends events_1.EventEmitter {
         this._waveParameters = { waves, timePeriod, distancePeriod };
         bridge_1.setWaveParameters(this._waveParameters);
     }
-    getAnimationTime() {
-        return bridge_1.getAnimationTime();
+    setPowerState(newPowerState) {
+        bridge_1.setPowerState(newPowerState);
+    }
+    setBrightness(newBrightness) {
+        bridge_1.setBrightness(newBrightness);
     }
 }
 exports.RVL = RVL;
