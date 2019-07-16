@@ -465,11 +465,12 @@ export function init(
               for (let i = 0; i < 4; i++) {
                 view.setUint8(i, CLOCK_SYNC_SIGNATURE[i]);
               }
-              view.setUint8(4, 1); // Version: 1 byte = 1
-              view.setUint8(5, 1); // Type: 1 byte = 1:reference, 2:response
-              view.setUint16(6, ++seq); // Sequence: 2 bytes = always incrementing
-              view.setUint32(8, clockTime); // Clock: 4 bytes = running clock, relative to app start
-              view.setUint16(12, 0); // ClientID: 2 bytes = 0 in this case because this is not an LED device/client
+              view.setUint8(4, 2); // Version: 1 byte = 2
+              view.setUint8(5, 240 + channel); // Destination: 1 byte = The channel of this device
+              view.setUint8(6, deviceId); // Source: 1 byte = This device's ID
+              view.setUint8(7, 1); // Type: 1 byte = 1:reference, 2:response
+              view.setUint16(8, ++seq); // Sequence: 2 bytes = always incrementing
+              view.setUint32(10, clockTime); // Clock: 4 bytes = running clock, relative to app start
               socket.send(msg as any, port, broadcastAddress);
             }, CLOCK_SYNC_INTERVAL);
           }
