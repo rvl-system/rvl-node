@@ -54,7 +54,7 @@ export function createEmptyWaveParameters(): IWaveParameters {
 
 const UPDATE_RATE = 33;
 const CLOCK_SYNC_INTERVAL = 2000;
-const CLOCK_SYNC_SIGNATURE = [ 'C'.charCodeAt(0), 'L'.charCodeAt(0), 'K'.charCodeAt(0), 'S'.charCodeAt(0) ];
+const PACKET_SIGNATURE = [ 'R'.charCodeAt(0), 'V'.charCodeAt(0), 'L'.charCodeAt(0), 'X'.charCodeAt(0) ];
 
 let wasmExports: WebAssembly.ResultObject | undefined;
 const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
@@ -451,7 +451,6 @@ export function init(
           if (enableClockSync) {
             console.log('Enabling clock sync server');
             const clockStartTime = Date.now();
-            let seq = 0;
             setInterval(() => {
               if (!running) {
                 return;
@@ -463,13 +462,13 @@ export function init(
 
               // Signature: 4 bytes = "CLKS"
               for (let i = 0; i < 4; i++) {
-                view.setUint8(i, CLOCK_SYNC_SIGNATURE[i]);
+                view.setUint8(i, PACKET_SIGNATURE[i]);
               }
-              view.setUint8(4, 2); // Version: 1 byte = 2
+              view.setUint8(4, 1); // Version: 1 byte = 2
               view.setUint8(5, 240 + channel); // Destination: 1 byte = The channel of this device
               view.setUint8(6, deviceId); // Source: 1 byte = This device's ID
-              view.setUint8(7, 1); // Type: 1 byte = 1:reference, 2:response
-              view.setUint16(8, ++seq); // Sequence: 2 bytes = always incrementing
+              view.setUint8(7, 3); // Packet type: 1 byte = 1: System, 2: Discover, 3: Clock Sync, 4: Wave Animation
+              view.setUint16(8, 0);
               view.setUint32(10, clockTime); // Clock: 4 bytes = running clock, relative to app start
               socket.send(msg as any, port, broadcastAddress);
             }, CLOCK_SYNC_INTERVAL);
