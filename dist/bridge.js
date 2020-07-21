@@ -306,7 +306,7 @@ function init(networkInterface, port, mode, channel, logLevel, enableClockSync, 
         }
         const bytes = new Uint8Array(buf);
         const tableArgs = {
-            initial: output_1.tableInitial,
+            initial: output_1.tableInitial || 10000000,
             element: 'anyfunc'
         };
         if (typeof output_1.tableMaximum === 'number') {

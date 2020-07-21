@@ -375,7 +375,7 @@ export function init(
     }
     const bytes = new Uint8Array(buf);
     const tableArgs: WebAssembly.TableDescriptor = {
-      initial: tableInitial,
+      initial: tableInitial || 10000000,
       element: 'anyfunc'
     };
     if (typeof tableMaximum === 'number') {

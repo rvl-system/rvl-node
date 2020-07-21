@@ -72,6 +72,8 @@ const command = [
   ...sourceFiles
 ];
 
+console.log(command.join(' '))
+
 exec(command.join(' '), {
   cwd: join(__dirname, '..'),
   stdio: 'inherit'
