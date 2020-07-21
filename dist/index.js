@@ -2,7 +2,7 @@
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,9 +17,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 */
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const bridge_1 = require("./bridge");
+__export(require("./animation"));
 let created = false;
 class RVL extends events_1.EventEmitter {
     constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel, enableClockSync = false }) {

@@ -2071,9 +2071,9 @@ function nullFunc_viiiii(x) { err("Invalid function pointer '" + x + "' called w
 
 function nullFunc_viiiiii(x) { err("Invalid function pointer '" + x + "' called with signature 'viiiiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  err("This pointer might make sense in another type signature: viii: " + debug_table_viii[x] + "  viiii: " + debug_table_viiii[x] + "  viiiii: " + debug_table_viiiii[x] + "  vii: " + debug_table_vii[x] + "  vi: " + debug_table_vi[x] + "  v: " + debug_table_v[x] + "  iiii: " + debug_table_iiii[x] + "  ii: " + debug_table_ii[x] + "  jiji: " + debug_table_jiji[x] + "  iidiiii: " + debug_table_iidiiii[x] + "  "); abort(x) }
 
-var asmGlobalArg = module.exports.asmGlobalArg = {}
+var asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = module.exports.asmGlobalArg = {}
 
-var asmLibraryArg = module.exports.asmLibraryArg = {
+var asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = module.exports.asmLibraryArg = {
   "abort": abort,
   "setTempRet0": setTempRet0,
   "getTempRet0": getTempRet0,
@@ -2612,6 +2612,42 @@ run();
 
 
 
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
+module.exports.memoryBase = 1024
+module.exports.tableBase = 0
+module.exports.tableInitial = 608
+module.exports.tableMaximum = 608
 module.exports.memoryBase = 1024
 module.exports.tableBase = 0
 module.exports.tableInitial = 608

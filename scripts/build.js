@@ -1,7 +1,7 @@
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 
 const { readdirSync, statSync } = require('fs');
 const { join } = require('path');
-const { spawn } = require('child_process');
+const { exec } = require('child_process');
 
 const EXPORTED_FUNCTIONS = [
   '_init',
@@ -28,6 +28,8 @@ const EXPORTED_FUNCTIONS = [
   '_setPowerState',
   '_setBrightness'
 ];
+
+const EMSDK_EXECUTABLE = join(__dirname, '..', '..' ,'emsdk', 'emsdk');
 
 const OUTPUT_FILE_NAME = join('dist', 'output.js');
 
@@ -49,7 +51,12 @@ const libraries = readdirSync(LIB_DIR);
 libraries.map((name) => join(LIB_DIR, name, 'src')).forEach(search);
 search(SRC_DIR);
 
-const args = [
+// ./emsdk construct_env
+const command = [
+  EMSDK_EXECUTABLE,
+  'construct_env',
+  '&&',
+  'em++',
   '-s', 'WASM=1',
   '-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
   '-s', 'ENVIRONMENT=node',
@@ -64,17 +71,8 @@ const args = [
   '-Isrc',
   ...sourceFiles
 ];
-const buildProcess = spawn('em++', args, {
-  cwd: join(__dirname, '..'),
-  stdio: 'inherit',
-  shell: '/bin/bash'
-});
 
-buildProcess.on('exit', (code) => {
-  if (code) {
-    console.error('Build failed');
-    process.exit(code);
-    return;
-  }
-  console.log('done');
+exec(command.join(' '), {
+  cwd: join(__dirname, '..'),
+  stdio: 'inherit'
 });

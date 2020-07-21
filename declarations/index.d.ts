@@ -1,8 +1,9 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
-import { IWaveParameters } from 'rvl-node-types';
-export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
+import { IWaveParameters } from './types';
+export * from './types';
+export * from './animation';
 export interface IRVLOptions {
     networkInterface: string;
     channel: number;

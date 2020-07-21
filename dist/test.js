@@ -2,7 +2,7 @@
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 console.log('Initializing');
 const rvl = new index_1.RVL({
-    networkInterface: 'wlan0',
+    networkInterface: 'Wi-Fi',
     logLevel: 'debug',
     mode: 'controller',
     channel: 0
@@ -32,18 +32,8 @@ rvl.on('initialized', () => {
     setTimeout(() => {
         rvl.setWaveParameters({
             waves: [
-                {
-                    h: { a: 0, b: 190, w_t: 0, w_x: 0, phi: 0 },
-                    s: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
-                    v: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
-                    a: { a: 255, b: 0, w_t: 2, w_x: 0, phi: 0 },
-                },
-                {
-                    h: { a: 0, b: 80, w_t: 0, w_x: 0, phi: 0 },
-                    s: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
-                    v: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
-                    a: { a: 0, b: 255, w_t: 0, w_x: 0, phi: 0 },
-                }
+                index_1.createPulsingWave(0, 255, 1),
+                index_1.createSolidColorWave(180, 255, 255)
             ]
         });
     }, 1000);

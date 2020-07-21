@@ -1,6 +1,6 @@
 {
   "name": "rvl-node",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",
@@ -34,7 +34,6 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "rvl-node-types": "^1.0.0",
     "strict-event-emitter-types": "^2.0.0"
   }
 }

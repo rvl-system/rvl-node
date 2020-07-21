@@ -1,7 +1,7 @@
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import { networkInterfaces } from 'os';
 import { createSocket, Socket } from 'dgram';
 import { asmGlobalArg, asmLibraryArg, memoryBase, tableBase, tableInitial, tableMaximum } from './output';
 import { AddressInfo } from 'net';
-import { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
+import { IWave, IWaveChannel, IWaveParameters } from './types';
 
 export const DEFAULT_TIME_PERIOD = 255;
 export const DEFAULT_DISTANCE_PERIOD = 32;

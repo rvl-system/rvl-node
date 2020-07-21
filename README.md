@@ -319,7 +319,7 @@ _Arguments_:
 
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

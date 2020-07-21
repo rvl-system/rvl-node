@@ -1,4 +1,4 @@
-import { IWave, IWaveParameters } from 'rvl-node-types';
+import { IWave, IWaveParameters } from './types';
 export declare const DEFAULT_TIME_PERIOD = 255;
 export declare const DEFAULT_DISTANCE_PERIOD = 32;
 export declare const MAX_NUM_WAVES = 4;

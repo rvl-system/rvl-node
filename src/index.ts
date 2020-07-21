@@ -1,7 +1,7 @@
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
-This file is part of Raver Lights Node.
+This file is part of RVL Node.
 
 Raver Lights Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import { EventEmitter } from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
-import { IWaveParameters } from 'rvl-node-types';
+import { IWaveParameters } from './types';
 import {
   init,
   start,
@@ -41,7 +41,8 @@ import {
   listenForPowerStateUpdates,
 } from './bridge';
 
-export { IWave, IWaveChannel, IWaveParameters } from 'rvl-node-types';
+export * from './types';
+export * from './animation';
 
 export interface IRVLOptions {
   networkInterface: string;
