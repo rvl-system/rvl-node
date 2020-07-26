@@ -28,7 +28,7 @@ console.log('Initializing');
     channel: 0
   });
 
-  // await rvl.init();
+  await rvl.init();
 
   rvl.setWaveParameters({
     waves: [

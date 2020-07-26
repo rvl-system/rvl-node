@@ -7,6 +7,7 @@ export interface IRVLControllerOptions {
     logLevel?: 'error' | 'info' | 'debug';
 }
 declare const isInitialized: unique symbol;
+declare const options: unique symbol;
 declare const waveParameters: unique symbol;
 declare const brightness: unique symbol;
 declare const powerState: unique symbol;
@@ -15,6 +16,7 @@ export declare class RVLController {
     private [waveParameters];
     private [brightness];
     private [powerState];
+    private [options];
     readonly waveParameters: IWaveParameters;
     readonly animationTime: number;
     readonly powerState: boolean;

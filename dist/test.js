@@ -26,7 +26,7 @@ console.log('Initializing');
         logLevel: 'debug',
         channel: 0
     });
-    // await rvl.init();
+    await rvl.init();
     rvl.setWaveParameters({
         waves: [
             index_1.createPulsingWave(0, 255, 1),

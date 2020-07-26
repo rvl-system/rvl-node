@@ -35,7 +35,10 @@ export interface IRVLControllerOptions {
   logLevel?: 'error' | 'info' | 'debug';
 }
 
+const channelsInUse = new Set<number>();
+
 const isInitialized = Symbol();
+const options = Symbol();
 const waveParameters = Symbol();
 const brightness = Symbol();
 const powerState = Symbol();
@@ -45,6 +48,7 @@ export class RVLController {
   private [waveParameters]: IWaveParameters;
   private [brightness] = 0;
   private [powerState] = false;
+  private [options]: IRVLControllerOptions;
 
   public get waveParameters() {
     return this[waveParameters];
@@ -69,6 +73,11 @@ export class RVLController {
     port = DEFAULT_PORT,
     logLevel = DEFAULT_LOG_LEVEL
   }: IRVLControllerOptions) {
+    if (channelsInUse.has(channel)) {
+      throw new Error(`Channel ${channel} is already in use`);
+    }
+    channelsInUse.add(channel);
+    this[options] = { networkInterface, channel, port, logLevel };
     // TODO
   }
 
@@ -82,6 +91,8 @@ export class RVLController {
       throw new Error('Cannot call "close" before calling "init"');
     }
     // TODO
+    this[isInitialized] = false;
+    channelsInUse.delete(this[options].channel);
   }
 
   public setWaveParameters(newWaveParameters: IWaveParameters): void {

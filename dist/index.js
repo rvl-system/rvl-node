@@ -29,7 +29,9 @@ const DEFAULT_LOG_LEVEL = 'debug';
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
+const channelsInUse = new Set();
 const isInitialized = Symbol();
+const options = Symbol();
 const waveParameters = Symbol();
 const brightness = Symbol();
 const powerState = Symbol();
@@ -38,6 +40,11 @@ class RVLController {
         this[_a] = false;
         this[_b] = 0;
         this[_c] = false;
+        if (channelsInUse.has(channel)) {
+            throw new Error(`Channel ${channel} is already in use`);
+        }
+        channelsInUse.add(channel);
+        this[options] = { networkInterface, channel, port, logLevel };
         // TODO
     }
     get waveParameters() {
@@ -62,6 +69,8 @@ class RVLController {
             throw new Error('Cannot call "close" before calling "init"');
         }
         // TODO
+        this[isInitialized] = false;
+        channelsInUse.delete(this[options].channel);
     }
     setWaveParameters(newWaveParameters) {
         if (!this[isInitialized]) {
