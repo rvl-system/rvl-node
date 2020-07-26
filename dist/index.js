@@ -21,8 +21,10 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var _a, _b, _c;
+var _a;
 "use strict";
+const path_1 = require("path");
+const worker_threads_1 = require("worker_threads");
 __export(require("./animation"));
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = 'debug';
@@ -32,37 +34,44 @@ const MAX_NUM_WAVES = 4;
 const channelsInUse = new Set();
 const isInitialized = Symbol();
 const options = Symbol();
-const waveParameters = Symbol();
-const brightness = Symbol();
-const powerState = Symbol();
+const rvlWorker = Symbol();
 class RVLController {
     constructor({ networkInterface, channel, port = DEFAULT_PORT, logLevel = DEFAULT_LOG_LEVEL }) {
         this[_a] = false;
-        this[_b] = 0;
-        this[_c] = false;
         if (channelsInUse.has(channel)) {
             throw new Error(`Channel ${channel} is already in use`);
         }
         channelsInUse.add(channel);
         this[options] = { networkInterface, channel, port, logLevel };
-        // TODO
     }
-    get waveParameters() {
-        return this[waveParameters];
-    }
-    get animationTime() {
-        // TODO
-        return 0;
-    }
-    get powerState() {
-        return this[powerState];
-    }
-    get brightness() {
-        return this[brightness];
-    }
-    async init() {
-        // TODO
-        this[isInitialized] = true;
+    init() {
+        return new Promise((resolve, reject) => {
+            this[rvlWorker] = new worker_threads_1.Worker(path_1.join(__dirname, 'worker.js'), {
+                workerData: this[options]
+            });
+            this[rvlWorker].on('error', reject);
+            this[rvlWorker].on('exit', (code) => {
+                throw new Error(`Internal Error: worker thread unexpectedly quit with code ${code}`);
+            });
+            this[rvlWorker].on('message', (message) => {
+                console.log(message);
+                if (!this[isInitialized]) {
+                    if (message.type === 'initComplete') {
+                        this[isInitialized] = true;
+                        resolve();
+                    }
+                    else {
+                        throw new Error(`Internal Error: received worker thread "${message.type}" message before receiving "initComplete" message`);
+                    }
+                }
+                else {
+                    switch (message.type) {
+                        default:
+                            throw new Error(`Internal Error: received unknown worker thread "${message.type}" message`);
+                    }
+                }
+            });
+        });
     }
     async close() {
         if (!this[isInitialized]) {
@@ -85,24 +94,33 @@ class RVLController {
         if (typeof newWaveParameters.distancePeriod !== 'number') {
             newWaveParameters.timePeriod = DEFAULT_DISTANCE_PERIOD;
         }
-        // TODO
-        this[waveParameters] = newWaveParameters;
+        const message = {
+            type: 'setWaveParameters',
+            waveParameters: newWaveParameters
+        };
+        this[rvlWorker].postMessage(message);
     }
     setPowerState(newPowerState) {
         if (!this[isInitialized]) {
             throw new Error('Cannot call "setPowerState" before calling "init"');
         }
-        // TODO
-        this[powerState] = newPowerState;
+        const message = {
+            type: 'setPowerState',
+            powerState: newPowerState
+        };
+        this[rvlWorker].postMessage(message);
     }
     setBrightness(newBrightness) {
         if (!this[isInitialized]) {
             throw new Error('Cannot call "setBrightness" before calling "init"');
         }
-        // TODO
-        this[brightness] = newBrightness;
+        const message = {
+            type: 'setBrightness',
+            brightness: newBrightness
+        };
+        this[rvlWorker].postMessage(message);
     }
 }
-_a = isInitialized, _b = brightness, _c = powerState;
+_a = isInitialized;
 exports.RVLController = RVLController;
 //# sourceMappingURL=index.js.map

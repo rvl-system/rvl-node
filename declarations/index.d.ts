@@ -1,26 +1,14 @@
 import { IWaveParameters } from './animation';
+import { IRVLControllerOptions } from './messageTypes';
 export * from './animation';
-export interface IRVLControllerOptions {
-    networkInterface: string;
-    channel: number;
-    port?: number;
-    logLevel?: 'error' | 'info' | 'debug';
-}
+export { IRVLControllerOptions } from './messageTypes';
 declare const isInitialized: unique symbol;
 declare const options: unique symbol;
-declare const waveParameters: unique symbol;
-declare const brightness: unique symbol;
-declare const powerState: unique symbol;
+declare const rvlWorker: unique symbol;
 export declare class RVLController {
     private [isInitialized];
-    private [waveParameters];
-    private [brightness];
-    private [powerState];
     private [options];
-    readonly waveParameters: IWaveParameters;
-    readonly animationTime: number;
-    readonly powerState: boolean;
-    readonly brightness: number;
+    private [rvlWorker];
     constructor({ networkInterface, channel, port, logLevel }: IRVLControllerOptions);
     init(): Promise<void>;
     close(): Promise<void>;

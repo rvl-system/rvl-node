@@ -18,21 +18,25 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("./index");
-console.log('Initializing');
-(async () => {
-    const rvl = new index_1.RVLController({
-        networkInterface: 'Wi-Fi',
-        logLevel: 'debug',
-        channel: 0
-    });
-    await rvl.init();
-    console.log('Initialized');
-    rvl.setWaveParameters({
-        waves: [
-            index_1.createPulsingWave(0, 255, 1),
-            index_1.createSolidColorWave(180, 255, 255)
-        ]
-    });
-})();
-//# sourceMappingURL=test.js.map
+const worker_threads_1 = require("worker_threads");
+console.log(worker_threads_1.workerData);
+if (!worker_threads_1.parentPort) {
+    throw new Error('This file must be executed in a worker thread');
+}
+worker_threads_1.parentPort.on('message', (message) => {
+    switch (message.type) {
+        case 'setWaveParameters':
+            console.log(message);
+        case 'setBrightness':
+            console.log(message);
+        case 'setPowerState':
+            console.log(message);
+        default:
+            throw new Error(`Internal Error: received unknown parent thread message type ${message.type}`);
+    }
+});
+const initMessage = {
+    type: 'initComplete'
+};
+worker_threads_1.parentPort.postMessage(initMessage);
+//# sourceMappingURL=worker.js.map

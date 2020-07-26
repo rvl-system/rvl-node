@@ -1,3 +1,4 @@
+"use strict";
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
@@ -16,26 +17,5 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-import { RVLController, createSolidColorWave, createPulsingWave } from './index';
-
-console.log('Initializing');
-
-(async () => {
-  const rvl = new RVLController({
-    networkInterface: 'Wi-Fi',
-    logLevel: 'debug',
-    channel: 0
-  });
-
-  await rvl.init();
-
-  console.log('Initialized');
-
-  rvl.setWaveParameters({
-    waves: [
-      createPulsingWave(0, 255, 1),
-      createSolidColorWave(180, 255, 255)
-    ]
-  });
-})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//# sourceMappingURL=messageTypes.js.map

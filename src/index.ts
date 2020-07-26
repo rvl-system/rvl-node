@@ -17,9 +17,14 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { join } from 'path';
+import { Worker } from 'worker_threads';
 import { IWaveParameters } from './animation';
+import { IMessage, ISetWaveParametersMessage, ISetBrightnessMessage, ISetPowerStateMessage } from './messageTypes';
+import { IRVLControllerOptions } from './messageTypes';
 
 export * from './animation';
+export { IRVLControllerOptions } from './messageTypes';
 
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = 'debug';
@@ -28,44 +33,16 @@ const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
-export interface IRVLControllerOptions {
-  networkInterface: string;
-  channel: number;
-  port?: number;
-  logLevel?: 'error' | 'info' | 'debug';
-}
-
 const channelsInUse = new Set<number>();
 
 const isInitialized = Symbol();
 const options = Symbol();
-const waveParameters = Symbol();
-const brightness = Symbol();
-const powerState = Symbol();
+const rvlWorker = Symbol();
 
 export class RVLController {
   private [isInitialized] = false;
-  private [waveParameters]: IWaveParameters;
-  private [brightness] = 0;
-  private [powerState] = false;
   private [options]: IRVLControllerOptions;
-
-  public get waveParameters() {
-    return this[waveParameters];
-  }
-
-  public get animationTime() {
-    // TODO
-    return 0;
-  }
-
-  public get powerState() {
-    return this[powerState];
-  }
-
-  public get brightness() {
-    return this[brightness];
-  }
+  private [rvlWorker]: Worker;
 
   constructor({
     networkInterface,
@@ -78,12 +55,39 @@ export class RVLController {
     }
     channelsInUse.add(channel);
     this[options] = { networkInterface, channel, port, logLevel };
-    // TODO
   }
 
-  public async init(): Promise<void> {
-    // TODO
-    this[isInitialized] = true;
+  public init(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this[rvlWorker] = new Worker(join(__dirname, 'worker.js'), {
+        workerData: this[options]
+      });
+
+      this[rvlWorker].on('error', reject);
+
+      this[rvlWorker].on('exit', (code) => {
+        throw new Error(`Internal Error: worker thread unexpectedly quit with code ${code}`);
+      });
+
+      this[rvlWorker].on('message', (message: IMessage) => {
+        console.log(message);
+        if (!this[isInitialized]) {
+          if (message.type === 'initComplete') {
+            this[isInitialized] = true;
+            resolve();
+          } else {
+            throw new Error(
+              `Internal Error: received worker thread "${message.type}" message before receiving "initComplete" message`
+            );
+          }
+        } else {
+          switch (message.type) {
+            default:
+              throw new Error(`Internal Error: received unknown worker thread "${message.type}" message`);
+          }
+        }
+      });
+    });
   }
 
   public async close(): Promise<void> {
@@ -108,23 +112,32 @@ export class RVLController {
     if (typeof newWaveParameters.distancePeriod !== 'number') {
       newWaveParameters.timePeriod = DEFAULT_DISTANCE_PERIOD;
     }
-    // TODO
-    this[waveParameters] = newWaveParameters;
+    const message: ISetWaveParametersMessage = {
+      type: 'setWaveParameters',
+      waveParameters: newWaveParameters
+    };
+    this[rvlWorker].postMessage(message);
   }
 
   public setPowerState(newPowerState: boolean): void {
     if (!this[isInitialized]) {
       throw new Error('Cannot call "setPowerState" before calling "init"');
     }
-    // TODO
-    this[powerState] = newPowerState;
+    const message: ISetPowerStateMessage = {
+      type: 'setPowerState',
+      powerState: newPowerState
+    };
+    this[rvlWorker].postMessage(message);
   }
 
   public setBrightness(newBrightness: number): void {
     if (!this[isInitialized]) {
       throw new Error('Cannot call "setBrightness" before calling "init"');
     }
-    // TODO
-    this[brightness] = newBrightness;
+    const message: ISetBrightnessMessage = {
+      type: 'setBrightness',
+      brightness: newBrightness
+    };
+    this[rvlWorker].postMessage(message);
   }
 }

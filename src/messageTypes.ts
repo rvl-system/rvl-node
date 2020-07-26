@@ -17,25 +17,34 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { RVLController, createSolidColorWave, createPulsingWave } from './index';
+import { IWaveParameters } from './animation';
 
-console.log('Initializing');
+export interface IRVLControllerOptions {
+  networkInterface: string;
+  channel: number;
+  port?: number;
+  logLevel?: 'error' | 'info' | 'debug';
+}
 
-(async () => {
-  const rvl = new RVLController({
-    networkInterface: 'Wi-Fi',
-    logLevel: 'debug',
-    channel: 0
-  });
+export interface IMessage {
+  type: string;
+}
 
-  await rvl.init();
+export interface IInitCompleteMessage extends IMessage {
+  type: 'initComplete';
+}
 
-  console.log('Initialized');
+export interface ISetWaveParametersMessage extends IMessage {
+  type: 'setWaveParameters';
+  waveParameters: IWaveParameters;
+}
 
-  rvl.setWaveParameters({
-    waves: [
-      createPulsingWave(0, 255, 1),
-      createSolidColorWave(180, 255, 255)
-    ]
-  });
-})();
+export interface ISetBrightnessMessage extends IMessage {
+  type: 'setBrightness';
+  brightness: number;
+}
+
+export interface ISetPowerStateMessage extends IMessage {
+  type: 'setPowerState';
+  powerState: boolean;
+}
