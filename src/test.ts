@@ -3,46 +3,37 @@ Copyright (c) Bryan Hughes <bryan@nebri.us>
 
 This file is part of RVL Node.
 
-Raver Lights Node is free software: you can redistribute it and/or modify
+RVL Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Raver Lights Node is distributed in the hope that it will be useful,
+RVL Node is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
+along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { RVL, createSolidColorWave, createPulsingWave } from './index';
+import { RVLController, createSolidColorWave, createPulsingWave } from './index';
 
 console.log('Initializing');
 
-const rvl = new RVL({
-  networkInterface: 'Wi-Fi',
-  logLevel: 'debug',
-  mode: 'controller',
-  channel: 0
-});
+(async () => {
+  const rvl = new RVLController({
+    networkInterface: 'Wi-Fi',
+    logLevel: 'debug',
+    channel: 0
+  });
 
-rvl.on('initialized', () => {
-  console.log('Starting loop');
-  rvl.start();
-  setTimeout(() => {
-    rvl.setWaveParameters({
-      waves: [
-        createPulsingWave(0, 255, 1),
-        createSolidColorWave(180, 255, 255)
-      ]
-    });
-  }, 1000);
-});
+  // await rvl.init();
 
-rvl.on('waveParametersUpdated', (parameters) => {
-  console.log('Wave Parameters Updated:');
-  console.log(JSON.stringify(parameters, null, '  '));
-  console.log();
-});
+  rvl.setWaveParameters({
+    waves: [
+      createPulsingWave(0, 255, 1),
+      createSolidColorWave(180, 255, 255)
+    ]
+  });
+})();

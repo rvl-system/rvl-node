@@ -53,17 +53,17 @@ search(SRC_DIR);
 
 // ./emsdk construct_env
 const command = [
-  EMSDK_EXECUTABLE,
-  'construct_env',
-  '&&',
+  // EMSDK_EXECUTABLE,
+  // 'construct_env',
+  // '&&',
   'em++',
   '-s', 'WASM=1',
-  '-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
   '-s', 'ENVIRONMENT=node',
   '-s', 'NODEJS_CATCH_EXIT=0',
   '-s', 'DEMANGLE_SUPPORT=1',
   '-s', 'ASSERTIONS=2',
   '-s', `EXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
+  '-s', `EXTRA_EXPORTED_RUNTIME_METHODS="['cwrap']"`,
   '-std=c++11',
   '-g4',
   '-o', OUTPUT_FILE_NAME,
@@ -72,9 +72,14 @@ const command = [
   ...sourceFiles
 ];
 
-console.log(command.join(' '))
+console.log(command.join(' ').replace(/\\/g, '\\\\'))
 
 exec(command.join(' '), {
-  cwd: join(__dirname, '..'),
-  stdio: 'inherit'
+  cwd: join(__dirname, '..')
+}, (err, stdout, stderr) => {
+  if (err) {
+    console.error(stderr);
+    process.exit(err);
+  }
+  console.log(stdout);
 });

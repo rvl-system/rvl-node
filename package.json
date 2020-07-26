@@ -1,6 +1,6 @@
 {
   "name": "rvl-node",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",
@@ -13,7 +13,6 @@
     "build-ts": "tsc",
     "prebuild-cpp": "cpplint --quiet --linelength=120 --recursive --repository=src src/*",
     "build-cpp": "node scripts/build.js",
-    "postbuild-cpp": "node scripts/hackOutput.js",
     "build": "npm run build-cpp && npm run build-ts"
   },
   "repository": {

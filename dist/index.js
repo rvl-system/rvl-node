@@ -4,108 +4,96 @@ Copyright (c) Bryan Hughes <bryan@nebri.us>
 
 This file is part of RVL Node.
 
-Raver Lights Node is free software: you can redistribute it and/or modify
+RVL Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Raver Lights Node is distributed in the hope that it will be useful,
+RVL Node is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
+along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-const events_1 = require("events");
-const bridge_1 = require("./bridge");
+var _a, _b, _c;
+"use strict";
 __export(require("./animation"));
-let created = false;
-class RVL extends events_1.EventEmitter {
-    constructor({ networkInterface, port = 4978, mode = 'receiver', logLevel = 'info', channel, enableClockSync = false }) {
-        super();
-        this._isInitialized = false;
-        this._brightness = 0;
-        this._powerState = false;
-        if (created) {
-            throw new Error(`Currently the RVL class can only be instantiated once per process.`);
-        }
-        created = true;
-        this._mode = mode;
-        this._waveParameters = bridge_1.createEmptyWaveParameters();
-        bridge_1.listenForWaveParameterUpdates((newParameters) => {
-            this._waveParameters = newParameters;
-            this.emit('waveParametersUpdated', this._waveParameters);
-        });
-        bridge_1.listenForPowerStateUpdates((newPowerState) => {
-            this._powerState = newPowerState;
-            this.emit('powerStateUpdated', this._powerState);
-        });
-        bridge_1.listenForBrightnessUpdates((newBrightness) => {
-            this._brightness = newBrightness;
-            this.emit('brightnessUpdated', this._brightness);
-        });
-        bridge_1.init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
-            bridge_1.setWaveParameters(this._waveParameters);
-            this._isInitialized = true;
-            this.emit('initialized');
-        });
+const DEFAULT_PORT = 4978;
+const DEFAULT_LOG_LEVEL = 'debug';
+const DEFAULT_TIME_PERIOD = 255;
+const DEFAULT_DISTANCE_PERIOD = 32;
+const MAX_NUM_WAVES = 4;
+const isInitialized = Symbol();
+const waveParameters = Symbol();
+const brightness = Symbol();
+const powerState = Symbol();
+class RVLController {
+    constructor({ networkInterface, channel, port = DEFAULT_PORT, logLevel = DEFAULT_LOG_LEVEL }) {
+        this[_a] = false;
+        this[_b] = 0;
+        this[_c] = false;
+        // TODO
     }
     get waveParameters() {
-        return this._waveParameters;
-    }
-    get mode() {
-        return this._mode;
+        return this[waveParameters];
     }
     get animationTime() {
-        return bridge_1.getAnimationTime();
+        // TODO
+        return 0;
     }
     get powerState() {
-        return this._powerState;
+        return this[powerState];
     }
     get brightness() {
-        return this._brightness;
+        return this[brightness];
     }
-    start() {
-        if (!this._isInitialized) {
-            throw new Error('Cannot call "start" until the platform has been initialized and the "initialized" event has been emitted');
-        }
-        bridge_1.start();
+    async init() {
+        // TODO
+        this[isInitialized] = true;
     }
-    stop() {
-        if (!this._isInitialized) {
-            throw new Error('Cannot call "stop" until the platform has been initialized and the "initialized" event has been emitted');
+    async close() {
+        if (!this[isInitialized]) {
+            throw new Error('Cannot call "close" before calling "init"');
         }
-        bridge_1.stop();
+        // TODO
     }
-    setWaveParameters({ waves, timePeriod = bridge_1.DEFAULT_TIME_PERIOD, distancePeriod = bridge_1.DEFAULT_DISTANCE_PERIOD }) {
-        if (!this._isInitialized) {
-            throw new Error('Cannot call "setWaveParameters" until the platform has been initialized ' +
-                'and the "initialized" event has been emitted');
+    setWaveParameters(newWaveParameters) {
+        if (!this[isInitialized]) {
+            throw new Error('Cannot call "setWaveParameters" before calling "init"');
         }
-        if (this._mode !== 'controller') {
-            throw new Error(`Cannot set wave parameters while in ${this._mode} mode`);
+        if (newWaveParameters.waves.length > MAX_NUM_WAVES) {
+            throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
         }
-        if (waves.length > bridge_1.MAX_NUM_WAVES) {
-            throw new Error(`Only ${bridge_1.MAX_NUM_WAVES} waves are supported at a time`);
+        if (typeof newWaveParameters.timePeriod !== 'number') {
+            newWaveParameters.timePeriod = DEFAULT_TIME_PERIOD;
         }
-        waves = [...waves]; // Clone the array so we don't modify the user's array
-        for (let i = waves.length; i < bridge_1.MAX_NUM_WAVES; i++) {
-            waves.push({ ...bridge_1.createEmptyWave() });
+        if (typeof newWaveParameters.distancePeriod !== 'number') {
+            newWaveParameters.timePeriod = DEFAULT_DISTANCE_PERIOD;
         }
-        this._waveParameters = { waves, timePeriod, distancePeriod };
-        bridge_1.setWaveParameters(this._waveParameters);
+        // TODO
+        this[waveParameters] = newWaveParameters;
     }
     setPowerState(newPowerState) {
-        bridge_1.setPowerState(newPowerState);
+        if (!this[isInitialized]) {
+            throw new Error('Cannot call "setPowerState" before calling "init"');
+        }
+        // TODO
+        this[powerState] = newPowerState;
     }
     setBrightness(newBrightness) {
-        bridge_1.setBrightness(newBrightness);
+        if (!this[isInitialized]) {
+            throw new Error('Cannot call "setBrightness" before calling "init"');
+        }
+        // TODO
+        this[brightness] = newBrightness;
     }
 }
-exports.RVL = RVL;
+_a = isInitialized, _b = brightness, _c = powerState;
+exports.RVLController = RVLController;
 //# sourceMappingURL=index.js.map

@@ -3,177 +3,117 @@ Copyright (c) Bryan Hughes <bryan@nebri.us>
 
 This file is part of RVL Node.
 
-Raver Lights Node is free software: you can redistribute it and/or modify
+RVL Node is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Raver Lights Node is distributed in the hope that it will be useful,
+RVL Node is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
+along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { EventEmitter } from 'events';
-import StrictEventEmitter from 'strict-event-emitter-types';
-import { IWaveParameters } from './types';
-import {
-  init,
-  start,
-  stop,
+import { IWaveParameters } from './animation';
 
-  setWaveParameters,
-  setPowerState,
-  setBrightness,
-  getAnimationTime,
-  listenForWaveParameterUpdates,
-
-  createEmptyWave,
-  createEmptyWaveParameters,
-
-  DEFAULT_DISTANCE_PERIOD,
-  DEFAULT_TIME_PERIOD,
-  MAX_NUM_WAVES,
-  listenForBrightnessUpdates,
-  listenForPowerStateUpdates,
-} from './bridge';
-
-export * from './types';
 export * from './animation';
 
-export interface IRVLOptions {
+const DEFAULT_PORT = 4978;
+const DEFAULT_LOG_LEVEL = 'debug';
+
+const DEFAULT_TIME_PERIOD = 255;
+const DEFAULT_DISTANCE_PERIOD = 32;
+const MAX_NUM_WAVES = 4;
+
+export interface IRVLControllerOptions {
   networkInterface: string;
   channel: number;
   port?: number;
-  mode?: 'controller' | 'receiver';
   logLevel?: 'error' | 'info' | 'debug';
-  enableClockSync?: boolean;
 }
 
-interface IEvents {
-  initialized: void;
-  waveParametersUpdated: IWaveParameters;
-  powerStateUpdated: boolean;
-  brightnessUpdated: number;
-}
-type RVLEmitter = StrictEventEmitter<EventEmitter, IEvents>;
+const isInitialized = Symbol();
+const waveParameters = Symbol();
+const brightness = Symbol();
+const powerState = Symbol();
 
-let created = false;
-
-export class RVL extends (EventEmitter as new() => RVLEmitter) {
-
-  private _isInitialized = false;
-  private _waveParameters: IWaveParameters;
-  private _mode: 'controller' | 'receiver';
-  private _brightness = 0;
-  private _powerState = false;
+export class RVLController {
+  private [isInitialized] = false;
+  private [waveParameters]: IWaveParameters;
+  private [brightness] = 0;
+  private [powerState] = false;
 
   public get waveParameters() {
-    return this._waveParameters;
-  }
-
-  public get mode() {
-    return this._mode;
+    return this[waveParameters];
   }
 
   public get animationTime() {
-    return getAnimationTime();
+    // TODO
+    return 0;
   }
 
   public get powerState() {
-    return this._powerState;
+    return this[powerState];
   }
 
   public get brightness() {
-    return this._brightness;
+    return this[brightness];
   }
 
   constructor({
     networkInterface,
-    port = 4978,
-    mode = 'receiver',
-    logLevel = 'info',
     channel,
-    enableClockSync = false
-  }: IRVLOptions) {
-    super();
-    if (created) {
-      throw new Error(`Currently the RVL class can only be instantiated once per process.`);
-    }
-    created = true;
-
-    this._mode = mode;
-    this._waveParameters = createEmptyWaveParameters();
-
-    listenForWaveParameterUpdates((newParameters) => {
-      this._waveParameters = newParameters;
-      this.emit('waveParametersUpdated', this._waveParameters);
-    });
-
-    listenForPowerStateUpdates((newPowerState) => {
-      this._powerState = newPowerState;
-      this.emit('powerStateUpdated', this._powerState);
-    });
-
-    listenForBrightnessUpdates((newBrightness) => {
-      this._brightness = newBrightness;
-      this.emit('brightnessUpdated', this._brightness);
-    });
-
-    init(networkInterface, port, mode, channel, logLevel, enableClockSync, () => {
-      setWaveParameters(this._waveParameters);
-      this._isInitialized = true;
-      this.emit('initialized');
-    });
+    port = DEFAULT_PORT,
+    logLevel = DEFAULT_LOG_LEVEL
+  }: IRVLControllerOptions) {
+    // TODO
   }
 
-  public start() {
-    if (!this._isInitialized) {
-      throw new Error(
-        'Cannot call "start" until the platform has been initialized and the "initialized" event has been emitted');
-    }
-    start();
+  public async init(): Promise<void> {
+    // TODO
+    this[isInitialized] = true;
   }
 
-  public stop() {
-    if (!this._isInitialized) {
-      throw new Error(
-        'Cannot call "stop" until the platform has been initialized and the "initialized" event has been emitted');
+  public async close(): Promise<void> {
+    if (!this[isInitialized]) {
+      throw new Error('Cannot call "close" before calling "init"');
     }
-    stop();
+    // TODO
   }
 
-  public setWaveParameters({
-    waves,
-    timePeriod = DEFAULT_TIME_PERIOD,
-    distancePeriod = DEFAULT_DISTANCE_PERIOD
-  }: IWaveParameters) {
-    if (!this._isInitialized) {
-      throw new Error('Cannot call "setWaveParameters" until the platform has been initialized ' +
-        'and the "initialized" event has been emitted');
+  public setWaveParameters(newWaveParameters: IWaveParameters): void {
+    if (!this[isInitialized]) {
+      throw new Error('Cannot call "setWaveParameters" before calling "init"');
     }
-    if (this._mode !== 'controller') {
-      throw new Error(`Cannot set wave parameters while in ${this._mode} mode`);
+    if (newWaveParameters.waves.length > MAX_NUM_WAVES) {
+      throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
     }
-    if (waves.length > MAX_NUM_WAVES) {
-      throw new Error(`Only ${MAX_NUM_WAVES} waves are supported at a time`);
+    if (typeof newWaveParameters.timePeriod !== 'number') {
+      newWaveParameters.timePeriod = DEFAULT_TIME_PERIOD;
     }
-    waves = [ ...waves ]; // Clone the array so we don't modify the user's array
-    for (let i = waves.length; i < MAX_NUM_WAVES; i++) {
-      waves.push({ ...createEmptyWave() });
+    if (typeof newWaveParameters.distancePeriod !== 'number') {
+      newWaveParameters.timePeriod = DEFAULT_DISTANCE_PERIOD;
     }
-    this._waveParameters = { waves, timePeriod, distancePeriod };
-    setWaveParameters(this._waveParameters);
+    // TODO
+    this[waveParameters] = newWaveParameters;
   }
 
   public setPowerState(newPowerState: boolean): void {
-    setPowerState(newPowerState);
+    if (!this[isInitialized]) {
+      throw new Error('Cannot call "setPowerState" before calling "init"');
+    }
+    // TODO
+    this[powerState] = newPowerState;
   }
 
   public setBrightness(newBrightness: number): void {
-    setBrightness(newBrightness);
+    if (!this[isInitialized]) {
+      throw new Error('Cannot call "setBrightness" before calling "init"');
+    }
+    // TODO
+    this[brightness] = newBrightness;
   }
 }

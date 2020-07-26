@@ -1,15 +1,23 @@
-import { IWaveParameters, IWave } from './types';
-export interface IPixel {
-    r: number;
-    g: number;
+export interface IWaveChannel {
+    a: number;
     b: number;
+    w_t: number;
+    w_x: number;
+    phi: number;
 }
-export declare function initRenderer(waveParameters: IWaveParameters, numPixels: number, numWaves?: number): void;
-export declare function resetRendererClock(): void;
-export declare function getRendererClock(): number;
-export declare function renderPixels(): IPixel[];
-export declare function createEmptyWave(): IWave;
+export interface IWave {
+    h: IWaveChannel;
+    s: IWaveChannel;
+    v: IWaveChannel;
+    a: IWaveChannel;
+}
+export interface IWaveParameters {
+    timePeriod?: number;
+    distancePeriod?: number;
+    waves: IWave[];
+}
 export declare function createWaveParameters(wave1?: IWave, wave2?: IWave, wave3?: IWave, wave4?: IWave): IWaveParameters;
+export declare function createEmptyWave(): IWave;
 export declare function createSolidColorWave(h: number, s: number, a: number): IWave;
 export declare function createColorCycleWave(rate: number, a: number): IWave;
 export declare function createMovingWave(h: number, s: number, rate: number, spacing: number): IWave;
