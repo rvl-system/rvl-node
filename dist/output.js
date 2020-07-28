@@ -1929,19 +1929,79 @@ var ASM_CONSTS = {
       abortOnCannotGrowMemory(requestedSize);
     }
 
-  function _jsLocalClock() {
+  function _jsBeginWrite(...args) {
+      const { beginWrite } = require('./nodePlatform');
+      return beginWrite(...args);
+    }
+
+  function _jsEndWrite(...args) {
+      const { endWrite } = require('./nodePlatform');
+      return endWrite(...args);
+    }
+
+  function _jsGetDeviceId(...args) {
+      const { getDeviceId } = require('./nodePlatform');
+      return getDeviceId(...args);
+    }
+
+  function _jsLocalClock(...args) {
       const { localClock } = require('./nodePlatform');
-      return localClock();
+      return localClock(...args);
     }
 
-  function _jsPrint(msg) {
+  function _jsParsePacket(...args) {
+      const { parsePacket } = require('./nodePlatform');
+      return parsePacket(...args);
+    }
+
+  function _jsPrint(...args) {
       const { print } = require('./nodePlatform');
-      return print(msg);
+      return print(...args);
     }
 
-  function _jsPrintln(msg) {
+  function _jsPrintln(...args) {
       const { println } = require('./nodePlatform');
-      return println(msg);
+      return println(...args);
+    }
+
+  function _jsRead(...args) {
+      const { read } = require('./nodePlatform');
+      return read(...args);
+    }
+
+  function _jsRead16(...args) {
+      const { read16 } = require('./nodePlatform');
+      return read16(...args);
+    }
+
+  function _jsRead32(...args) {
+      const { read32 } = require('./nodePlatform');
+      return read32(...args);
+    }
+
+  function _jsRead8(...args) {
+      const { read8 } = require('./nodePlatform');
+      return read8(...args);
+    }
+
+  function _jsWrite(...args) {
+      const { write } = require('./nodePlatform');
+      return write(...args);
+    }
+
+  function _jsWrite16(...args) {
+      const { write16 } = require('./nodePlatform');
+      return write16(...args);
+    }
+
+  function _jsWrite32(...args) {
+      const { write32 } = require('./nodePlatform');
+      return write32(...args);
+    }
+
+  function _jsWrite8(...args) {
+      const { write8 } = require('./nodePlatform');
+      return write8(...args);
     }
 var ASSERTIONS = true;
 
@@ -1973,7 +2033,7 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "jsLocalClock": _jsLocalClock, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "memory": wasmMemory, "table": wasmTable };
+var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "jsBeginWrite": _jsBeginWrite, "jsEndWrite": _jsEndWrite, "jsGetDeviceId": _jsGetDeviceId, "jsLocalClock": _jsLocalClock, "jsParsePacket": _jsParsePacket, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "jsRead": _jsRead, "jsRead16": _jsRead16, "jsRead32": _jsRead32, "jsRead8": _jsRead8, "jsWrite": _jsWrite, "jsWrite16": _jsWrite16, "jsWrite32": _jsWrite32, "jsWrite8": _jsWrite8, "memory": wasmMemory, "table": wasmTable };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");

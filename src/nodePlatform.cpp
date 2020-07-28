@@ -23,68 +23,74 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NodePlatform {
 
-System::System() {
+System::System() {}
 
-}
+void System::loop() {}
 
-void System::loop() {
-
-}
-
+extern "C" { extern void jsBeginWrite(uint8_t destination); }
 void System::beginWrite(uint8_t destination) {
-
+  jsBeginWrite(destination);
 }
 
+extern "C" { extern void jsWrite8(uint8_t data); }
 void System::write8(uint8_t data) {
-
+  jsWrite8(data);
 }
 
+extern "C" { extern void jsWrite16(uint16_t data); }
 void System::write16(uint16_t data) {
-
+  jsWrite16(data);
 }
 
+extern "C" { extern void jsWrite32(uint32_t data); }
 void System::write32(uint32_t data) {
-
+  jsWrite32(data);
 }
 
+extern "C" { extern void jsWrite(uint8_t* data, uint16_t length); }
 void System::write(uint8_t* data, uint16_t length) {
-
+  jsWrite(data, length);
 }
 
+extern "C" { extern void jsEndWrite(); }
 void System::endWrite() {
-
+  jsEndWrite();
 }
 
+extern "C" { extern uint16_t jsParsePacket(); }
 uint16_t System::parsePacket() {
-  return 0;
+  return jsParsePacket();
 }
 
+extern "C" { extern uint8_t jsRead8(); }
 uint8_t System::read8() {
-  return 0;
+  return jsRead8();
 
 }
 
+extern "C" { extern uint16_t jsRead16(); }
 uint16_t System::read16() {
-  return 0;
-
+  return jsRead16();
 }
 
+extern "C" { extern uint32_t jsRead32(); }
 uint32_t System::read32() {
-  return 0;
-
+  return jsRead32();
 }
 
+extern "C" { extern void jsRead(uint8_t* buffer, uint16_t length); }
 void System::read(uint8_t* buffer, uint16_t length) {
-
+  jsRead(buffer, length);
 }
 
+extern "C" { extern bool jsIsConnected(); }
 bool System::isConnected() {
-  return false;
+  return jsIsConnected();
 }
 
+extern "C" { extern uint16_t jsGetDeviceId(); }
 uint16_t System::getDeviceId() {
-  return 0;
-
+  return jsGetDeviceId();
 }
 
 extern "C" { extern uint32_t jsLocalClock(); }
@@ -92,14 +98,14 @@ uint32_t System::localClock() {
   return jsLocalClock();
 }
 
-extern "C" { extern void jsPrint(const char* msg, size_t length); }
+extern "C" { extern void jsPrint(const char* msg); }
 void System::print(const char* str) {
-  jsPrint(str, strlen(str));
+  jsPrint(str);
 }
 
-extern "C" { extern void jsPrintln(const char* msg, size_t length); }
+extern "C" { extern void jsPrintln(const char* msg); }
 void System::println(const char* str) {
-  jsPrintln(str, strlen(str));
+  jsPrintln(str);
 }
 
 }  // namespace NodePlatform

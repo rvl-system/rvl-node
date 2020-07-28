@@ -21,17 +21,33 @@ import Module = require('./output');
 
 const startTime = process.hrtime();
 
+// void beginWrite(uint8_t destination);
+// void write8(uint8_t data);
+// void write16(uint16_t data);
+// void write32(uint32_t data);
+// void write(uint8_t* data, uint16_t length);
+// void endWrite();
+
+// uint16_t parsePacket();
+// uint8_t read8();
+// uint16_t read16();
+// uint32_t read32();
+// void read(uint8_t* buffer, uint16_t length);
+
+// bool isConnected();
+// uint16_t getDeviceId();
+
 export function localClock() {
   const [ seconds, nanoseconds ] = process.hrtime(startTime);
   return seconds * 1000 + Math.round(nanoseconds / 1000000);
 }
 
-export function print(messagePointer: number, length: number) {
-  const str = Module.UTF8ToString(messagePointer, length);
+export function print(messagePointer: number) {
+  const str = Module.UTF8ToString(messagePointer);
   process.stdout.write(str);
 }
 
-export function println(messagePointer: number, length: number) {
-  const str = Module.UTF8ToString(messagePointer, length);
+export function println(messagePointer: number) {
+  const str = Module.UTF8ToString(messagePointer);
   process.stdout.write(`${str}\n`);
 }

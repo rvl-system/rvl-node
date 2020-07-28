@@ -21,7 +21,7 @@ declare namespace output {
   export function cwrap(functionName: string, retval: null | string, args: string[]): any;
   export let onRuntimeInitialized: any;
 
-  export function UTF8ToString(start: number, length: number): string;
+  export function UTF8ToString(start: number, maxBytesToRead?: number): string;
 }
 
 export = output;

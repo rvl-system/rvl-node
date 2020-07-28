@@ -20,18 +20,31 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const Module = require("./output");
 const startTime = process.hrtime();
+// void beginWrite(uint8_t destination);
+// void write8(uint8_t data);
+// void write16(uint16_t data);
+// void write32(uint32_t data);
+// void write(uint8_t* data, uint16_t length);
+// void endWrite();
+// uint16_t parsePacket();
+// uint8_t read8();
+// uint16_t read16();
+// uint32_t read32();
+// void read(uint8_t* buffer, uint16_t length);
+// bool isConnected();
+// uint16_t getDeviceId();
 function localClock() {
     const [seconds, nanoseconds] = process.hrtime(startTime);
     return seconds * 1000 + Math.round(nanoseconds / 1000000);
 }
 exports.localClock = localClock;
-function print(messagePointer, length) {
-    const str = Module.UTF8ToString(messagePointer, length);
+function print(messagePointer) {
+    const str = Module.UTF8ToString(messagePointer);
     process.stdout.write(str);
 }
 exports.print = print;
-function println(messagePointer, length) {
-    const str = Module.UTF8ToString(messagePointer, length);
+function println(messagePointer) {
+    const str = Module.UTF8ToString(messagePointer);
     process.stdout.write(`${str}\n`);
 }
 exports.println = println;
