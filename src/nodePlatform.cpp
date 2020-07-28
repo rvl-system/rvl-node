@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <emscripten.h>
+#include <string.h>
 #include "./nodePlatform.h"
 
 namespace NodePlatform {
@@ -89,12 +91,19 @@ uint32_t System::localClock() {
   return 0;
 }
 
+EM_JS(void, jsPrint, (const char* str, uint16_t length), {
+  process.stdout.write(UTF8ToString(str, length));
+});
 void System::print(const char* str) {
-
+  jsPrint(str, strlen(str));
 }
 
+EM_JS(void, jsPrintln, (const char* str, uint16_t length), {
+  process.stdout.write(UTF8ToString(str, length));
+  process.stdout.write('\n');
+});
 void System::println(const char* str) {
-
+  jsPrintln(str, strlen(str));
 }
 
 }  // namespace NodePlatform

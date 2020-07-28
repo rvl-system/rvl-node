@@ -1184,11 +1184,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5260016,
+    STACK_BASE = 5260240,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 17136,
-    DYNAMIC_BASE = 5260016,
-    DYNAMICTOP_PTR = 16976;
+    STACK_MAX = 17360,
+    DYNAMIC_BASE = 5260240,
+    DYNAMICTOP_PTR = 17200;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1772,11 +1772,12 @@ var tempI64;
 var ASM_CONSTS = {
   
 };
+function jsPrint(str,length){ process.stdout.write(UTF8ToString(str, length)); }
+function jsPrintln(str,length){ process.stdout.write(UTF8ToString(str, length)); process.stdout.write('\n'); }
 
 
 
-
-// STATICTOP = STATIC_BASE + 16112;
+// STATICTOP = STATIC_BASE + 16336;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1902,7 +1903,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 16976;
+      return 17200;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -1958,7 +1959,7 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "memory": wasmMemory, "table": wasmTable };
+var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "jsPrint": jsPrint, "jsPrintln": jsPrintln, "memory": wasmMemory, "table": wasmTable };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
