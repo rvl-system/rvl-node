@@ -87,21 +87,17 @@ uint16_t System::getDeviceId() {
 
 }
 
+extern "C" { extern uint32_t jsLocalClock(); }
 uint32_t System::localClock() {
-  return 0;
+  return jsLocalClock();
 }
 
-EM_JS(void, jsPrint, (const char* str, uint16_t length), {
-  process.stdout.write(UTF8ToString(str, length));
-});
+extern "C" { extern void jsPrint(const char* msg, size_t length); }
 void System::print(const char* str) {
   jsPrint(str, strlen(str));
 }
 
-EM_JS(void, jsPrintln, (const char* str, uint16_t length), {
-  process.stdout.write(UTF8ToString(str, length));
-  process.stdout.write('\n');
-});
+extern "C" { extern void jsPrintln(const char* msg, size_t length); }
 void System::println(const char* str) {
   jsPrintln(str, strlen(str));
 }

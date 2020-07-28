@@ -32,7 +32,7 @@ extern "C" void init(uint8_t logLevel, uint8_t channel) {
   nodeSystem = new NodePlatform::System();
   rvl::init(nodeSystem);
 
-  rvl::info("System initialized");
+  rvl::info("System initialized %d", nodeSystem->localClock());
 }
 
 EMSCRIPTEN_KEEPALIVE

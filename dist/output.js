@@ -1184,11 +1184,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5260240,
+    STACK_BASE = 5260032,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 17360,
-    DYNAMIC_BASE = 5260240,
-    DYNAMICTOP_PTR = 17200;
+    STACK_MAX = 17152,
+    DYNAMIC_BASE = 5260032,
+    DYNAMICTOP_PTR = 16992;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1772,12 +1772,11 @@ var tempI64;
 var ASM_CONSTS = {
   
 };
-function jsPrint(str,length){ process.stdout.write(UTF8ToString(str, length)); }
-function jsPrintln(str,length){ process.stdout.write(UTF8ToString(str, length)); process.stdout.write('\n'); }
 
 
 
-// STATICTOP = STATIC_BASE + 16336;
+
+// STATICTOP = STATIC_BASE + 16128;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1903,7 +1902,7 @@ function jsPrintln(str,length){ process.stdout.write(UTF8ToString(str, length));
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 17200;
+      return 16992;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -1928,6 +1927,21 @@ function jsPrintln(str,length){ process.stdout.write(UTF8ToString(str, length));
     }function _emscripten_resize_heap(requestedSize) {
       requestedSize = requestedSize >>> 0;
       abortOnCannotGrowMemory(requestedSize);
+    }
+
+  function _jsLocalClock() {
+      const { localClock } = require('./nodePlatform');
+      return localClock();
+    }
+
+  function _jsPrint(msg) {
+      const { print } = require('./nodePlatform');
+      return print(msg);
+    }
+
+  function _jsPrintln(msg) {
+      const { println } = require('./nodePlatform');
+      return println(msg);
     }
 var ASSERTIONS = true;
 
@@ -1959,7 +1973,7 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "jsPrint": jsPrint, "jsPrintln": jsPrintln, "memory": wasmMemory, "table": wasmTable };
+var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "jsLocalClock": _jsLocalClock, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "memory": wasmMemory, "table": wasmTable };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
@@ -2052,7 +2066,7 @@ if (!Object.getOwnPropertyDescriptor(Module, "getValue")) Module["getValue"] = f
 if (!Object.getOwnPropertyDescriptor(Module, "allocate")) Module["allocate"] = function() { abort("'allocate' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "getMemory")) Module["getMemory"] = function() { abort("'getMemory' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
 if (!Object.getOwnPropertyDescriptor(Module, "UTF8ArrayToString")) Module["UTF8ArrayToString"] = function() { abort("'UTF8ArrayToString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "UTF8ToString")) Module["UTF8ToString"] = function() { abort("'UTF8ToString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+Module["UTF8ToString"] = UTF8ToString;
 if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF8Array")) Module["stringToUTF8Array"] = function() { abort("'stringToUTF8Array' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF8")) Module["stringToUTF8"] = function() { abort("'stringToUTF8' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "lengthBytesUTF8")) Module["lengthBytesUTF8"] = function() { abort("'lengthBytesUTF8' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };

@@ -17,11 +17,21 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-declare namespace output {
-  export function cwrap(functionName: string, retval: null | string, args: string[]): any;
-  export let onRuntimeInitialized: any;
+import Module = require('./output');
 
-  export function UTF8ToString(start: number, length: number): string;
+const startTime = process.hrtime();
+
+export function localClock() {
+  const [ seconds, nanoseconds ] = process.hrtime(startTime);
+  return seconds * 1000 + Math.round(nanoseconds / 1000000);
 }
 
-export = output;
+export function print(messagePointer: number, length: number) {
+  const str = Module.UTF8ToString(messagePointer, length);
+  process.stdout.write(str);
+}
+
+export function println(messagePointer: number, length: number) {
+  const str = Module.UTF8ToString(messagePointer, length);
+  process.stdout.write(`${str}\n`);
+}
