@@ -24,12 +24,10 @@ const { exec } = require('child_process');
 const EXPORTED_FUNCTIONS = [
   '_init',
   '_loop',
-  '_waveParametersUpdated',
-  '_setPowerState',
-  '_setBrightness'
+  // '_waveParametersUpdated',
+  // '_setPowerState',
+  // '_setBrightness'
 ];
-
-const EMSDK_EXECUTABLE = join(__dirname, '..', '..' ,'emsdk', 'emsdk');
 
 const OUTPUT_FILE_NAME = join('dist', 'output.js');
 
@@ -51,11 +49,7 @@ const libraries = readdirSync(LIB_DIR);
 libraries.map((name) => join(LIB_DIR, name, 'src')).forEach(search);
 search(SRC_DIR);
 
-// ./emsdk construct_env
 const command = [
-  // EMSDK_EXECUTABLE,
-  // 'construct_env',
-  // '&&',
   'em++',
   '-s', 'WASM=1',
   '-s', 'ENVIRONMENT=node',
@@ -72,8 +66,6 @@ const command = [
   ...sourceFiles
 ];
 
-console.log(command.join(' ').replace(/\\/g, '\\\\'))
-
 exec(command.join(' '), {
   cwd: join(__dirname, '..')
 }, (err, stdout, stderr) => {
@@ -81,5 +73,5 @@ exec(command.join(' '), {
     console.error(stderr);
     process.exit(err);
   }
-  console.log(stdout);
+  console.log(stderr, stdout);
 });

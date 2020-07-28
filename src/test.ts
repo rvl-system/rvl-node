@@ -17,20 +17,18 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { RVLController, createSolidColorWave, createPulsingWave } from './index';
-
-console.log('Initializing');
+import { RVLController, LogLevel, createSolidColorWave, createPulsingWave } from './index';
 
 (async () => {
   const rvl = new RVLController({
     networkInterface: 'Wi-Fi',
-    logLevel: 'debug',
+    logLevel: LogLevel.Debug,
     channel: 0
   });
 
   await rvl.init();
 
-  console.log('Initialized');
+  console.log('Running');
 
   rvl.setWaveParameters({
     waves: [

@@ -18,16 +18,22 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { join } from 'path';
-import { Worker } from 'worker_threads';
+import { fork, ChildProcess } from 'child_process';
 import { IWaveParameters } from './animation';
-import { IMessage, ISetWaveParametersMessage, ISetBrightnessMessage, ISetPowerStateMessage } from './messageTypes';
-import { IRVLControllerOptions } from './messageTypes';
+import {
+  IRVLControllerOptions,
+  LogLevel,
+  IMessage,
+  ISetWaveParametersMessage,
+  ISetBrightnessMessage,
+  ISetPowerStateMessage
+} from './types';
 
 export * from './animation';
-export { IRVLControllerOptions } from './messageTypes';
+export { IRVLControllerOptions, LogLevel } from './types';
 
 const DEFAULT_PORT = 4978;
-const DEFAULT_LOG_LEVEL = 'debug';
+const DEFAULT_LOG_LEVEL = LogLevel.Debug;
 
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
@@ -42,7 +48,7 @@ const rvlWorker = Symbol();
 export class RVLController {
   private [isInitialized] = false;
   private [options]: IRVLControllerOptions;
-  private [rvlWorker]: Worker;
+  private [rvlWorker]: ChildProcess;
 
   constructor({
     networkInterface,
@@ -59,9 +65,7 @@ export class RVLController {
 
   public init(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this[rvlWorker] = new Worker(join(__dirname, 'worker.js'), {
-        workerData: this[options]
-      });
+      this[rvlWorker] = fork(join(__dirname, 'worker.js'), [ JSON.stringify(this[options]) ]);
 
       this[rvlWorker].on('error', reject);
 
@@ -70,7 +74,6 @@ export class RVLController {
       });
 
       this[rvlWorker].on('message', (message: IMessage) => {
-        console.log(message);
         if (!this[isInitialized]) {
           if (message.type === 'initComplete') {
             this[isInitialized] = true;
@@ -83,7 +86,7 @@ export class RVLController {
         } else {
           switch (message.type) {
             default:
-              throw new Error(`Internal Error: received unknown worker thread "${message.type}" message`);
+              throw new Error(`Internal Error: received unknown message type "${message.type}" from child process`);
           }
         }
       });
@@ -116,7 +119,7 @@ export class RVLController {
       type: 'setWaveParameters',
       waveParameters: newWaveParameters
     };
-    this[rvlWorker].postMessage(message);
+    this[rvlWorker].send(message);
   }
 
   public setPowerState(newPowerState: boolean): void {
@@ -127,7 +130,7 @@ export class RVLController {
       type: 'setPowerState',
       powerState: newPowerState
     };
-    this[rvlWorker].postMessage(message);
+    this[rvlWorker].send(message);
   }
 
   public setBrightness(newBrightness: number): void {
@@ -138,6 +141,6 @@ export class RVLController {
       type: 'setBrightness',
       brightness: newBrightness
     };
-    this[rvlWorker].postMessage(message);
+    this[rvlWorker].send(message);
   }
 }

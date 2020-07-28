@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-declare namespace output {
-  export function cwrap(functionName: string, retval: null | string, args: string[]): any;
-  export let onRuntimeInitialized: any;
+export async function wait(duration: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, duration));
 }
-
-export = output;

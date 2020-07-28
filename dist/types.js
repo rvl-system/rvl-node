@@ -1,3 +1,4 @@
+"use strict";
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
@@ -16,10 +17,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-declare namespace output {
-  export function cwrap(functionName: string, retval: null | string, args: string[]): any;
-  export let onRuntimeInitialized: any;
-}
-
-export = output;
+Object.defineProperty(exports, "__esModule", { value: true });
+var LogLevel;
+(function (LogLevel) {
+    LogLevel[LogLevel["Error"] = 1] = "Error";
+    LogLevel[LogLevel["Info"] = 2] = "Info";
+    LogLevel[LogLevel["Debug"] = 3] = "Debug";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+//# sourceMappingURL=types.js.map

@@ -24,10 +24,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _a;
 "use strict";
 const path_1 = require("path");
-const worker_threads_1 = require("worker_threads");
+const child_process_1 = require("child_process");
+const types_1 = require("./types");
 __export(require("./animation"));
+var types_2 = require("./types");
+exports.LogLevel = types_2.LogLevel;
 const DEFAULT_PORT = 4978;
-const DEFAULT_LOG_LEVEL = 'debug';
+const DEFAULT_LOG_LEVEL = types_1.LogLevel.Debug;
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
@@ -46,15 +49,12 @@ class RVLController {
     }
     init() {
         return new Promise((resolve, reject) => {
-            this[rvlWorker] = new worker_threads_1.Worker(path_1.join(__dirname, 'worker.js'), {
-                workerData: this[options]
-            });
+            this[rvlWorker] = child_process_1.fork(path_1.join(__dirname, 'worker.js'), [JSON.stringify(this[options])]);
             this[rvlWorker].on('error', reject);
             this[rvlWorker].on('exit', (code) => {
                 throw new Error(`Internal Error: worker thread unexpectedly quit with code ${code}`);
             });
             this[rvlWorker].on('message', (message) => {
-                console.log(message);
                 if (!this[isInitialized]) {
                     if (message.type === 'initComplete') {
                         this[isInitialized] = true;
@@ -67,7 +67,7 @@ class RVLController {
                 else {
                     switch (message.type) {
                         default:
-                            throw new Error(`Internal Error: received unknown worker thread "${message.type}" message`);
+                            throw new Error(`Internal Error: received unknown message type "${message.type}" from child process`);
                     }
                 }
             });
@@ -98,7 +98,7 @@ class RVLController {
             type: 'setWaveParameters',
             waveParameters: newWaveParameters
         };
-        this[rvlWorker].postMessage(message);
+        this[rvlWorker].send(message);
     }
     setPowerState(newPowerState) {
         if (!this[isInitialized]) {
@@ -108,7 +108,7 @@ class RVLController {
             type: 'setPowerState',
             powerState: newPowerState
         };
-        this[rvlWorker].postMessage(message);
+        this[rvlWorker].send(message);
     }
     setBrightness(newBrightness) {
         if (!this[isInitialized]) {
@@ -118,7 +118,7 @@ class RVLController {
             type: 'setBrightness',
             brightness: newBrightness
         };
-        this[rvlWorker].postMessage(message);
+        this[rvlWorker].send(message);
     }
 }
 _a = isInitialized;

@@ -1,16 +1,2 @@
-import { IWave, IWaveParameters } from './types';
-export declare const DEFAULT_TIME_PERIOD = 255;
-export declare const DEFAULT_DISTANCE_PERIOD = 32;
-export declare const MAX_NUM_WAVES = 4;
-export declare function createEmptyWave(): IWave;
-export declare function createEmptyWaveParameters(): IWaveParameters;
-export declare function init(networkInterface: string, port: number, mode: 'controller' | 'receiver', channel: number, logLevel: 'error' | 'info' | 'debug', enableClockSync: boolean, cb: (err?: Error) => void): void;
-export declare function start(): void;
-export declare function stop(): void;
-export declare function setWaveParameters(params: IWaveParameters): void;
-export declare function getAnimationTime(): number;
-export declare function setBrightness(brightness: number): void;
-export declare function setPowerState(powerState: boolean): void;
-export declare function listenForWaveParameterUpdates(cb: (parameters: IWaveParameters) => void): void;
-export declare function listenForPowerStateUpdates(cb: (powerState: boolean) => void): void;
-export declare function listenForBrightnessUpdates(cb: (brightness: number) => void): void;
+import { LogLevel } from './types';
+export declare function init(logLevel: LogLevel, channel: number): Promise<void>;

@@ -17,9 +17,25 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-declare namespace output {
-  export function cwrap(functionName: string, retval: null | string, args: string[]): any;
-  export let onRuntimeInitialized: any;
+#include <rvl.h>
+#include <emscripten.h>
+#include "./nodePlatform.h"
+
+NodePlatform::System* nodeSystem;
+
+EMSCRIPTEN_KEEPALIVE
+extern "C" void init(uint8_t logLevel, uint8_t channel) {
+  rvl::setLogLevel(static_cast<rvl::LogLevel>(logLevel));
+  rvl::setDeviceMode(rvl::DeviceMode::Controller);
+  rvl::setChannel(channel);
+
+  nodeSystem = new NodePlatform::System();
+  rvl::init(nodeSystem);
+
+  rvl::info("Initialized");
 }
 
-export = output;
+EMSCRIPTEN_KEEPALIVE
+extern "C" void loop() {
+  rvl::loop();
+}

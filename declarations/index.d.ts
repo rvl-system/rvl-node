@@ -1,7 +1,7 @@
 import { IWaveParameters } from './animation';
-import { IRVLControllerOptions } from './messageTypes';
+import { IRVLControllerOptions } from './types';
 export * from './animation';
-export { IRVLControllerOptions } from './messageTypes';
+export { IRVLControllerOptions, LogLevel } from './types';
 declare const isInitialized: unique symbol;
 declare const options: unique symbol;
 declare const rvlWorker: unique symbol;

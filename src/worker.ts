@@ -17,36 +17,45 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { parentPort, workerData as options } from 'worker_threads';
 import {
   IMessage,
-  IRVLControllerOptions,
+  IWorkerOptions,
   IInitCompleteMessage,
   ISetWaveParametersMessage,
   ISetBrightnessMessage,
   ISetPowerStateMessage
-} from './messageTypes';
+} from './types';
+import { init } from './bridge';
 
-console.log(options as IRVLControllerOptions);
+const options: IWorkerOptions = JSON.parse(process.argv[2]);
 
-if (!parentPort) {
-  throw new Error('This file must be executed in a worker thread');
+function sendMessage(msg: Record<string, any>) {
+  if (!process.send) {
+    throw new Error('This module must be called from a child process');
+  }
+  process.send(msg);
 }
 
-parentPort.on('message', (message: IMessage) => {
+process.on('message', (message: IMessage) => {
   switch (message.type) {
     case 'setWaveParameters':
       console.log(message as ISetWaveParametersMessage);
+      break;
     case 'setBrightness':
       console.log(message as ISetBrightnessMessage);
+      break;
     case 'setPowerState':
       console.log(message as ISetPowerStateMessage);
+      break;
     default:
-      throw new Error(`Internal Error: received unknown parent thread message type ${message.type}`);
+      throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);
   }
 });
 
-const initMessage: IInitCompleteMessage = {
-  type: 'initComplete'
-};
-parentPort.postMessage(initMessage);
+(async () => {
+  await init(options.logLevel, options.channel);
+  const initMessage: IInitCompleteMessage = {
+    type: 'initComplete'
+  };
+  sendMessage(initMessage);
+})();

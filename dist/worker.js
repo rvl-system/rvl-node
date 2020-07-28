@@ -18,25 +18,34 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-const worker_threads_1 = require("worker_threads");
-console.log(worker_threads_1.workerData);
-if (!worker_threads_1.parentPort) {
-    throw new Error('This file must be executed in a worker thread');
+const bridge_1 = require("./bridge");
+const options = JSON.parse(process.argv[2]);
+function sendMessage(msg) {
+    if (!process.send) {
+        throw new Error('This module must be called from a child process');
+    }
+    process.send(msg);
 }
-worker_threads_1.parentPort.on('message', (message) => {
+process.on('message', (message) => {
     switch (message.type) {
         case 'setWaveParameters':
             console.log(message);
+            break;
         case 'setBrightness':
             console.log(message);
+            break;
         case 'setPowerState':
             console.log(message);
+            break;
         default:
-            throw new Error(`Internal Error: received unknown parent thread message type ${message.type}`);
+            throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);
     }
 });
-const initMessage = {
-    type: 'initComplete'
-};
-worker_threads_1.parentPort.postMessage(initMessage);
+(async () => {
+    await bridge_1.init(options.logLevel, options.channel);
+    const initMessage = {
+        type: 'initComplete'
+    };
+    sendMessage(initMessage);
+})();
 //# sourceMappingURL=worker.js.map
