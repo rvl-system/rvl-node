@@ -32,3 +32,11 @@ export interface ISetPowerStateMessage extends IMessage {
     type: 'setPowerState';
     powerState: boolean;
 }
+export interface IReceivePacketMessage extends IMessage {
+    type: 'receivedPacket';
+    payload: string;
+}
+export interface ISendPacketMessage extends IMessage {
+    type: 'sendPacket';
+    payload: string;
+}

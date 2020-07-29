@@ -22,4 +22,11 @@ async function wait(duration) {
     return new Promise((resolve) => setTimeout(resolve, duration));
 }
 exports.wait = wait;
+function sendMessage(msg) {
+    if (!process.send) {
+        throw new Error('This module must be called from a child process');
+    }
+    process.send(msg);
+}
+exports.sendMessage = sendMessage;
 //# sourceMappingURL=util.js.map

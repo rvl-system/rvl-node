@@ -19,13 +19,8 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 const bridge_1 = require("./bridge");
+const util_1 = require("./util");
 const options = JSON.parse(process.argv[2]);
-function sendMessage(msg) {
-    if (!process.send) {
-        throw new Error('This module must be called from a child process');
-    }
-    process.send(msg);
-}
 process.on('message', (message) => {
     switch (message.type) {
         case 'setWaveParameters':
@@ -46,6 +41,6 @@ process.on('message', (message) => {
     const initMessage = {
         type: 'initComplete'
     };
-    sendMessage(initMessage);
+    util_1.sendMessage(initMessage);
 })();
 //# sourceMappingURL=worker.js.map

@@ -66,6 +66,9 @@ class RVLController {
                 }
                 else {
                     switch (message.type) {
+                        case 'sendPacket':
+                            console.log(message);
+                            break;
                         default:
                             throw new Error(`Internal Error: received unknown message type "${message.type}" from child process`);
                     }

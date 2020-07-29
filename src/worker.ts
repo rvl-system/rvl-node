@@ -26,15 +26,9 @@ import {
   ISetPowerStateMessage
 } from './types';
 import { init, setWaveParameters, setBrightness, setPowerState } from './bridge';
+import { sendMessage } from './util';
 
 const options: IWorkerOptions = JSON.parse(process.argv[2]);
-
-function sendMessage(msg: Record<string, any>) {
-  if (!process.send) {
-    throw new Error('This module must be called from a child process');
-  }
-  process.send(msg);
-}
 
 process.on('message', (message: IMessage) => {
   switch (message.type) {

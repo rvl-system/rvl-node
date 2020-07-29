@@ -45,6 +45,8 @@ export interface IInitCompleteMessage extends IMessage {
   type: 'initComplete';
 }
 
+// Parent -> Child
+
 export interface ISetWaveParametersMessage extends IMessage {
   type: 'setWaveParameters';
   waveParameters: IWaveParameters;
@@ -58,4 +60,16 @@ export interface ISetBrightnessMessage extends IMessage {
 export interface ISetPowerStateMessage extends IMessage {
   type: 'setPowerState';
   powerState: boolean;
+}
+
+export interface IReceivePacketMessage extends IMessage {
+  type: 'receivedPacket';
+  payload: string;
+}
+
+// Child -> Parent
+
+export interface ISendPacketMessage extends IMessage {
+  type: 'sendPacket';
+  payload: string;
 }

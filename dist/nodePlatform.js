@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("./util");
 const Module = require("./output");
 const WRITE_BUFFER_SIZE = 1024;
 const startTime = process.hrtime();
@@ -72,8 +73,11 @@ function endWrite() {
         throw new Error(`endWrite called before beginWrite`);
     }
     const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
-    console.log(payload);
-    // TODO
+    const message = {
+        type: 'sendPacket',
+        payload
+    };
+    util_1.sendMessage(message);
 }
 exports.endWrite = endWrite;
 // uint16_t parsePacket();

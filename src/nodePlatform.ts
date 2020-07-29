@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { ISendPacketMessage } from './types';
+import { sendMessage } from './util';
 import Module = require('./output');
 
 const WRITE_BUFFER_SIZE = 1024;
@@ -75,8 +77,11 @@ export function endWrite(): void {
     throw new Error(`endWrite called before beginWrite`);
   }
   const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
-  console.log(payload);
-  // TODO
+  const message: ISendPacketMessage = {
+    type: 'sendPacket',
+    payload
+  };
+  sendMessage(message);
 }
 
 // uint16_t parsePacket();

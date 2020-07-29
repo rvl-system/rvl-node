@@ -26,7 +26,8 @@ import {
   IMessage,
   ISetWaveParametersMessage,
   ISetBrightnessMessage,
-  ISetPowerStateMessage
+  ISetPowerStateMessage,
+  ISendPacketMessage
 } from './types';
 
 export * from './animation';
@@ -85,6 +86,10 @@ export class RVLController {
           }
         } else {
           switch (message.type) {
+            case 'sendPacket':
+              console.log(message as ISendPacketMessage);
+              // TODO
+              break;
             default:
               throw new Error(`Internal Error: received unknown message type "${message.type}" from child process`);
           }
