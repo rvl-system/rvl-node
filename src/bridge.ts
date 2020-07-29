@@ -22,8 +22,6 @@ import { wait } from './util';
 
 import Module = require('./output');
 
-console.log((Module as any).getMemory);
-
 const UPDATE_RATE = 33;
 
 let cInit: ((logLevel: number, channel: number) => void) | undefined;

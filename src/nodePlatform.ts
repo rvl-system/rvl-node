@@ -22,32 +22,84 @@ import Module = require('./output');
 const startTime = process.hrtime();
 
 // void beginWrite(uint8_t destination);
+export function beginWrite(destination: number): void {
+  // TODO
+}
+
 // void write8(uint8_t data);
+export function write8(data: number): void {
+  // TODO
+}
+
 // void write16(uint16_t data);
+export function write16(data: number): void {
+  // TODO
+}
+
 // void write32(uint32_t data);
+export function write32(data: number): void {
+  // TODO
+}
+
 // void write(uint8_t* data, uint16_t length);
+export function write(data: number, length: number): void {
+  // TODO
+}
+
 // void endWrite();
+export function endWrite(): void {
+  // TODO
+}
 
 // uint16_t parsePacket();
+export function parsePacket(): number {
+  // TODO
+  return 0;
+}
+
 // uint8_t read8();
+export function read8(): number {
+  // TODO
+  return 0;
+}
+
 // uint16_t read16();
+export function read16(): number {
+  // TODO
+  return 0;
+}
+
 // uint32_t read32();
+export function read32(): number {
+  // TODO
+  return 0;
+}
+
 // void read(uint8_t* buffer, uint16_t length);
+export function read(buffer: number, length: number): void {
+  // TODO
+}
 
-// bool isConnected();
 // uint16_t getDeviceId();
+export function getDeviceId(): number {
+  // TODO
+  return 0;
+}
 
-export function localClock() {
+// uint32_t localClock();
+export function localClock(): number {
   const [ seconds, nanoseconds ] = process.hrtime(startTime);
   return seconds * 1000 + Math.round(nanoseconds / 1000000);
 }
 
-export function print(messagePointer: number) {
+// void print(const char* str);
+export function print(messagePointer: number): void {
   const str = Module.UTF8ToString(messagePointer);
   process.stdout.write(str);
 }
 
-export function println(messagePointer: number) {
+// void println(const char* str);
+export function println(messagePointer: number): void {
   const str = Module.UTF8ToString(messagePointer);
   process.stdout.write(`${str}\n`);
 }

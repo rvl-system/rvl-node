@@ -20,7 +20,6 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("./util");
 const Module = require("./output");
-console.log(Module.getMemory);
 const UPDATE_RATE = 33;
 let cInit;
 let cLoop;

@@ -43,10 +43,6 @@ mergeInto(LibraryManager.library, {
     const { read } = require('./nodePlatform');
     return read(...args);
   },
-  jsIsConnected: function(...args) {
-    const { isConnected } = require('./nodePlatform');
-    return isConnected(...args);
-  },
   jsGetDeviceId: function(...args) {
     const { getDeviceId } = require('./nodePlatform');
     return getDeviceId(...args);

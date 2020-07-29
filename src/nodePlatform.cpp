@@ -19,11 +19,14 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <emscripten.h>
 #include <string.h>
+#include <rvl.h>
 #include "./nodePlatform.h"
 
 namespace NodePlatform {
 
-System::System() {}
+System::System() {
+  this->setConnectedState(true);
+}
 
 void System::loop() {}
 
@@ -81,11 +84,6 @@ uint32_t System::read32() {
 extern "C" { extern void jsRead(uint8_t* buffer, uint16_t length); }
 void System::read(uint8_t* buffer, uint16_t length) {
   jsRead(buffer, length);
-}
-
-extern "C" { extern bool jsIsConnected(); }
-bool System::isConnected() {
-  return jsIsConnected();
 }
 
 extern "C" { extern uint16_t jsGetDeviceId(); }
