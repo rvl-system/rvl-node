@@ -113,16 +113,15 @@ export async function createRvl(initOptions: IInitOptions = {}): Promise<IRVL> {
     });
 
     socket.on('message', (msg, rinfo) => {
-      // if (rinfo.port !== port || rinfo.address === address) {
-      //   return;
-      // }
-      // readBuffers.push(msg);
+      if (rinfo.port !== port || rinfo.address === address) {
+        return;
+      }
       // TODO
     });
 
     socket.on('error', (err) => {
-      console.error(err);
       socket.close();
+      reject(err);
     });
 
     socket.on('listening', () => {
