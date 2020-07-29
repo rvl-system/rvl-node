@@ -57,7 +57,7 @@ const command = [
   '-s', 'DEMANGLE_SUPPORT=1',
   '-s', 'ASSERTIONS=2',
   '-s', `EXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
-  '-s', `EXTRA_EXPORTED_RUNTIME_METHODS="['cwrap', 'UTF8ToString']"`,
+  '-s', `EXTRA_EXPORTED_RUNTIME_METHODS="['cwrap', 'UTF8ToString', 'writeArrayToMemory']"`,
   '--js-library', join(__dirname, '..', 'src', 'library.js'),
   '-std=c++11',
   '-g4',

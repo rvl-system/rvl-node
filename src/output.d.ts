@@ -21,7 +21,9 @@ declare namespace output {
   export function cwrap(functionName: string, retval: null | string, args: string[]): any;
   export let onRuntimeInitialized: any;
 
-  export function UTF8ToString(start: number, maxBytesToRead?: number): string;
+  export function UTF8ToString(ptr: number, maxBytesToRead?: number): string;
+  export function writeArrayToMemory(array: Uint8Array, ptr: number): void;
+  export const HEAPU8: Uint8Array;
 }
 
 export = output;

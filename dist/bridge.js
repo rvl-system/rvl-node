@@ -56,4 +56,16 @@ function loop() {
         setTimeout(loop, UPDATE_RATE - timeConsumed);
     }
 }
+function setWaveParameters(newWaveParameters) {
+    // TODO
+}
+exports.setWaveParameters = setWaveParameters;
+function setPowerState(newPowerState) {
+    // TODO
+}
+exports.setPowerState = setPowerState;
+function setBrightness(newBrightness) {
+    // TODO
+}
+exports.setBrightness = setBrightness;
 //# sourceMappingURL=bridge.js.map

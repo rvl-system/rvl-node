@@ -29,13 +29,13 @@ function sendMessage(msg) {
 process.on('message', (message) => {
     switch (message.type) {
         case 'setWaveParameters':
-            console.log(message);
+            bridge_1.setWaveParameters(message.waveParameters);
             break;
         case 'setBrightness':
-            console.log(message);
+            bridge_1.setBrightness(message.brightness);
             break;
         case 'setPowerState':
-            console.log(message);
+            bridge_1.setPowerState(message.powerState);
             break;
         default:
             throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);

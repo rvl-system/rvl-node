@@ -25,7 +25,7 @@ import {
   ISetBrightnessMessage,
   ISetPowerStateMessage
 } from './types';
-import { init } from './bridge';
+import { init, setWaveParameters, setBrightness, setPowerState } from './bridge';
 
 const options: IWorkerOptions = JSON.parse(process.argv[2]);
 
@@ -39,13 +39,13 @@ function sendMessage(msg: Record<string, any>) {
 process.on('message', (message: IMessage) => {
   switch (message.type) {
     case 'setWaveParameters':
-      console.log(message as ISetWaveParametersMessage);
+      setWaveParameters((message as ISetWaveParametersMessage).waveParameters);
       break;
     case 'setBrightness':
-      console.log(message as ISetBrightnessMessage);
+      setBrightness((message as ISetBrightnessMessage).brightness);
       break;
     case 'setPowerState':
-      console.log(message as ISetPowerStateMessage);
+      setPowerState((message as ISetPowerStateMessage).powerState);
       break;
     default:
       throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);

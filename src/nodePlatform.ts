@@ -19,35 +19,63 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import Module = require('./output');
 
+const WRITE_BUFFER_SIZE = 1024;
+
 const startTime = process.hrtime();
+
+let writeBuffer: Buffer;
+let writeBufferHead = 0;
 
 // void beginWrite(uint8_t destination);
 export function beginWrite(destination: number): void {
-  // TODO
+  writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
+  writeBufferHead = 0;
 }
 
 // void write8(uint8_t data);
 export function write8(data: number): void {
-  // TODO
+  if (!writeBuffer) {
+    throw new Error(`write8 called before beginWrite`);
+  }
+  writeBuffer.writeUInt8(data, writeBufferHead);
+  writeBufferHead += 1;
 }
 
 // void write16(uint16_t data);
 export function write16(data: number): void {
-  // TODO
+  if (!writeBuffer) {
+    throw new Error(`write16 called before beginWrite`);
+  }
+  writeBuffer.writeUInt16BE(data, writeBufferHead);
+  writeBufferHead += 2;
 }
 
 // void write32(uint32_t data);
 export function write32(data: number): void {
-  // TODO
+  if (!writeBuffer) {
+    throw new Error(`write32 called before beginWrite`);
+  }
+  writeBuffer.writeUInt32BE(data, writeBufferHead);
+  writeBufferHead += 4;
 }
 
 // void write(uint8_t* data, uint16_t length);
 export function write(data: number, length: number): void {
-  // TODO
+  if (!writeBuffer) {
+    throw new Error(`write called before beginWrite`);
+  }
+  const dataBuffer = Module.HEAPU8.subarray(data, data + length);
+  writeBuffer.set(dataBuffer, writeBufferHead);
+  writeBufferHead += length;
 }
 
 // void endWrite();
 export function endWrite(): void {
+  if (!writeBuffer) {
+    throw new Error(`endWrite called before beginWrite`);
+  }
+  const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
+  console.log(payload);
   // TODO
 }
 
@@ -76,7 +104,7 @@ export function read32(): number {
 }
 
 // void read(uint8_t* buffer, uint16_t length);
-export function read(buffer: number, length: number): void {
+export function read(bufferPointer: number, length: number): void {
   // TODO
 }
 

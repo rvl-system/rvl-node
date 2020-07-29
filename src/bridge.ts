@@ -19,6 +19,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import { LogLevel } from './types';
 import { wait } from './util';
+import { IWaveParameters } from './animation';
 
 import Module = require('./output');
 
@@ -61,4 +62,16 @@ function loop() {
   } else {
     setTimeout(loop, UPDATE_RATE - timeConsumed);
   }
+}
+
+export function setWaveParameters(newWaveParameters: IWaveParameters): void {
+  // TODO
+}
+
+export function setPowerState(newPowerState: boolean): void {
+  // TODO
+}
+
+export function setBrightness(newBrightness: number): void {
+  // TODO
 }

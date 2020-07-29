@@ -19,34 +19,60 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Module = require("./output");
+const WRITE_BUFFER_SIZE = 1024;
 const startTime = process.hrtime();
+let writeBuffer;
+let writeBufferHead = 0;
 // void beginWrite(uint8_t destination);
 function beginWrite(destination) {
-    // TODO
+    writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
+    writeBufferHead = 0;
 }
 exports.beginWrite = beginWrite;
 // void write8(uint8_t data);
 function write8(data) {
-    // TODO
+    if (!writeBuffer) {
+        throw new Error(`write8 called before beginWrite`);
+    }
+    writeBuffer.writeUInt8(data, writeBufferHead);
+    writeBufferHead += 1;
 }
 exports.write8 = write8;
 // void write16(uint16_t data);
 function write16(data) {
-    // TODO
+    if (!writeBuffer) {
+        throw new Error(`write16 called before beginWrite`);
+    }
+    writeBuffer.writeUInt16BE(data, writeBufferHead);
+    writeBufferHead += 2;
 }
 exports.write16 = write16;
 // void write32(uint32_t data);
 function write32(data) {
-    // TODO
+    if (!writeBuffer) {
+        throw new Error(`write32 called before beginWrite`);
+    }
+    writeBuffer.writeUInt32BE(data, writeBufferHead);
+    writeBufferHead += 4;
 }
 exports.write32 = write32;
 // void write(uint8_t* data, uint16_t length);
 function write(data, length) {
-    // TODO
+    if (!writeBuffer) {
+        throw new Error(`write called before beginWrite`);
+    }
+    const dataBuffer = Module.HEAPU8.subarray(data, data + length);
+    writeBuffer.set(dataBuffer, writeBufferHead);
+    writeBufferHead += length;
 }
 exports.write = write;
 // void endWrite();
 function endWrite() {
+    if (!writeBuffer) {
+        throw new Error(`endWrite called before beginWrite`);
+    }
+    const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
+    console.log(payload);
     // TODO
 }
 exports.endWrite = endWrite;
@@ -75,7 +101,7 @@ function read32() {
 }
 exports.read32 = read32;
 // void read(uint8_t* buffer, uint16_t length);
-function read(buffer, length) {
+function read(bufferPointer, length) {
     // TODO
 }
 exports.read = read;
