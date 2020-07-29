@@ -24,10 +24,12 @@ const WRITE_BUFFER_SIZE = 1024;
 const startTime = process.hrtime();
 let writeBuffer;
 let writeBufferHead = 0;
+let writeDestination = 0;
 // void beginWrite(uint8_t destination);
 function beginWrite(destination) {
     writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
     writeBufferHead = 0;
+    writeDestination = destination;
 }
 exports.beginWrite = beginWrite;
 // void write8(uint8_t data);
@@ -75,6 +77,7 @@ function endWrite() {
     const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
     const message = {
         type: 'sendPacket',
+        destination: writeDestination,
         payload
     };
     util_1.sendMessage(message);

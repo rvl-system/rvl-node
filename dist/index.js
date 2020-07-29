@@ -25,6 +25,7 @@ var _a;
 "use strict";
 const path_1 = require("path");
 const child_process_1 = require("child_process");
+const os_1 = require("os");
 const types_1 = require("./types");
 __export(require("./animation"));
 var types_2 = require("./types");
@@ -34,20 +35,81 @@ const DEFAULT_LOG_LEVEL = types_1.LogLevel.Debug;
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
-const channelsInUse = new Set();
+const channels = new Map();
 const isInitialized = Symbol();
 const options = Symbol();
 const rvlWorker = Symbol();
-class RVLController {
-    constructor({ networkInterface, channel, port = DEFAULT_PORT, logLevel = DEFAULT_LOG_LEVEL }) {
-        this[_a] = false;
-        if (channelsInUse.has(channel)) {
-            throw new Error(`Channel ${channel} is already in use`);
-        }
-        channelsInUse.add(channel);
-        this[options] = { networkInterface, channel, port, logLevel };
+const init = Symbol();
+const interfaces = os_1.networkInterfaces();
+let defaultNetworkInterface = '';
+const bestKnownIfacePrefixes = ['eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+for (const iface in interfaces) {
+    if (!interfaces.hasOwnProperty(iface)) {
+        continue;
     }
-    init() {
+    let isEstimate = false;
+    for (const estimate of bestKnownIfacePrefixes) {
+        if (iface.startsWith(estimate)) {
+            isEstimate = true;
+            break;
+        }
+    }
+    if (!isEstimate) {
+        continue;
+    }
+    const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+    if (ips.length) {
+        defaultNetworkInterface = iface;
+        break;
+    }
+}
+function createRvl(initOptions = {}) {
+    initOptions = initOptions || {};
+    const networkInterface = initOptions.networkInterface || defaultNetworkInterface;
+    const port = initOptions.port || DEFAULT_PORT;
+    const iface = interfaces[networkInterface];
+    if (!iface) {
+        throw new Error(`Unknown network interface ${networkInterface}. ` +
+            `Valid options are ${Object.keys(interfaces).join(', ')}`);
+    }
+    let address;
+    for (const binding of iface) {
+        if (binding.family === 'IPv4') {
+            address = binding.address;
+            break;
+        }
+    }
+    if (!address) {
+        throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
+    }
+    return {
+        async createController(controllerOptions) {
+            if (channels.has(controllerOptions.channel)) {
+                throw new Error(`Channel ${controllerOptions.channel} is already in use`);
+            }
+            const controller = new RVLController(controllerOptions);
+            channels.set(controllerOptions.channel, controller);
+            await controller[init]();
+            return controller;
+        },
+        get networkInterface() {
+            return networkInterface;
+        },
+        get port() {
+            return port;
+        },
+        get nodeId() {
+            return address ? address.split('.')[3] : '';
+        }
+    };
+}
+exports.createRvl = createRvl;
+class RVLController {
+    constructor({ channel, logLevel = DEFAULT_LOG_LEVEL }) {
+        this[_a] = false;
+        this[options] = { channel, logLevel };
+    }
+    [(_a = isInitialized, init)]() {
         return new Promise((resolve, reject) => {
             this[rvlWorker] = child_process_1.fork(path_1.join(__dirname, 'worker.js'), [JSON.stringify(this[options])]);
             this[rvlWorker].on('error', reject);
@@ -68,6 +130,7 @@ class RVLController {
                     switch (message.type) {
                         case 'sendPacket':
                             console.log(message);
+                            // TODO
                             break;
                         default:
                             throw new Error(`Internal Error: received unknown message type "${message.type}" from child process`);
@@ -82,7 +145,7 @@ class RVLController {
         }
         // TODO
         this[isInitialized] = false;
-        channelsInUse.delete(this[options].channel);
+        channels.delete(this[options].channel);
     }
     setWaveParameters(newWaveParameters) {
         if (!this[isInitialized]) {
@@ -124,6 +187,4 @@ class RVLController {
         this[rvlWorker].send(message);
     }
 }
-_a = isInitialized;
-exports.RVLController = RVLController;
 //# sourceMappingURL=index.js.map

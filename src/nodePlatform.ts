@@ -27,11 +27,13 @@ const startTime = process.hrtime();
 
 let writeBuffer: Buffer;
 let writeBufferHead = 0;
+let writeDestination = 0;
 
 // void beginWrite(uint8_t destination);
 export function beginWrite(destination: number): void {
   writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
   writeBufferHead = 0;
+  writeDestination = destination;
 }
 
 // void write8(uint8_t data);
@@ -79,6 +81,7 @@ export function endWrite(): void {
   const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
   const message: ISendPacketMessage = {
     type: 'sendPacket',
+    destination: writeDestination,
     payload
   };
   sendMessage(message);

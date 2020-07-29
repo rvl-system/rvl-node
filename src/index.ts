@@ -19,6 +19,8 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import { join } from 'path';
 import { fork, ChildProcess } from 'child_process';
+import { networkInterfaces } from 'os';
+// import { createSocket, Socket } from 'dgram';
 import { IWaveParameters } from './animation';
 import {
   IRVLControllerOptions,
@@ -40,31 +42,97 @@ const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
-const channelsInUse = new Set<number>();
+const channels = new Map<number, RVLController>();
 
 const isInitialized = Symbol();
 const options = Symbol();
 const rvlWorker = Symbol();
+const init = Symbol();
 
-export class RVLController {
+export interface IInitOptions {
+  networkInterface?: string;
+  port?: number;
+}
+
+const interfaces = networkInterfaces();
+let defaultNetworkInterface = '';
+const bestKnownIfacePrefixes = ['eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+for (const iface in interfaces) {
+  if (!interfaces.hasOwnProperty(iface)) {
+    continue;
+  }
+  let isEstimate = false;
+  for (const estimate of bestKnownIfacePrefixes) {
+    if (iface.startsWith(estimate)) {
+      isEstimate = true;
+      break;
+    }
+  }
+  if (!isEstimate) {
+    continue;
+  }
+  const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+  if (ips.length) {
+    defaultNetworkInterface = iface;
+    break;
+  }
+}
+
+export function createRvl(initOptions: IInitOptions = {}) {
+  initOptions = initOptions || {};
+  const networkInterface = initOptions.networkInterface || defaultNetworkInterface;
+  const port = initOptions.port || DEFAULT_PORT;
+  const iface = interfaces[networkInterface];
+  if (!iface) {
+    throw new Error(`Unknown network interface ${networkInterface}. ` +
+      `Valid options are ${Object.keys(interfaces).join(', ')}`);
+  }
+  let address: string | undefined;
+  for (const binding of iface) {
+    if (binding.family === 'IPv4') {
+      address = binding.address;
+      break;
+    }
+  }
+  if (!address) {
+    throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
+  }
+
+  return {
+    async createController(controllerOptions: IRVLControllerOptions) {
+      if (channels.has(controllerOptions.channel)) {
+        throw new Error(`Channel ${controllerOptions.channel} is already in use`);
+      }
+      const controller = new RVLController(controllerOptions);
+      channels.set(controllerOptions.channel, controller);
+      await controller[init]();
+      return controller;
+    },
+    get networkInterface() {
+      return networkInterface;
+    },
+    get port() {
+      return port;
+    },
+    get nodeId() {
+      return address ? address.split('.')[3] : '';
+    }
+  };
+}
+
+class RVLController {
   private [isInitialized] = false;
   private [options]: IRVLControllerOptions;
   private [rvlWorker]: ChildProcess;
 
   constructor({
-    networkInterface,
     channel,
-    port = DEFAULT_PORT,
     logLevel = DEFAULT_LOG_LEVEL
   }: IRVLControllerOptions) {
-    if (channelsInUse.has(channel)) {
-      throw new Error(`Channel ${channel} is already in use`);
-    }
-    channelsInUse.add(channel);
-    this[options] = { networkInterface, channel, port, logLevel };
+    this[options] = { channel, logLevel };
   }
 
-  public init(): Promise<void> {
+  public [init](): Promise<void> {
     return new Promise((resolve, reject) => {
       this[rvlWorker] = fork(join(__dirname, 'worker.js'), [ JSON.stringify(this[options]) ]);
 
@@ -104,7 +172,7 @@ export class RVLController {
     }
     // TODO
     this[isInitialized] = false;
-    channelsInUse.delete(this[options].channel);
+    channels.delete(this[options].channel);
   }
 
   public setWaveParameters(newWaveParameters: IWaveParameters): void {

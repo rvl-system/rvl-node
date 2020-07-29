@@ -20,9 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { IWaveParameters } from './animation';
 
 export interface IRVLControllerOptions {
-  networkInterface: string;
   channel: number;
-  port?: number;
   logLevel?: LogLevel;
 }
 
@@ -71,5 +69,6 @@ export interface IReceivePacketMessage extends IMessage {
 
 export interface ISendPacketMessage extends IMessage {
   type: 'sendPacket';
+  destination: number;
   payload: string;
 }
