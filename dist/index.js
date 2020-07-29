@@ -26,6 +26,7 @@ var _a;
 const path_1 = require("path");
 const child_process_1 = require("child_process");
 const os_1 = require("os");
+const dgram_1 = require("dgram");
 const types_1 = require("./types");
 __export(require("./animation"));
 var types_2 = require("./types");
@@ -36,6 +37,7 @@ const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 const channels = new Map();
+let socket;
 const isInitialized = Symbol();
 const options = Symbol();
 const rvlWorker = Symbol();
@@ -63,7 +65,7 @@ for (const iface in interfaces) {
         break;
     }
 }
-function createRvl(initOptions = {}) {
+async function createRvl(initOptions = {}) {
     initOptions = initOptions || {};
     const networkInterface = initOptions.networkInterface || defaultNetworkInterface;
     const port = initOptions.port || DEFAULT_PORT;
@@ -82,26 +84,48 @@ function createRvl(initOptions = {}) {
     if (!address) {
         throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
     }
-    return {
-        async createController(controllerOptions) {
-            if (channels.has(controllerOptions.channel)) {
-                throw new Error(`Channel ${controllerOptions.channel} is already in use`);
-            }
-            const controller = new RVLController(controllerOptions);
-            channels.set(controllerOptions.channel, controller);
-            await controller[init]();
-            return controller;
-        },
-        get networkInterface() {
-            return networkInterface;
-        },
-        get port() {
-            return port;
-        },
-        get nodeId() {
-            return address ? address.split('.')[3] : '';
-        }
-    };
+    return new Promise((resolve, reject) => {
+        socket = dgram_1.createSocket({
+            type: 'udp4',
+            reuseAddr: true
+        });
+        socket.on('message', (msg, rinfo) => {
+            // if (rinfo.port !== port || rinfo.address === address) {
+            //   return;
+            // }
+            // readBuffers.push(msg);
+            // TODO
+        });
+        socket.on('error', (err) => {
+            console.error(err);
+            socket.close();
+        });
+        socket.on('listening', () => {
+            socket.setBroadcast(true);
+            resolve({
+                async createController(controllerOptions) {
+                    if (channels.has(controllerOptions.channel)) {
+                        throw new Error(`Channel ${controllerOptions.channel} is already in use`);
+                    }
+                    const controller = new RVLController(controllerOptions);
+                    channels.set(controllerOptions.channel, controller);
+                    await controller[init]();
+                    return controller;
+                },
+                get networkInterface() {
+                    return networkInterface;
+                },
+                get port() {
+                    return port;
+                },
+                get nodeId() {
+                    return address ? parseInt(address.split('.')[3], 10) : 0;
+                }
+            });
+        });
+        socket.on('error', reject);
+        socket.bind(port);
+    });
 }
 exports.createRvl = createRvl;
 class RVLController {

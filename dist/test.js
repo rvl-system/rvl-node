@@ -20,13 +20,12 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 (async () => {
-    const rvl = index_1.createRvl();
+    const rvl = await index_1.createRvl();
     console.log(`RVL instance created on network interface ${rvl.networkInterface}, ` +
         `port ${rvl.port}, with node ID ${rvl.nodeId}`);
     const controller = await rvl.createController({
         channel: 0
     });
-    console.log('Running');
     controller.setWaveParameters({
         waves: [
             index_1.createPulsingWave(0, 255, 1),

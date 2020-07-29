@@ -20,7 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { join } from 'path';
 import { fork, ChildProcess } from 'child_process';
 import { networkInterfaces } from 'os';
-// import { createSocket, Socket } from 'dgram';
+import { createSocket, Socket } from 'dgram';
 import { IWaveParameters } from './animation';
 import {
   IRVLControllerOptions,
@@ -43,6 +43,7 @@ const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
 const channels = new Map<number, RVLController>();
+let socket: Socket;
 
 const isInitialized = Symbol();
 const options = Symbol();
@@ -78,7 +79,14 @@ for (const iface in interfaces) {
   }
 }
 
-export function createRvl(initOptions: IInitOptions = {}) {
+export interface IRVL {
+  readonly networkInterface: string;
+  readonly port: number;
+  readonly nodeId: number;
+  createController(controllerOptions: IRVLControllerOptions): Promise<RVLController>;
+}
+
+export async function createRvl(initOptions: IInitOptions = {}): Promise<IRVL> {
   initOptions = initOptions || {};
   const networkInterface = initOptions.networkInterface || defaultNetworkInterface;
   const port = initOptions.port || DEFAULT_PORT;
@@ -98,26 +106,53 @@ export function createRvl(initOptions: IInitOptions = {}) {
     throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
   }
 
-  return {
-    async createController(controllerOptions: IRVLControllerOptions) {
-      if (channels.has(controllerOptions.channel)) {
-        throw new Error(`Channel ${controllerOptions.channel} is already in use`);
-      }
-      const controller = new RVLController(controllerOptions);
-      channels.set(controllerOptions.channel, controller);
-      await controller[init]();
-      return controller;
-    },
-    get networkInterface() {
-      return networkInterface;
-    },
-    get port() {
-      return port;
-    },
-    get nodeId() {
-      return address ? address.split('.')[3] : '';
-    }
-  };
+  return new Promise((resolve, reject) => {
+    socket = createSocket({
+      type: 'udp4',
+      reuseAddr: true
+    });
+
+    socket.on('message', (msg, rinfo) => {
+      // if (rinfo.port !== port || rinfo.address === address) {
+      //   return;
+      // }
+      // readBuffers.push(msg);
+      // TODO
+    });
+
+    socket.on('error', (err) => {
+      console.error(err);
+      socket.close();
+    });
+
+    socket.on('listening', () => {
+      socket.setBroadcast(true);
+      resolve({
+        async createController(controllerOptions: IRVLControllerOptions) {
+          if (channels.has(controllerOptions.channel)) {
+            throw new Error(`Channel ${controllerOptions.channel} is already in use`);
+          }
+          const controller = new RVLController(controllerOptions);
+          channels.set(controllerOptions.channel, controller);
+          await controller[init]();
+          return controller;
+        },
+        get networkInterface() {
+          return networkInterface;
+        },
+        get port() {
+          return port;
+        },
+        get nodeId() {
+          return address ? parseInt(address.split('.')[3], 10) : 0;
+        }
+      });
+    });
+
+    socket.on('error', reject);
+
+    socket.bind(port);
+  });
 }
 
 class RVLController {

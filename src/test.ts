@@ -20,7 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { createRvl, createSolidColorWave, createPulsingWave } from './index';
 
 (async () => {
-  const rvl = createRvl();
+  const rvl = await createRvl();
 
   console.log(`RVL instance created on network interface ${rvl.networkInterface}, ` +
     `port ${rvl.port}, with node ID ${rvl.nodeId}`);

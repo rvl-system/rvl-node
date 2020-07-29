@@ -10,12 +10,13 @@ export interface IInitOptions {
     networkInterface?: string;
     port?: number;
 }
-export declare function createRvl(initOptions?: IInitOptions): {
-    createController(controllerOptions: IRVLControllerOptions): Promise<RVLController>;
+export interface IRVL {
     readonly networkInterface: string;
     readonly port: number;
-    readonly nodeId: string;
-};
+    readonly nodeId: number;
+    createController(controllerOptions: IRVLControllerOptions): Promise<RVLController>;
+}
+export declare function createRvl(initOptions?: IInitOptions): Promise<IRVL>;
 declare class RVLController {
     private [isInitialized];
     private [options];
