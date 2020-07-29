@@ -17,15 +17,15 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { createRvl, createSolidColorWave, createPulsingWave } from './index';
+import { createManager, createSolidColorWave, createPulsingWave } from './index';
 
 (async () => {
-  const rvl = await createRvl();
+  const manager = await createManager();
 
-  console.log(`RVL instance created on network interface ${rvl.networkInterface}, ` +
-    `port ${rvl.port}, with node ID ${rvl.nodeId}`);
+  console.log(`RVL instance created on network interface ${manager.networkInterface}, ` +
+    `port ${manager.port}, with node ID ${manager.nodeId}`);
 
-  const controller = await rvl.createController({
+  const controller = await manager.createController({
     channel: 0
   });
 

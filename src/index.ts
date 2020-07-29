@@ -19,7 +19,9 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import { RVLManager, IRVLManagerOptions, initManager } from './manager';
 
-export async function createManager(options: IRVLManagerOptions): Promise<RVLManager> {
+export * from './animation';
+
+export async function createManager(options?: IRVLManagerOptions): Promise<RVLManager> {
   const manager = new RVLManager(options);
   await manager[initManager]();
   return manager;

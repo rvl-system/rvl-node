@@ -25,7 +25,7 @@ import {
   ISetWaveParametersMessage,
   ISetBrightnessMessage,
   ISetPowerStateMessage
-} from './types'
+} from './types';
 import { IWaveParameters } from './animation';
 import { join } from 'path';
 import { fork, ChildProcess } from 'child_process';
@@ -54,7 +54,7 @@ export class RVLController {
     send: SendPacket
   ) {
     this[options] = { channel, logLevel };
-    this[sendPacket] = send
+    this[sendPacket] = send;
   }
 
   public [initController](): Promise<void> {

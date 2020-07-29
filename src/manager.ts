@@ -20,7 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { createSocket, Socket } from 'dgram';
 import { networkInterfaces } from 'os';
 import { RVLController, initController, SendPacket } from './controller';
-import { IRVLControllerOptions, ISendPacketMessage, LogLevel } from './types'
+import { IRVLControllerOptions, ISendPacketMessage, LogLevel } from './types';
 
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = LogLevel.Debug;
@@ -60,7 +60,7 @@ export class RVLManager {
     return this[serverAddress];
   }
 
-  constructor({ networkInterface, port = DEFAULT_PORT }: IRVLManagerOptions) {
+  constructor({ networkInterface, port = DEFAULT_PORT }: IRVLManagerOptions = {}) {
     if (!networkInterface) {
       networkInterface = this[getDefaultInterface]();
     }
@@ -68,6 +68,59 @@ export class RVLManager {
     this[serverNetworkInterface] = networkInterface;
     this[serverAddress] = address;
     this[serverPort] = port;
+  }
+
+  public [initManager](): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this[socket] = createSocket({
+        type: 'udp4',
+        reuseAddr: true
+      });
+
+      this[socket].on('message', (msg, rinfo) => {
+        if (rinfo.port !== this[serverPort] || rinfo.address === this[serverAddress]) {
+          return;
+        }
+        // TODO
+      });
+
+      this[socket].on('error', (err) => {
+        this[socket].close();
+        reject(err);
+      });
+
+      this[socket].on('listening', () => {
+        this[socket].setBroadcast(true);
+        resolve();
+      });
+
+      this[socket].on('error', reject);
+
+      this[socket].bind(this[serverPort]);
+    });
+  }
+
+  public async createController(controllerOptions: IRVLControllerOptions) {
+    if (this[channels].has(controllerOptions.channel)) {
+      throw new Error(`Channel ${controllerOptions.channel} is already in use`);
+    }
+
+    const sendPacket: SendPacket = (message: ISendPacketMessage): void => {
+      console.log(message);
+      // TODO
+      const address = message.destination >= 240 ? `255.255.255.255` : `TODO`;
+      const payload = Buffer.from(message.payload, 'base64');
+      this[socket].send(payload, this[serverPort], address);
+    };
+
+    const controller = new RVLController(
+      controllerOptions.channel,
+      controllerOptions.logLevel || DEFAULT_LOG_LEVEL,
+      sendPacket
+    );
+    this[channels].set(controllerOptions.channel, controller);
+    await controller[initController]();
+    return controller;
   }
 
   private [getDefaultInterface](): string {
@@ -118,58 +171,5 @@ export class RVLManager {
       throw new Error(`Could not find an IPv4 address for interface "${networkInterface}"`);
     }
     return address;
-  }
-
-  public [initManager](): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this[socket] = createSocket({
-        type: 'udp4',
-        reuseAddr: true
-      });
-
-      this[socket].on('message', (msg, rinfo) => {
-        if (rinfo.port !== this[serverPort] || rinfo.address === this[serverAddress]) {
-          return;
-        }
-        // TODO
-      });
-
-      this[socket].on('error', (err) => {
-        this[socket].close();
-        reject(err);
-      });
-
-      this[socket].on('listening', () => {
-        this[socket].setBroadcast(true);
-        resolve();
-      });
-
-      this[socket].on('error', reject);
-
-      this[socket].bind(this[serverPort]);
-    });
-  }
-
-  public async createController(controllerOptions: IRVLControllerOptions) {
-    if (this[channels].has(controllerOptions.channel)) {
-      throw new Error(`Channel ${controllerOptions.channel} is already in use`);
-    }
-
-    const sendPacket: SendPacket = (message: ISendPacketMessage): void => {
-      console.log(message);
-      // TODO
-      const address = message.destination >= 240 ? `255.255.255.255` : `TODO`
-      const payload = Buffer.from(message.payload, 'base64');
-      this[socket].send(payload, this[serverPort], address);
-    };
-
-    const controller = new RVLController(
-      controllerOptions.channel,
-      controllerOptions.logLevel || DEFAULT_LOG_LEVEL,
-      sendPacket
-    );
-    this[channels].set(controllerOptions.channel, controller);
-    await controller[initController]();
-    return controller;
   }
 }
