@@ -22,42 +22,20 @@ exports.receivePacket = exports.setBrightness = exports.setPowerState = exports.
 const util_1 = require("./util");
 const nodePlatform_1 = require("./nodePlatform");
 const Module = require("./output");
-const UPDATE_RATE = 33;
 let cInit;
-let cLoop;
 Module.onRuntimeInitialized = () => {
     cInit = Module.cwrap('init', null, ['number', 'number']);
-    cLoop = Module.cwrap('loop', null, []);
 };
 async function init(logLevel, channel) {
     if (!Number.isInteger(channel) || channel < 0 || channel > 7) {
         throw new Error(`Channel "${channel} is invalid. The channel must be an integer between 0 and 7 (inclusive)`);
     }
-    while (!cInit || !cLoop) {
+    while (!cInit) {
         await util_1.wait(10);
     }
     cInit(logLevel, channel);
-    setImmediate(loop);
 }
 exports.init = init;
-function loop() {
-    if (!cLoop) {
-        throw new Error(`Internal Error: cLoop is unepexctedly undefined`);
-    }
-    // Run one iteration of the loop
-    const loopStartTime = process.hrtime.bigint();
-    cLoop();
-    const now = process.hrtime.bigint();
-    // Calculate how long until we should run the loop again, and run it then
-    const timeConsumed = Number((now - loopStartTime) / 1000000n);
-    if (timeConsumed > UPDATE_RATE) {
-        console.log(`[Warn ]: system loop took ${timeConsumed - UPDATE_RATE}ms longer than the update rate`);
-        setImmediate(loop);
-    }
-    else {
-        setTimeout(loop, UPDATE_RATE - timeConsumed);
-    }
-}
 function setWaveParameters(newWaveParameters) {
     // TODO
 }

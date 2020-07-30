@@ -23,7 +23,6 @@ const { exec } = require('child_process');
 
 const EXPORTED_FUNCTIONS = [
   '_init',
-  '_loop',
   // '_waveParametersUpdated',
   // '_setPowerState',
   // '_setBrightness'

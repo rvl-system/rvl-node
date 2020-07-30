@@ -25,6 +25,10 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 NodePlatform::System* nodeSystem;
 
+void run() {
+  rvl::loop();
+}
+
 EMSCRIPTEN_KEEPALIVE
 extern "C" void init(uint8_t logLevel, uint8_t channel) {
   rvl::setLogLevel(static_cast<rvl::LogLevel>(logLevel));
@@ -37,10 +41,5 @@ extern "C" void init(uint8_t logLevel, uint8_t channel) {
   nodeSystem = new NodePlatform::System();
   rvl::init(nodeSystem);
 
-  rvl::info("System initialized");
-}
-
-EMSCRIPTEN_KEEPALIVE
-extern "C" void loop() {
-  rvl::loop();
+  emscripten_set_main_loop(run, 200, false);
 }

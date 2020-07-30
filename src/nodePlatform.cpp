@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <chrono>
 #include <emscripten.h>
 #include <string.h>
 #include <rvl.h>
 #include "./nodePlatform.h"
 
 namespace NodePlatform {
+
+auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 System::System() {
   this->setConnectedState(true);
@@ -91,9 +94,9 @@ uint16_t System::getDeviceId() {
   return jsGetDeviceId();
 }
 
-extern "C" { extern uint32_t jsLocalClock(); }
 uint32_t System::localClock() {
-  return jsLocalClock();
+  auto duration = std::chrono::high_resolution_clock::now().time_since_epoch() - startTime;
+  return duration.count() / 1000000;
 }
 
 extern "C" { extern void jsPrint(const char* msg); }

@@ -47,10 +47,6 @@ mergeInto(LibraryManager.library, {
     const { getDeviceId } = require('./nodePlatform');
     return getDeviceId(...args);
   },
-  jsLocalClock: function(...args) {
-    const { localClock } = require('./nodePlatform');
-    return localClock(...args);
-  },
   jsPrint: function(...args) {
     const { print } = require('./nodePlatform');
     return print(...args);

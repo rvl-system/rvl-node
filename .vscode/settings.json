@@ -48,6 +48,9 @@
     "__split_buffer": "cpp",
     "__string": "cpp",
     "__tuple": "cpp",
-    "string_view": "cpp"
+    "string_view": "cpp",
+    "chrono": "cpp",
+    "ctime": "cpp",
+    "ratio": "cpp"
   }
 }
