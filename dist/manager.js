@@ -138,7 +138,7 @@ class RVLManager {
             const payload = Buffer.from(message.payload, 'base64');
             this[socket].send(payload, this[serverPort], address);
         };
-        const controller = new controller_1.RVLController(controllerOptions.channel, controllerOptions.logLevel || DEFAULT_LOG_LEVEL, sendPacket);
+        const controller = new controller_1.RVLController(controllerOptions.channel, controllerOptions.logLevel || DEFAULT_LOG_LEVEL, this[serverDeviceId], sendPacket);
         this[channels].set(controllerOptions.channel, controller);
         await controller[controller_1.initController]();
         return controller;

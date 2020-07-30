@@ -24,20 +24,20 @@ import { addPacketToQueue } from './nodePlatform';
 
 import Module = require('./output');
 
-let cInit: ((logLevel: number, channel: number) => void) | undefined;
+let cInit: ((logLevel: number, channel: number, deviceId: number) => void) | undefined;
 
 Module.onRuntimeInitialized = () => {
-  cInit = Module.cwrap('init', null, ['number', 'number']);
+  cInit = Module.cwrap('init', null, ['number', 'number', 'number']);
 };
 
-export async function init(logLevel: LogLevel, channel: number) {
+export async function init(logLevel: LogLevel, channel: number, deviceId: number): Promise<void> {
   if (!Number.isInteger(channel) || channel < 0 || channel > 7) {
     throw new Error(`Channel "${channel} is invalid. The channel must be an integer between 0 and 7 (inclusive)`);
   }
   while (!cInit) {
     await wait(10);
   }
-  cInit(logLevel, channel);
+  cInit(logLevel, channel, deviceId);
 }
 
 export function setWaveParameters(newWaveParameters: IWaveParameters): void {

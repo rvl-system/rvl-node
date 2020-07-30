@@ -171,6 +171,7 @@ export class RVLManager {
     const controller = new RVLController(
       controllerOptions.channel,
       controllerOptions.logLevel || DEFAULT_LOG_LEVEL,
+      this[serverDeviceId],
       sendPacket
     );
     this[channels].set(controllerOptions.channel, controller);

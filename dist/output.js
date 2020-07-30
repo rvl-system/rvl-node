@@ -2747,11 +2747,6 @@ var ASM_CONSTS = {
       return endWrite(...args);
     }
 
-  function _jsGetDeviceId(...args) {
-      const { getDeviceId } = require('./nodePlatform');
-      return getDeviceId(...args);
-    }
-
   function _jsParsePacket(...args) {
       const { parsePacket } = require('./nodePlatform');
       return parsePacket(...args);
@@ -2844,7 +2839,7 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop": _emscripten_set_main_loop, "jsBeginWrite": _jsBeginWrite, "jsEndWrite": _jsEndWrite, "jsGetDeviceId": _jsGetDeviceId, "jsParsePacket": _jsParsePacket, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "jsRead": _jsRead, "jsRead16": _jsRead16, "jsRead32": _jsRead32, "jsRead8": _jsRead8, "jsWrite": _jsWrite, "jsWrite16": _jsWrite16, "jsWrite32": _jsWrite32, "jsWrite8": _jsWrite8, "memory": wasmMemory, "table": wasmTable };
+var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop": _emscripten_set_main_loop, "jsBeginWrite": _jsBeginWrite, "jsEndWrite": _jsEndWrite, "jsParsePacket": _jsParsePacket, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "jsRead": _jsRead, "jsRead16": _jsRead16, "jsRead32": _jsRead32, "jsRead8": _jsRead8, "jsWrite": _jsWrite, "jsWrite16": _jsWrite16, "jsWrite32": _jsWrite32, "jsWrite8": _jsWrite8, "memory": wasmMemory, "table": wasmTable };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");

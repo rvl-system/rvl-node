@@ -26,8 +26,10 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 namespace NodePlatform {
 
 auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch();
+uint8_t deviceId = 0;
 
-System::System() {
+System::System(uint8_t newDeviceId) {
+  deviceId = newDeviceId;
   this->setConnectedState(true);
 }
 
@@ -89,9 +91,8 @@ void System::read(uint8_t* buffer, uint16_t length) {
   jsRead(buffer, length);
 }
 
-extern "C" { extern uint16_t jsGetDeviceId(); }
 uint16_t System::getDeviceId() {
-  return jsGetDeviceId();
+  return deviceId;
 }
 
 uint32_t System::localClock() {

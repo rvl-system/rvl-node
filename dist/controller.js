@@ -33,9 +33,9 @@ const options = Symbol();
 const rvlWorker = Symbol();
 const sendPacket = Symbol();
 class RVLController {
-    constructor(channel, logLevel, send) {
+    constructor(channel, logLevel, deviceId, send) {
         this[_a] = false;
-        this[options] = { channel, logLevel };
+        this[options] = { channel, logLevel, deviceId };
         this[sendPacket] = send;
     }
     [(_a = isInitialized, exports.initController)]() {

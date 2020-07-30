@@ -27,6 +27,7 @@ export interface IRVLControllerOptions {
 export interface IWorkerOptions {
   channel: number;
   logLevel: LogLevel;
+  deviceId: number;
 }
 
 export enum LogLevel {

@@ -51,7 +51,7 @@ process.on('message', (message: IMessage) => {
 });
 
 (async () => {
-  await init(options.logLevel, options.channel);
+  await init(options.logLevel, options.channel, options.deviceId);
   const initMessage: IInitCompleteMessage = {
     type: 'initComplete'
   };

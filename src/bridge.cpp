@@ -30,7 +30,7 @@ void run() {
 }
 
 EMSCRIPTEN_KEEPALIVE
-extern "C" void init(uint8_t logLevel, uint8_t channel) {
+extern "C" void init(uint8_t logLevel, uint8_t channel, uint8_t deviceId) {
   rvl::setLogLevel(static_cast<rvl::LogLevel>(logLevel));
 
   rvl::setDeviceMode(rvl::DeviceMode::Controller);
@@ -38,7 +38,7 @@ extern "C" void init(uint8_t logLevel, uint8_t channel) {
   rvl::setPowerState(true);
   rvl::setBrightness(DEFAULT_BRIGHTNESS);
 
-  nodeSystem = new NodePlatform::System();
+  nodeSystem = new NodePlatform::System(deviceId);
   rvl::init(nodeSystem);
 
   emscripten_set_main_loop(run, 200, false);

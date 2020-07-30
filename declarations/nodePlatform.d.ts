@@ -11,7 +11,6 @@ export declare function read8(): number;
 export declare function read16(): number;
 export declare function read32(): number;
 export declare function read(bufferPointer: number, length: number): void;
-export declare function getDeviceId(): number;
 export declare function localClock(): number;
 export declare function print(messagePointer: number): void;
 export declare function println(messagePointer: number): void;

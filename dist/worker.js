@@ -40,7 +40,7 @@ process.on('message', (message) => {
     }
 });
 (async () => {
-    await bridge_1.init(options.logLevel, options.channel);
+    await bridge_1.init(options.logLevel, options.channel, options.deviceId);
     const initMessage = {
         type: 'initComplete'
     };

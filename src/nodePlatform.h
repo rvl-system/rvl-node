@@ -28,7 +28,7 @@ namespace NodePlatform {
 
 class System : public rvl::System {
  public:
-  System();
+  System(uint8_t deviceId);
   void loop();
 
   void beginWrite(uint8_t destination);

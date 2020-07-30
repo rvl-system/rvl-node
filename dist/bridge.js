@@ -24,16 +24,16 @@ const nodePlatform_1 = require("./nodePlatform");
 const Module = require("./output");
 let cInit;
 Module.onRuntimeInitialized = () => {
-    cInit = Module.cwrap('init', null, ['number', 'number']);
+    cInit = Module.cwrap('init', null, ['number', 'number', 'number']);
 };
-async function init(logLevel, channel) {
+async function init(logLevel, channel, deviceId) {
     if (!Number.isInteger(channel) || channel < 0 || channel > 7) {
         throw new Error(`Channel "${channel} is invalid. The channel must be an integer between 0 and 7 (inclusive)`);
     }
     while (!cInit) {
         await util_1.wait(10);
     }
-    cInit(logLevel, channel);
+    cInit(logLevel, channel, deviceId);
 }
 exports.init = init;
 function setWaveParameters(newWaveParameters) {

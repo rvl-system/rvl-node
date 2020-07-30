@@ -19,7 +19,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
   LogLevel,
-  IRVLControllerOptions,
+  IWorkerOptions,
   IMessage,
   ISendPacketMessage,
   IReceivePacketMessage,
@@ -47,16 +47,17 @@ const sendPacket = Symbol();
 
 export class RVLController {
   private [isInitialized] = false;
-  private [options]: IRVLControllerOptions;
+  private [options]: IWorkerOptions;
   private [rvlWorker]: ChildProcess;
   private [sendPacket]: SendPacket;
 
   constructor(
     channel: number,
     logLevel: LogLevel,
+    deviceId: number,
     send: SendPacket
   ) {
-    this[options] = { channel, logLevel };
+    this[options] = { channel, logLevel, deviceId };
     this[sendPacket] = send;
   }
 

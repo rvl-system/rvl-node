@@ -134,12 +134,6 @@ export function read(bufferPointer: number, length: number): void {
   currentPacketHead += length;
 }
 
-// uint16_t getDeviceId();
-export function getDeviceId(): number {
-  // TODO
-  return 0;
-}
-
 // uint32_t localClock();
 export function localClock(): number {
   const [ seconds, nanoseconds ] = process.hrtime(startTime);
