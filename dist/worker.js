@@ -32,6 +32,9 @@ process.on('message', (message) => {
         case 'setPowerState':
             bridge_1.setPowerState(message.powerState);
             break;
+        case 'receivedPacket':
+            bridge_1.receivePacket(Buffer.from(message.payload, 'base64'));
+            break;
         default:
             throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);
     }

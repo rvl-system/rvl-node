@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createRainbowWave = exports.createPulsingWave = exports.createMovingWave = exports.createColorCycleWave = exports.createSolidColorWave = exports.createEmptyWave = exports.createWaveParameters = void 0;
 const EMPTY_CHANNEL = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
 function validateNum(num, min, max, name) {
     if (typeof num !== 'number' || num < min || num > max) {

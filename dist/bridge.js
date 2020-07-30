@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.receivePacket = exports.setBrightness = exports.setPowerState = exports.setWaveParameters = exports.init = void 0;
 const util_1 = require("./util");
 const Module = require("./output");
 const UPDATE_RATE = 33;
@@ -68,4 +69,8 @@ function setBrightness(newBrightness) {
     // TODO
 }
 exports.setBrightness = setBrightness;
+function receivePacket(packet) {
+    // TODO
+}
+exports.receivePacket = receivePacket;
 //# sourceMappingURL=bridge.js.map

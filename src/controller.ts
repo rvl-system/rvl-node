@@ -22,6 +22,7 @@ import {
   IRVLControllerOptions,
   IMessage,
   ISendPacketMessage,
+  IReceivePacketMessage,
   ISetWaveParametersMessage,
   ISetBrightnessMessage,
   ISetPowerStateMessage
@@ -35,6 +36,7 @@ const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
 export const initController = Symbol();
+export const processPacket = Symbol();
 export type SendPacket = (message: ISendPacketMessage) => void;
 
 const isInitialized = Symbol();
@@ -88,6 +90,14 @@ export class RVLController {
         }
       });
     });
+  }
+
+  public [processPacket](packet: Buffer): void {
+    const message: IReceivePacketMessage = {
+      type: 'receivedPacket',
+      payload: packet.toString('base64')
+    };
+    this[rvlWorker].send(message);
   }
 
   public setWaveParameters(newWaveParameters: IWaveParameters): void {

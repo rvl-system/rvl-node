@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendMessage = exports.wait = void 0;
 async function wait(duration) {
     return new Promise((resolve) => setTimeout(resolve, duration));
 }

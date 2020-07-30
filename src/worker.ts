@@ -23,9 +23,10 @@ import {
   IInitCompleteMessage,
   ISetWaveParametersMessage,
   ISetBrightnessMessage,
-  ISetPowerStateMessage
+  ISetPowerStateMessage,
+  IReceivePacketMessage
 } from './types';
-import { init, setWaveParameters, setBrightness, setPowerState } from './bridge';
+import { init, setWaveParameters, setBrightness, setPowerState, receivePacket } from './bridge';
 import { sendMessage } from './util';
 
 const options: IWorkerOptions = JSON.parse(process.argv[2]);
@@ -40,6 +41,9 @@ process.on('message', (message: IMessage) => {
       break;
     case 'setPowerState':
       setPowerState((message as ISetPowerStateMessage).powerState);
+      break;
+    case 'receivedPacket':
+      receivePacket(Buffer.from((message as IReceivePacketMessage).payload, 'base64'));
       break;
     default:
       throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);

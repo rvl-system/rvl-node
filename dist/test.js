@@ -22,10 +22,11 @@ const index_1 = require("./index");
 (async () => {
     const manager = await index_1.createManager();
     console.log(`RVL instance created on network interface ${manager.networkInterface}, ` +
-        `port ${manager.port}, with node ID ${manager.nodeId}`);
+        `port ${manager.port}, with device ID ${manager.deviceId}`);
     const controller = await manager.createController({
         channel: 0
     });
+    console.log('Controller created');
     controller.setWaveParameters({
         waves: [
             index_1.createPulsingWave(0, 255, 1),

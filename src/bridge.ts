@@ -75,3 +75,6 @@ export function setPowerState(newPowerState: boolean): void {
 export function setBrightness(newBrightness: number): void {
   // TODO
 }
+export function receivePacket(packet: Buffer): void {
+  // TODO
+}

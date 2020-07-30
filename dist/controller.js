@@ -17,15 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
-Object.defineProperty(exports, "__esModule", { value: true });
 var _a;
-"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RVLController = exports.processPacket = exports.initController = void 0;
 const path_1 = require("path");
 const child_process_1 = require("child_process");
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 exports.initController = Symbol();
+exports.processPacket = Symbol();
 const isInitialized = Symbol();
 const options = Symbol();
 const rvlWorker = Symbol();
@@ -64,6 +65,13 @@ class RVLController {
                 }
             });
         });
+    }
+    [exports.processPacket](packet) {
+        const message = {
+            type: 'receivedPacket',
+            payload: packet.toString('base64')
+        };
+        this[rvlWorker].send(message);
     }
     setWaveParameters(newWaveParameters) {
         if (!this[isInitialized]) {

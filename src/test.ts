@@ -23,11 +23,13 @@ import { createManager, createSolidColorWave, createPulsingWave } from './index'
   const manager = await createManager();
 
   console.log(`RVL instance created on network interface ${manager.networkInterface}, ` +
-    `port ${manager.port}, with node ID ${manager.nodeId}`);
+    `port ${manager.port}, with device ID ${manager.deviceId}`);
 
   const controller = await manager.createController({
     channel: 0
   });
+
+  console.log('Controller created');
 
   controller.setWaveParameters({
     waves: [

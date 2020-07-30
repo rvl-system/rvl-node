@@ -26,11 +26,10 @@
   },
   "homepage": "https://github.com/nebrius/RVLMessaging-Node#readme",
   "devDependencies": {
-    "@types/node": "^11.13.10",
-    "@types/webassembly-js-api": "0.0.2",
+    "@types/node": "^11.15.20",
     "clone-deep": "^4.0.1",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "strict-event-emitter-types": "^2.0.0"
