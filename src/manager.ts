@@ -26,8 +26,8 @@ const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
 
+// Private and friend class properties
 export const initManager = Symbol();
-
 const getDefaultInterface = Symbol();
 const getAddressForInterface = Symbol();
 const socket = Symbol();

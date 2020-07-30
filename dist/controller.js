@@ -25,6 +25,7 @@ const child_process_1 = require("child_process");
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
+// Private and friend class properties
 exports.initController = Symbol();
 exports.processPacket = Symbol();
 const isInitialized = Symbol();

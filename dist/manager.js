@@ -27,6 +27,7 @@ const types_1 = require("./types");
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = types_1.LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
+// Private and friend class properties
 exports.initManager = Symbol();
 const getDefaultInterface = Symbol();
 const getAddressForInterface = Symbol();

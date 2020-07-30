@@ -35,10 +35,11 @@ const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
-export const initController = Symbol();
-export const processPacket = Symbol();
 export type SendPacket = (message: ISendPacketMessage) => void;
 
+// Private and friend class properties
+export const initController = Symbol();
+export const processPacket = Symbol();
 const isInitialized = Symbol();
 const options = Symbol();
 const rvlWorker = Symbol();
