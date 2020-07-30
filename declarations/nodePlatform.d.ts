@@ -1,3 +1,5 @@
+/// <reference types="node" />
+export declare function addPacketToQueue(packet: Buffer): void;
 export declare function beginWrite(destination: number): void;
 export declare function write8(data: number): void;
 export declare function write16(data: number): void;

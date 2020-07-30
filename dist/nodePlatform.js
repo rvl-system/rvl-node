@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.println = exports.print = exports.localClock = exports.getDeviceId = exports.read = exports.read32 = exports.read16 = exports.read8 = exports.parsePacket = exports.endWrite = exports.write = exports.write32 = exports.write16 = exports.write8 = exports.beginWrite = void 0;
+exports.println = exports.print = exports.localClock = exports.getDeviceId = exports.read = exports.read32 = exports.read16 = exports.read8 = exports.parsePacket = exports.endWrite = exports.write = exports.write32 = exports.write16 = exports.write8 = exports.beginWrite = exports.addPacketToQueue = void 0;
 const util_1 = require("./util");
 const Module = require("./output");
 const WRITE_BUFFER_SIZE = 1024;
@@ -26,6 +26,13 @@ const startTime = process.hrtime();
 let writeBuffer;
 let writeBufferHead = 0;
 let writeDestination = 0;
+const packetQueue = [];
+let currentPacket;
+let currentPacketHead = 0;
+function addPacketToQueue(packet) {
+    packetQueue.push(packet);
+}
+exports.addPacketToQueue = addPacketToQueue;
 // void beginWrite(uint8_t destination);
 function beginWrite(destination) {
     writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
@@ -86,31 +93,41 @@ function endWrite() {
 exports.endWrite = endWrite;
 // uint16_t parsePacket();
 function parsePacket() {
-    // TODO
-    return 0;
+    const nextPacket = packetQueue.shift();
+    if (!nextPacket) {
+        return 0;
+    }
+    currentPacket = nextPacket;
+    currentPacketHead = 0;
+    return currentPacket.length;
 }
 exports.parsePacket = parsePacket;
 // uint8_t read8();
 function read8() {
-    // TODO
-    return 0;
+    const data = currentPacket.readUInt8(currentPacketHead);
+    currentPacketHead += 1;
+    return data;
 }
 exports.read8 = read8;
 // uint16_t read16();
 function read16() {
-    // TODO
-    return 0;
+    const data = currentPacket.readUInt16BE(currentPacketHead);
+    currentPacketHead += 2;
+    return data;
 }
 exports.read16 = read16;
 // uint32_t read32();
 function read32() {
-    // TODO
-    return 0;
+    const data = currentPacket.readUInt32BE(currentPacketHead);
+    currentPacketHead += 4;
+    return data;
 }
 exports.read32 = read32;
 // void read(uint8_t* buffer, uint16_t length);
 function read(bufferPointer, length) {
-    // TODO
+    const dataBuffer = Module.HEAPU8.subarray(bufferPointer, bufferPointer + length);
+    dataBuffer.set(currentPacket.subarray(currentPacketHead, currentPacketHead + length));
+    currentPacketHead += length;
 }
 exports.read = read;
 // uint16_t getDeviceId();

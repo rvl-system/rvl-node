@@ -29,6 +29,14 @@ let writeBuffer: Buffer;
 let writeBufferHead = 0;
 let writeDestination = 0;
 
+const packetQueue: Buffer[] = [];
+let currentPacket: Buffer;
+let currentPacketHead = 0;
+
+export function addPacketToQueue(packet: Buffer): void {
+  packetQueue.push(packet);
+}
+
 // void beginWrite(uint8_t destination);
 export function beginWrite(destination: number): void {
   writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
@@ -89,31 +97,41 @@ export function endWrite(): void {
 
 // uint16_t parsePacket();
 export function parsePacket(): number {
-  // TODO
-  return 0;
+  const nextPacket = packetQueue.shift();
+  if (!nextPacket) {
+    return 0;
+  }
+  currentPacket = nextPacket;
+  currentPacketHead = 0;
+  return currentPacket.length;
 }
 
 // uint8_t read8();
 export function read8(): number {
-  // TODO
-  return 0;
+  const data = currentPacket.readUInt8(currentPacketHead);
+  currentPacketHead += 1;
+  return data;
 }
 
 // uint16_t read16();
 export function read16(): number {
-  // TODO
-  return 0;
+  const data = currentPacket.readUInt16BE(currentPacketHead);
+  currentPacketHead += 2;
+  return data;
 }
 
 // uint32_t read32();
 export function read32(): number {
-  // TODO
-  return 0;
+  const data = currentPacket.readUInt32BE(currentPacketHead);
+  currentPacketHead += 4;
+  return data;
 }
 
 // void read(uint8_t* buffer, uint16_t length);
 export function read(bufferPointer: number, length: number): void {
-  // TODO
+  const dataBuffer = Module.HEAPU8.subarray(bufferPointer, bufferPointer + length);
+  dataBuffer.set(currentPacket.subarray(currentPacketHead, currentPacketHead + length));
+  currentPacketHead += length;
 }
 
 // uint16_t getDeviceId();

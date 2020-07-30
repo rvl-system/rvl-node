@@ -146,7 +146,7 @@ export class RVLManager {
 
       this[socket].on('error', reject);
 
-      this[socket].bind(this[serverPort]);
+      this[socket].bind(this[serverPort], this[serverAddress]);
     });
   }
 

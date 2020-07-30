@@ -20,6 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.receivePacket = exports.setBrightness = exports.setPowerState = exports.setWaveParameters = exports.init = void 0;
 const util_1 = require("./util");
+const nodePlatform_1 = require("./nodePlatform");
 const Module = require("./output");
 const UPDATE_RATE = 33;
 let cInit;
@@ -70,7 +71,7 @@ function setBrightness(newBrightness) {
 }
 exports.setBrightness = setBrightness;
 function receivePacket(packet) {
-    // TODO
+    nodePlatform_1.addPacketToQueue(packet);
 }
 exports.receivePacket = receivePacket;
 //# sourceMappingURL=bridge.js.map

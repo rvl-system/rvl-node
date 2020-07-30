@@ -20,6 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { LogLevel } from './types';
 import { wait } from './util';
 import { IWaveParameters } from './animation';
+import { addPacketToQueue } from './nodePlatform';
 
 import Module = require('./output');
 
@@ -77,5 +78,5 @@ export function setBrightness(newBrightness: number): void {
 }
 
 export function receivePacket(packet: Buffer): void {
-  // TODO
+  addPacketToQueue(packet);
 }

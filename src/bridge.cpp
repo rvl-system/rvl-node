@@ -21,13 +21,18 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 #include <emscripten.h>
 #include "./nodePlatform.h"
 
+#define DEFAULT_BRIGHTNESS 50
+
 NodePlatform::System* nodeSystem;
 
 EMSCRIPTEN_KEEPALIVE
 extern "C" void init(uint8_t logLevel, uint8_t channel) {
   rvl::setLogLevel(static_cast<rvl::LogLevel>(logLevel));
+
   rvl::setDeviceMode(rvl::DeviceMode::Controller);
   rvl::setChannel(channel);
+  rvl::setPowerState(true);
+  rvl::setBrightness(DEFAULT_BRIGHTNESS);
 
   nodeSystem = new NodePlatform::System();
   rvl::init(nodeSystem);
