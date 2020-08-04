@@ -20,6 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 import { RVLManager, IRVLManagerOptions, initManager } from './manager';
 
 export * from './animation';
+export { LogLevel } from './types';
 
 export async function createManager(options?: IRVLManagerOptions): Promise<RVLManager> {
   const manager = new RVLManager(options);

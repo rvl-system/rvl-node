@@ -38,6 +38,12 @@ class RVLController {
         this[options] = { channel, logLevel, deviceId };
         this[sendPacket] = send;
     }
+    get channel() {
+        return this[options].channel;
+    }
+    get logLevel() {
+        return this[options].logLevel;
+    }
     [(_a = isInitialized, exports.initController)]() {
         return new Promise((resolve, reject) => {
             this[rvlWorker] = child_process_1.fork(path_1.join(__dirname, 'worker.js'), [JSON.stringify(this[options])]);

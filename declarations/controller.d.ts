@@ -13,6 +13,8 @@ export declare class RVLController {
     private [options];
     private [rvlWorker];
     private [sendPacket];
+    get channel(): number;
+    get logLevel(): LogLevel;
     constructor(channel: number, logLevel: LogLevel, deviceId: number, send: SendPacket);
     [initController](): Promise<void>;
     [processPacket](packet: Buffer): void;

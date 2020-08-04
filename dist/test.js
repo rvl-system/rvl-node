@@ -21,12 +21,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 (async () => {
     const manager = await index_1.createManager();
-    console.log(`RVL instance created on network interface ${manager.networkInterface}, ` +
+    console.log(`RVL manager created on network interface ${manager.networkInterface}, ` +
         `port ${manager.port}, with device ID ${manager.deviceId}`);
     const controller = await manager.createController({
         channel: 0
     });
-    console.log('Controller created');
+    console.log(`RVL controller created on channel ${controller.channel} with log level ${index_1.LogLevel[controller.logLevel]}`);
     controller.setWaveParameters({
         waves: [
             index_1.createPulsingWave(0, 255, 1),

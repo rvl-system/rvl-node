@@ -51,6 +51,14 @@ export class RVLController {
   private [rvlWorker]: ChildProcess;
   private [sendPacket]: SendPacket;
 
+  public get channel() {
+    return this[options].channel;
+  }
+
+  public get logLevel() {
+    return this[options].logLevel;
+  }
+
   constructor(
     channel: number,
     logLevel: LogLevel,
