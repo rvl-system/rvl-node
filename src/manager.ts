@@ -86,21 +86,21 @@ export class RVLManager {
       });
 
       const header = Buffer.from('RVLX', 'ascii');
-      this[socket].on('message', (msg, rinfo) => {
+      this[socket].on('message', (message, rinfo) => {
         if (rinfo.port !== this[serverPort] || rinfo.address === this[serverAddress]) {
           return;
         }
 
         // Check if this is an RVL packet
-        if (header.compare(msg, 0, 4)) {
-          if (msg[4] !== 1) {
-            console.warn(`[warn ]: Received unsupported RVL packet version ${msg[4]}`);
+        if (header.compare(message, 0, 4)) {
+          if (message[4] !== 1) {
+            console.warn(`[warn ]: Received unsupported RVL packet version ${message[4]}`);
             return;
           }
           // Peek at the header to do some pre-processing
-          const destination = msg[5];
-          const source = msg[6];
-          const channel = msg[8];
+          const destination = message[5];
+          const source = message[6];
+          const channel = message[8];
 
           // Ignore our own packets
           if (source === this[serverDeviceId]) {
@@ -122,13 +122,13 @@ export class RVLManager {
               return;
             }
 
-            controller[processPacket](msg);
+            controller[processPacket](message);
           }
 
           // If this is a broadcast packet, send it to all controllers
           if (destination === 255) {
             for (const [, controller] of this[channels].entries()) {
-              controller[processPacket](msg);
+              controller[processPacket](message);
             }
           }
         }

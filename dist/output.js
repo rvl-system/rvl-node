@@ -1184,11 +1184,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5260064,
+    STACK_BASE = 5261120,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 17184,
-    DYNAMIC_BASE = 5260064,
-    DYNAMICTOP_PTR = 17024;
+    STACK_MAX = 18240,
+    DYNAMIC_BASE = 5261120,
+    DYNAMICTOP_PTR = 18080;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1776,7 +1776,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 16160;
+// STATICTOP = STATIC_BASE + 17216;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1932,7 +1932,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 17024;
+      return 18080;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -2737,11 +2737,6 @@ var ASM_CONSTS = {
       }
     }
 
-  function _jsBeginWrite(...args) {
-      const { beginWrite } = require('./nodePlatform');
-      return beginWrite(...args);
-    }
-
   function _jsEndWrite(...args) {
       const { endWrite } = require('./nodePlatform');
       return endWrite(...args);
@@ -2760,46 +2755,6 @@ var ASM_CONSTS = {
   function _jsPrintln(...args) {
       const { println } = require('./nodePlatform');
       return println(...args);
-    }
-
-  function _jsRead(...args) {
-      const { read } = require('./nodePlatform');
-      return read(...args);
-    }
-
-  function _jsRead16(...args) {
-      const { read16 } = require('./nodePlatform');
-      return read16(...args);
-    }
-
-  function _jsRead32(...args) {
-      const { read32 } = require('./nodePlatform');
-      return read32(...args);
-    }
-
-  function _jsRead8(...args) {
-      const { read8 } = require('./nodePlatform');
-      return read8(...args);
-    }
-
-  function _jsWrite(...args) {
-      const { write } = require('./nodePlatform');
-      return write(...args);
-    }
-
-  function _jsWrite16(...args) {
-      const { write16 } = require('./nodePlatform');
-      return write16(...args);
-    }
-
-  function _jsWrite32(...args) {
-      const { write32 } = require('./nodePlatform');
-      return write32(...args);
-    }
-
-  function _jsWrite8(...args) {
-      const { write8 } = require('./nodePlatform');
-      return write8(...args);
     }
 Module["requestFullscreen"] = function Module_requestFullscreen(lockPointer, resizeCanvas) { Browser.requestFullscreen(lockPointer, resizeCanvas) };
   Module["requestFullScreen"] = function Module_requestFullScreen() { Browser.requestFullScreen() };
@@ -2839,7 +2794,7 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop": _emscripten_set_main_loop, "jsBeginWrite": _jsBeginWrite, "jsEndWrite": _jsEndWrite, "jsParsePacket": _jsParsePacket, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "jsRead": _jsRead, "jsRead16": _jsRead16, "jsRead32": _jsRead32, "jsRead8": _jsRead8, "jsWrite": _jsWrite, "jsWrite16": _jsWrite16, "jsWrite32": _jsWrite32, "jsWrite8": _jsWrite8, "memory": wasmMemory, "table": wasmTable };
+var asmLibraryArg = { "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_throw": ___cxa_throw, "__handle_stack_overflow": ___handle_stack_overflow, "abort": _abort, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop": _emscripten_set_main_loop, "jsEndWrite": _jsEndWrite, "jsParsePacket": _jsParsePacket, "jsPrint": _jsPrint, "jsPrintln": _jsPrintln, "memory": wasmMemory, "table": wasmTable };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");

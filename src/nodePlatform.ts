@@ -21,123 +21,32 @@ import { ISendPacketMessage } from './types';
 import { sendMessage } from './util';
 import Module = require('./output');
 
-const WRITE_BUFFER_SIZE = 1024;
-
-const startTime = process.hrtime();
-
-let writeBuffer: Buffer;
-let writeBufferHead = 0;
-let writeDestination = 0;
-
 const packetQueue: Buffer[] = [];
-let currentPacket: Buffer;
-let currentPacketHead = 0;
 
 export function addPacketToQueue(packet: Buffer): void {
   packetQueue.push(packet);
 }
 
-// void beginWrite(uint8_t destination);
-export function beginWrite(destination: number): void {
-  writeBuffer = Buffer.allocUnsafe(WRITE_BUFFER_SIZE);
-  writeBufferHead = 0;
-  writeDestination = destination;
-}
-
-// void write8(uint8_t data);
-export function write8(data: number): void {
-  if (!writeBuffer) {
-    throw new Error(`write8 called before beginWrite`);
-  }
-  writeBuffer.writeUInt8(data, writeBufferHead);
-  writeBufferHead += 1;
-}
-
-// void write16(uint16_t data);
-export function write16(data: number): void {
-  if (!writeBuffer) {
-    throw new Error(`write16 called before beginWrite`);
-  }
-  writeBuffer.writeUInt16BE(data, writeBufferHead);
-  writeBufferHead += 2;
-}
-
-// void write32(uint32_t data);
-export function write32(data: number): void {
-  if (!writeBuffer) {
-    throw new Error(`write32 called before beginWrite`);
-  }
-  writeBuffer.writeUInt32BE(data, writeBufferHead);
-  writeBufferHead += 4;
-}
-
-// void write(uint8_t* data, uint16_t length);
-export function write(data: number, length: number): void {
-  if (!writeBuffer) {
-    throw new Error(`write called before beginWrite`);
-  }
-  const dataBuffer = Module.HEAPU8.subarray(data, data + length);
-  writeBuffer.set(dataBuffer, writeBufferHead);
-  writeBufferHead += length;
-}
-
-// void endWrite();
-export function endWrite(): void {
-  if (!writeBuffer) {
-    throw new Error(`endWrite called before beginWrite`);
-  }
-  const payload = writeBuffer.slice(0, writeBufferHead).toString('base64');
+// void endWrite(uint8_t destination, uint8_t* buffer, uint8_t length);
+export function endWrite(destination: number, bufferPointer: number, length: number): void {
+  const payload = Module.HEAPU8.subarray(bufferPointer, bufferPointer + length);
   const message: ISendPacketMessage = {
     type: 'sendPacket',
-    destination: writeDestination,
-    payload
+    destination,
+    payload: Buffer.from(payload.buffer).toString('base64')
   };
   sendMessage(message);
 }
 
-// uint16_t parsePacket();
-export function parsePacket(): number {
+// uint16_t parsePacket(uint8_t* buffer);
+export function parsePacket(bufferPointer: number): number {
   const nextPacket = packetQueue.shift();
   if (!nextPacket) {
     return 0;
   }
-  currentPacket = nextPacket;
-  currentPacketHead = 0;
-  return currentPacket.length;
-}
-
-// uint8_t read8();
-export function read8(): number {
-  const data = currentPacket.readUInt8(currentPacketHead);
-  currentPacketHead += 1;
-  return data;
-}
-
-// uint16_t read16();
-export function read16(): number {
-  const data = currentPacket.readUInt16BE(currentPacketHead);
-  currentPacketHead += 2;
-  return data;
-}
-
-// uint32_t read32();
-export function read32(): number {
-  const data = currentPacket.readUInt32BE(currentPacketHead);
-  currentPacketHead += 4;
-  return data;
-}
-
-// void read(uint8_t* buffer, uint16_t length);
-export function read(bufferPointer: number, length: number): void {
-  const dataBuffer = Module.HEAPU8.subarray(bufferPointer, bufferPointer + length);
-  dataBuffer.set(currentPacket.subarray(currentPacketHead, currentPacketHead + length));
-  currentPacketHead += length;
-}
-
-// uint32_t localClock();
-export function localClock(): number {
-  const [ seconds, nanoseconds ] = process.hrtime(startTime);
-  return seconds * 1000 + Math.round(nanoseconds / 1000000);
+  const dataBuffer = Module.HEAPU8.subarray(bufferPointer, bufferPointer + nextPacket.length);
+  dataBuffer.set(nextPacket);
+  return nextPacket.length;
 }
 
 // void print(const char* str);

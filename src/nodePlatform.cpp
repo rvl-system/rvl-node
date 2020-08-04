@@ -25,8 +25,18 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NodePlatform {
 
+// This is the maximum "safe" buffer size for a UDP packet that doesn't fragment
+#define PACKET_BUFFER_SIZE 512
+
 auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch();
 uint8_t deviceId = 0;
+
+uint8_t receiveBuffer[PACKET_BUFFER_SIZE];
+uint16_t receiveBufferPointer;
+
+uint8_t sendBuffer[PACKET_BUFFER_SIZE];
+uint16_t sendBufferPointer;
+uint8_t sendDestination;
 
 System::System(uint8_t newDeviceId) {
   deviceId = newDeviceId;
@@ -35,60 +45,69 @@ System::System(uint8_t newDeviceId) {
 
 void System::loop() {}
 
-extern "C" { extern void jsBeginWrite(uint8_t destination); }
 void System::beginWrite(uint8_t destination) {
-  jsBeginWrite(destination);
+  sendBufferPointer = 0;
+  sendDestination = destination;
 }
 
-extern "C" { extern void jsWrite8(uint8_t data); }
 void System::write8(uint8_t data) {
-  jsWrite8(data);
+  sendBuffer[sendBufferPointer++] = data;
 }
 
-extern "C" { extern void jsWrite16(uint16_t data); }
 void System::write16(uint16_t data) {
-  jsWrite16(data);
+  sendBuffer[sendBufferPointer++] = data >> 8;
+  sendBuffer[sendBufferPointer++] = data & 0xFF;
 }
 
-extern "C" { extern void jsWrite32(uint32_t data); }
 void System::write32(uint32_t data) {
-  jsWrite32(data);
+  sendBuffer[sendBufferPointer++] = data >> 24;
+  sendBuffer[sendBufferPointer++] = data >> 16 & 0xFF;
+  sendBuffer[sendBufferPointer++] = data >> 8 & 0xFF;
+  sendBuffer[sendBufferPointer++] = data & 0xFF;
 }
 
-extern "C" { extern void jsWrite(uint8_t* data, uint16_t length); }
 void System::write(uint8_t* data, uint16_t length) {
-  jsWrite(data, length);
+  for (uint8_t i = 0; i < length; i++) {
+    sendBuffer[sendBufferPointer++] = data[i];
+  }
 }
 
-extern "C" { extern void jsEndWrite(); }
+extern "C" { extern void jsEndWrite(uint8_t destination, uint8_t* buffer, uint8_t length); }
 void System::endWrite() {
-  jsEndWrite();
+  jsEndWrite(sendDestination, sendBuffer, sendBufferPointer);
 }
 
-extern "C" { extern uint16_t jsParsePacket(); }
+extern "C" { extern uint16_t jsParsePacket(uint8_t* buffer); }
 uint16_t System::parsePacket() {
-  return jsParsePacket();
+  receiveBufferPointer = 0;
+  return jsParsePacket(receiveBuffer);
 }
 
-extern "C" { extern uint8_t jsRead8(); }
 uint8_t System::read8() {
-  return jsRead8();
+  return receiveBuffer[receiveBufferPointer++];
 
 }
 
-extern "C" { extern uint16_t jsRead16(); }
 uint16_t System::read16() {
-  return jsRead16();
+  uint16_t value = 0;
+  value |= receiveBuffer[receiveBufferPointer++] << 8;
+  value |= receiveBuffer[receiveBufferPointer++];
+  return value;
 }
 
-extern "C" { extern uint32_t jsRead32(); }
 uint32_t System::read32() {
-  return jsRead32();
+  uint32_t value = 0;
+  value |= receiveBuffer[receiveBufferPointer++] << 24;
+  value |= receiveBuffer[receiveBufferPointer++] << 16;
+  value |= receiveBuffer[receiveBufferPointer++] << 8;
+  value |= receiveBuffer[receiveBufferPointer++];
+  return value;
 }
 
-extern "C" { extern void jsRead(uint8_t* buffer, uint16_t length); }
 void System::read(uint8_t* buffer, uint16_t length) {
-  jsRead(buffer, length);
+  for (uint16_t i = 0; i < length; i++) {
+    buffer[i] = receiveBuffer[receiveBufferPointer++];
+  }
 }
 
 uint16_t System::getDeviceId() {
@@ -100,12 +119,12 @@ uint32_t System::localClock() {
   return duration.count() / 1000000;
 }
 
-extern "C" { extern void jsPrint(const char* msg); }
+extern "C" { extern void jsPrint(const char* str); }
 void System::print(const char* str) {
   jsPrint(str);
 }
 
-extern "C" { extern void jsPrintln(const char* msg); }
+extern "C" { extern void jsPrintln(const char* str); }
 void System::println(const char* str) {
   jsPrintln(str);
 }

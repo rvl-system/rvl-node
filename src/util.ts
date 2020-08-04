@@ -21,9 +21,9 @@ export async function wait(duration: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, duration));
 }
 
-export function sendMessage(msg: Record<string, any>) {
+export function sendMessage(message: Record<string, any>) {
   if (!process.send) {
     throw new Error('This module must be called from a child process');
   }
-  process.send(msg);
+  process.send(message);
 }
