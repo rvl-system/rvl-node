@@ -54,6 +54,9 @@ export class RVLManager {
   get networkInterface() {
     return this[serverNetworkInterface];
   }
+  get address() {
+    return this[serverAddress];
+  }
 
   get port() {
     return this[serverPort];

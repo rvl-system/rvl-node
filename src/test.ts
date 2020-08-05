@@ -23,7 +23,7 @@ import { createManager, createSolidColorWave, createPulsingWave, LogLevel } from
   const manager = await createManager();
 
   console.log(`RVL manager created on network interface ${manager.networkInterface}, ` +
-    `port ${manager.port}, with device ID ${manager.deviceId}`);
+    `bound to ${manager.address}:${manager.port}, with device ID ${manager.deviceId}`);
 
   const controller = await manager.createController({
     channel: 0

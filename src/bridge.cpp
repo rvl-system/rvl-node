@@ -24,6 +24,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 #define DEFAULT_BRIGHTNESS 50
 
 NodePlatform::System* nodeSystem;
+RVLWaveSettings waveSettingsBuffer;
 
 void run() {
   rvl::loop();
@@ -42,4 +43,14 @@ extern "C" void init(uint8_t logLevel, uint8_t channel, uint8_t deviceId) {
   rvl::init(nodeSystem);
 
   emscripten_set_main_loop(run, 200, false);
+}
+
+EMSCRIPTEN_KEEPALIVE
+extern "C" RVLWaveSettings* getWaveSettingsPointer() {
+  return &waveSettingsBuffer;
+}
+
+EMSCRIPTEN_KEEPALIVE
+extern "C" void updateWaveSettings() {
+  rvl::setWaveSettings(&waveSettingsBuffer);
 }

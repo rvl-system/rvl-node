@@ -22,7 +22,7 @@ const index_1 = require("./index");
 (async () => {
     const manager = await index_1.createManager();
     console.log(`RVL manager created on network interface ${manager.networkInterface}, ` +
-        `port ${manager.port}, with device ID ${manager.deviceId}`);
+        `bound to ${manager.address}:${manager.port}, with device ID ${manager.deviceId}`);
     const controller = await manager.createController({
         channel: 0
     });

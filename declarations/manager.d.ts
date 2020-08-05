@@ -21,6 +21,7 @@ export declare class RVLManager {
     private [channels];
     private [serverDeviceId];
     get networkInterface(): string;
+    get address(): string;
     get port(): number;
     get deviceId(): number;
     constructor({ networkInterface, port }?: IRVLManagerOptions);

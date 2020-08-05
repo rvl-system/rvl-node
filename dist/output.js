@@ -1184,11 +1184,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5261120,
+    STACK_BASE = 5261200,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 18240,
-    DYNAMIC_BASE = 5261120,
-    DYNAMICTOP_PTR = 18080;
+    STACK_MAX = 18320,
+    DYNAMIC_BASE = 5261200,
+    DYNAMICTOP_PTR = 18160;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1776,7 +1776,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 17216;
+// STATICTOP = STATIC_BASE + 17296;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1932,7 +1932,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 18080;
+      return 18160;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -2801,6 +2801,12 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 
 /** @type {function(...*):?} */
 var _init = Module["_init"] = createExportWrapper("init");
+
+/** @type {function(...*):?} */
+var _getWaveSettingsPointer = Module["_getWaveSettingsPointer"] = createExportWrapper("getWaveSettingsPointer");
+
+/** @type {function(...*):?} */
+var _updateWaveSettings = Module["_updateWaveSettings"] = createExportWrapper("updateWaveSettings");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");

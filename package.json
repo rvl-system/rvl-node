@@ -13,7 +13,8 @@
     "build-ts": "tsc",
     "prebuild-cpp": "cpplint --quiet --linelength=120 --recursive --repository=src src/*",
     "build-cpp": "node scripts/build.js",
-    "build": "npm run build-cpp && npm run build-ts"
+    "build": "npm run build-cpp && npm run build-ts",
+    "postbuild": "node scripts/wave.js"
   },
   "repository": {
     "type": "git",
