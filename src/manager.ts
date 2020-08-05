@@ -95,7 +95,7 @@ export class RVLManager {
         }
 
         // Check if this is an RVL packet
-        if (header.compare(message, 0, 4)) {
+        if (header.compare(message, 0, 4) === 0) {
           if (message[4] !== 1) {
             console.warn(`[warn ]: Received unsupported RVL packet version ${message[4]}`);
             return;
@@ -115,8 +115,8 @@ export class RVLManager {
             return;
           }
 
-          // If this is a multicast packet, send it to that controller only
-          if (destination >= CHANNEL_OFFSET && destination < 255) {
+          // If this is a unicast or multicast packet, send it to that controller only
+          if (destination < 255) {
             const controller = this[channels].get(channel);
 
             // If we don't have an active controller, that probably means this
