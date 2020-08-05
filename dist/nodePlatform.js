@@ -32,7 +32,7 @@ function endWrite(destination, bufferPointer, length) {
     const message = {
         type: 'sendPacket',
         destination,
-        payload: Buffer.from(payload.buffer).toString('base64')
+        payload: Buffer.from(payload).toString('base64')
     };
     util_1.sendMessage(message);
 }
