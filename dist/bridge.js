@@ -43,16 +43,20 @@ for (const entryName in structData.entryDictionary) {
 let cInit;
 let cGetWaveSettingsPointer;
 let cUpdateWaveSettings;
+let cUpdatePowerState;
+let cUpdateBrightness;
 Module.onRuntimeInitialized = () => {
     cInit = Module.cwrap('init', null, ['number', 'number', 'number']);
     cGetWaveSettingsPointer = Module.cwrap('getWaveSettingsPointer', 'number', []);
     cUpdateWaveSettings = Module.cwrap('updateWaveSettings', null, []);
+    cUpdatePowerState = Module.cwrap('updatePowerState', null, ['number']);
+    cUpdateBrightness = Module.cwrap('updateBrightness', null, ['number']);
 };
 async function init(logLevel, channel, deviceId) {
     if (!Number.isInteger(channel) || channel < 0 || channel > 7) {
         throw new Error(`Channel "${channel} is invalid. The channel must be an integer between 0 and 7 (inclusive)`);
     }
-    while (!cInit || !cGetWaveSettingsPointer || !cUpdateWaveSettings) {
+    while (!cInit) {
         await util_1.wait(10);
     }
     cInit(logLevel, channel, deviceId);
@@ -124,11 +128,17 @@ function setWaveParameters(newWaveParameters) {
 }
 exports.setWaveParameters = setWaveParameters;
 function setPowerState(newPowerState) {
-    // TODO
+    if (!cUpdatePowerState) {
+        throw new Error(`Internal Error: cUpdatePowerState is unexpectedly null`);
+    }
+    cUpdatePowerState(newPowerState);
 }
 exports.setPowerState = setPowerState;
 function setBrightness(newBrightness) {
-    // TODO
+    if (!cUpdateBrightness) {
+        throw new Error(`Internal Error: cUpdateBrightness is unexpectedly null`);
+    }
+    cUpdateBrightness(newBrightness);
 }
 exports.setBrightness = setBrightness;
 function receivePacket(packet) {

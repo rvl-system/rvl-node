@@ -54,3 +54,13 @@ EMSCRIPTEN_KEEPALIVE
 extern "C" void updateWaveSettings() {
   rvl::setWaveSettings(&waveSettingsBuffer);
 }
+
+EMSCRIPTEN_KEEPALIVE
+extern "C" void updatePowerState(bool newPowerState) {
+  rvl::setPowerState(newPowerState);
+}
+
+EMSCRIPTEN_KEEPALIVE
+extern "C" void updateBrightness(uint8_t newBrightness) {
+  rvl::setBrightness(newBrightness);
+}

@@ -24,7 +24,9 @@ const { exec } = require('child_process');
 const EXPORTED_FUNCTIONS = [
   '_init',
   '_getWaveSettingsPointer',
-  '_updateWaveSettings'
+  '_updateWaveSettings',
+  '_updatePowerState',
+  '_updateBrightness'
 ];
 
 const OUTPUT_FILE_NAME = join('dist', 'output.js');
