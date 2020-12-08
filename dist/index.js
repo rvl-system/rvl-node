@@ -33,6 +33,10 @@ const manager_1 = require("./manager");
 __exportStar(require("./animation"), exports);
 var types_1 = require("./types");
 Object.defineProperty(exports, "LogLevel", { enumerable: true, get: function () { return types_1.LogLevel; } });
+var manager_2 = require("./manager");
+Object.defineProperty(exports, "RVLManager", { enumerable: true, get: function () { return manager_2.RVLManager; } });
+var controller_1 = require("./controller");
+Object.defineProperty(exports, "RVLController", { enumerable: true, get: function () { return controller_1.RVLController; } });
 async function createManager(options) {
     const manager = new manager_1.RVLManager(options);
     await manager[manager_1.initManager]();

@@ -16,42 +16,19 @@ The below code instantiates an RVL instance in controller mode, and then sets th
 all other RVL devices listening on channel 1.
 
 ```typescript
-import { RVL } from 'rvl-node';
+import { createManager } from 'rvl-node';
 import { createWaveParameters, createSolidColorWave } from 'rvl-node-animations';
 
-const rvl = new RVL({
-  networkInterface: 'wlan0',
-  mode: 'controller',
-  channel: 1
-});
-
-rvl.on('initialized', () => {
-  rvl.start();
-  rvl.setWaveParameters(createWaveParameters(
+async function run() {
+  const manager = await createManager();
+  const controller = await manager.createController({
+    channel: 1
+  });
+  controller.setWaveParameters(createWaveParameters(
     createSolidColorWave(0, 255, 255) // Set the LED animation to solid red in the HSV space
   ));
-});
-```
-
-To create a receiver that listens for changes to the animation on channel 1 , we can run the below code:
-
-```typescript
-import { RVL } from 'rvl-node';
-import { createWaveParameters, createSolidColorWave } from 'rvl-node-animations';
-
-const rvl = new RVL({
-  networkInterface: 'wlan0',
-  mode: 'receiver',
-  channel: 1
-});
-
-rvl.on('initialized', () => {
-  rvl.start()
-});
-
-rvl.on('waveParametersUpdated', (waveParameters) => {
-  console.log('Wave parameters updated', waveParameters); // Prints the animation set by the controller
-});
+}
+run();
 ```
 
 ## API
@@ -63,27 +40,19 @@ If you're not familiar with TypeScript syntax, there are basically three things 
 1. A variables type is specified after the variable name, and separated by a `:`. For example, `x: number` means we have a variable named `x`, and it's a number.
 2. A `?` after the variable name and before the `:` means that the variable is optional. For example, `{ x?: number }` means the `x` property in this object can be left out.
 
-#### new RVL(options)
+#### createManager
 
-Instantiates a new RVL instance.
-
-**Warning**: although it has never been tested, instantiating more than one RVL instance at a time will _probably_ break.
+Instantiates a new RVL manager, which can be used to create controllers.
 
 _Signature:_
 
 ```typescript
-interface IRVLOptions {
-  networkInterface: string;
-  channel: number;
+interface IRVLManagerOptions {
+  networkInterface?: string;
   port?: number;
-  mode?: 'controller' | 'receiver';
-  logLevel?: 'error' | 'info' | 'debug';
-  enableClockSync?: boolean;
 }
 
-class RVL {
-  constructor(options: IRVLOptions)
-}
+function createManager(options?: IRVLManagerOptions): Promise<RVLManager>
 ```
 
 _Arguments_:
@@ -100,7 +69,7 @@ _Arguments_:
     <tr>
       <td>options</td>
       <td>Object</td>
-      <td>The options to instantiate the RVL instance with</td>
+      <td>The options to instantiate the RVL manager with</td>
     </tr>
     <tr>
       <td></td>
@@ -115,34 +84,14 @@ _Arguments_:
           </thead>
           <tbody>
             <tr>
-              <td>networkInterface</td>
+              <td>networkInterface (optional)</td>
               <td>string</td>
-              <td>The network interface to send/receive RVL packets on, e.g. "wlan0"</td>
-            </tr>
-            <tr>
-              <td>channel</td>
-              <td>number</td>
-              <td>The channel to communicate on, an integer between <code>0</code> and <code>7</code>.</td>
+              <td>The network interface to send/receive RVL packets on, e.g. "wlan0". If no value is provided, RVL will use the first interface it can find with an IPv4 address that's not 127.0.0.1</td>
             </tr>
             <tr>
               <td>port (optional)</td>
               <td>number</td>
               <td>The UDP port to bind to. Default is <code>4978</code>.</td>
-            </tr>
-            <tr>
-              <td>mode (optional)</td>
-              <td><code>'controller'</code> | <code>'receiver'</code></td>
-              <td>The mode to operate in. Default is <code>'controller'</code></td>
-            </tr>
-            <tr>
-              <td>logLevel (optional)</td>
-              <td><code>'error'</code> | <code>'info'</code> | <code>'debug'</code></td>
-              <td>The log level for RVL to log with. Default is <code>'info'</code>.</td>
-            </tr>
-            <tr>
-              <td>enableClockSync (optional)</td>
-              <td>boolean</td>
-              <td>Enables the clock sync server. Defaults to <code>false</code>. Note: this will likely be deprecated soon because there are plans to move away from a centralized clock server to a fully decentralized one.</td>
             </tr>
           </tbody>
         </table>
@@ -151,73 +100,29 @@ _Arguments_:
   </tbody>
 </table>
 
-### RVL Instance Properties
+_Returns:_ a promise that resolves to the manager once the manager has been initialized.
 
-#### waveParameters
+### RVL Manager Instance Properties
 
-This read-only property returns the currently active wave parameters, whether set locally or by a remote controller.
+#### networkInterface: string
 
-_Signature:_
+This read-only property returns the network interface the manager is bound to.
 
-```typescript
-class RVL {
-  public get waveParameters(): IWaveParameters
-}
-```
+#### address: string
 
-**Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
+This read-only property returns the IP address of the network interface the manager is bound to.
 
-#### mode
+#### port: string
 
-This read-only property returns the current mode, either `'controller'` or `'receiver'`.
+This read-only property returns the port the manager is bound to.
 
-_Signature:_
+#### deviceId: string
 
-```typescript
-class RVL {
-  public get mode(): 'controller' | 'receiver'
-}
-```
+This read-only property returns the device ID that this manager will appear as to other RVL nodes. As of this writing, this is the last octet of the IP address.
 
-### RVL Instance Methods
+### RVL Manager Instance Methods
 
-#### start()
-
-Starts the RVL system. In practice, this is somewhat analogous to various `listen()` methods in other libraries. There are some technical differences, however. RVL binds to the UDP port supplied as soon as the constructor is instantiated, but the internal system loop that process messages, etc. is not started until this method is called.
-
-This method cannot be called until the `initialized` event is emitted.
-
-_Signature:_
-
-```typescript
-class RVL {
-  public start(): void
-}
-```
-
-_Arguments_: none.
-
-_Returns:_ none.
-
-#### stop()
-
-Stops the RVL system. Note that the UDP port is still bound after calling this method.
-
-This method cannot be called until the `initialized` event is emitted.
-
-_Signature:_
-
-```typescript
-class RVL {
-  public stop(): void
-}
-```
-
-_Arguments_: none.
-
-_Returns:_ none.
-
-#### setWaveParameters(parameters)
+#### createController
 
 Sets the wave parameters for the system. These parameters will be synced to any other RVL devices on this channel within 2 seconds at most. You _can_ craft animation parameters by hand, but it's recommended to use the [rvl-node-animations](https://github.com/nebrius/rvl-node-animations) helper libraries instead. Crafting parameters by hand is a pain.
 
@@ -226,9 +131,62 @@ This method can only be called when the device is in controller mode, and cannot
 _Signature:_
 
 ```typescript
-class RVL {
-  public setWaveParameters(parameters: IWaveParameters): void
+interface IRVLControllerOptions {
+  channel: number;
+  logLevel?: LogLevel;
 }
+
+function createController(controllerOptions: IRVLControllerOptions): Promise<RVLController>
+```
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>channel</td>
+      <td>number</td>
+      <td>The channel number to bind this controller to.</td>
+    </tr>
+    <tr>
+      <td>logLevel</td>
+      <td>LogLevel</td>
+      <td>The minimum log level to log. RVL controllers can log a lot of debug information if you want to see what it's doing. Default is Debug</td>
+    </tr>
+  </tbody>
+</table>
+
+_Returns:_ a promise that resolves to the controller once the controller has been initialized.
+
+### RVL Controller Instance Properties
+
+#### channel: number
+
+This read-only property returns the channel the controller is bound to
+
+#### logLevel: LogLevel
+
+This read-only property returns the log level the controller was initialized with
+
+### RVL Controller Instance Methods
+
+#### setWaveParameters
+
+Sets the wave parameters for the system. These parameters will be synced to any other RVL devices on this channel within 2 seconds at most. You _can_ craft animation parameters by hand, but it's recommended to use the [rvl-node-animations](https://github.com/nebrius/rvl-node-animations) helper libraries instead. Crafting parameters by hand is a pain.
+
+This method can only be called when the device is in controller mode, and cannot be called until the `initialized` event is emitted.
+
+_Signature:_
+
+```typescript
+setWaveParameters(parameters: IWaveParameters): void
 ```
 
 _Arguments_:
@@ -254,66 +212,33 @@ _Arguments_:
 
 _Returns:_ none.
 
-#### getAnimationTime()
+#### setPowerState
 
-Gets the current animation time in the system in milliseconds. This "time" is not wall time, and is not relative to anything useful (0 is relative to when the clock sync server started). This "time" _is_ synchronized across all devices however, and can be used for relative timing that's accurate across all RVL systems on the network.
-
-_Signature:_
-
-```typescript
-class RVL {
-  public getAnimationTime(): number
-}
-```
-
-_Arguments_: none.
-
-_Returns:_ The current animation time across all devices (not based on wall-time).
-
-### RVL Instance Events
-
-#### initialized
-
-This event is emitted once the system has been initialized. Once this event has been emitted, it is safe to call any instance methods.
+Sets the power state for the controller. This is a handy way to turn off lights instead of setting the color to black.
 
 _Signature:_
 
 ```typescript
-rvl.on('initialized', () => void): void;
+setPowerState(newPowerState: boolean): void
 ```
 
-_Arguments_: none.
+_Arguments_: The power state, with `true` meaning "on" and `false` meaning "off."
 
-#### waveParametersUpdated
+_Returns:_ none
 
-This event is emitted whenever the wave parameters are updated. Wave parameters are updated either by a call to `setWaveParameters` if this device is a controller, or are synced from another controller on the network and the same channel as this device if this device is a receiver.
+#### setBrightness
+
+Sets the brightness for the controller, between `0` and `255`. This value sets the overall brightness on top of whatever the existing color is. If an existing HSV color is set to a value of `128` and then brightness is also set to `128`, the output color will have a combined brightness of `64`.
 
 _Signature:_
 
 ```typescript
-rvl.on('waveParametersUpdated', (waveParameters: IWaveParameters) => void): void;
+setBrightness(newBrightness: number): void
 ```
 
-_Arguments_:
+_Arguments_: The brightness, between `0` and `255`
 
-<table>
-  <thead>
-    <tr>
-      <th>Argument</th>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-    <tr>
-      <td>waveParameters</td>
-      <td>IWaveParameters</td>
-      <td>The recently updated wave parameters</td>
-    </tr>
-  <tbody>
-  </tbody>
-</table>
-
-**Note:** for details on `IWaveParameters`, please see the documentation for [rvl-node-types](https://github.com/nebrius/rvl-node-types).
+_Returns:_ none
 
 ## License
 
