@@ -149,7 +149,7 @@ class RVLManager {
     [getDefaultInterface]() {
         const interfaces = os_1.networkInterfaces();
         let defaultNetworkInterface = '';
-        const bestKnownIfacePrefixes = ['eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+        const bestKnownIfacePrefixes = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
         for (const iface in interfaces) {
             if (!interfaces.hasOwnProperty(iface)) {
                 continue;
