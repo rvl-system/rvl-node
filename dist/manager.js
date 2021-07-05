@@ -19,7 +19,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RVLManager = exports.initManager = void 0;
+exports.RVLManager = exports.getDefaultInterface = exports.getAvailableInterfaces = exports.initManager = void 0;
 const dgram_1 = require("dgram");
 const os_1 = require("os");
 const controller_1 = require("./controller");
@@ -27,9 +27,9 @@ const types_1 = require("./types");
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = types_1.LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
+const VALID_INTERFACE_PREFIXES = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
 // Private and friend class properties
 exports.initManager = Symbol();
-const getDefaultInterface = Symbol();
 const getAddressForInterface = Symbol();
 const socket = Symbol();
 const serverAddress = Symbol();
@@ -37,11 +37,43 @@ const serverDeviceId = Symbol();
 const serverPort = Symbol();
 const serverNetworkInterface = Symbol();
 const channels = Symbol();
+function getAvailableInterfaces() {
+    const interfaces = os_1.networkInterfaces();
+    const validInterfaces = [];
+    for (const iface in interfaces) {
+        if (!interfaces.hasOwnProperty(iface)) {
+            continue;
+        }
+        let isEstimate = false;
+        for (const estimate of VALID_INTERFACE_PREFIXES) {
+            if (iface.startsWith(estimate)) {
+                isEstimate = true;
+                break;
+            }
+        }
+        if (!isEstimate) {
+            continue;
+        }
+        const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+        if (ips.length) {
+            validInterfaces.push(iface);
+        }
+    }
+    return validInterfaces;
+}
+exports.getAvailableInterfaces = getAvailableInterfaces;
+function getDefaultInterface() {
+    return getAvailableInterfaces()[0];
+}
+exports.getDefaultInterface = getDefaultInterface;
 class RVLManager {
     constructor({ networkInterface, port = DEFAULT_PORT } = {}) {
         this[_a] = new Map();
         if (!networkInterface) {
-            networkInterface = this[getDefaultInterface]();
+            networkInterface = getDefaultInterface();
+            if (!networkInterface) {
+                throw new Error('Could not determine a usable default network interface');
+            }
         }
         const address = this[getAddressForInterface](networkInterface);
         this[serverNetworkInterface] = networkInterface;
@@ -146,41 +178,12 @@ class RVLManager {
         await controller[controller_1.initController]();
         return controller;
     }
-    [getDefaultInterface]() {
-        const interfaces = os_1.networkInterfaces();
-        let defaultNetworkInterface = '';
-        const bestKnownIfacePrefixes = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
-        for (const iface in interfaces) {
-            if (!interfaces.hasOwnProperty(iface)) {
-                continue;
-            }
-            let isEstimate = false;
-            for (const estimate of bestKnownIfacePrefixes) {
-                if (iface.startsWith(estimate)) {
-                    isEstimate = true;
-                    break;
-                }
-            }
-            if (!isEstimate) {
-                continue;
-            }
-            const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
-            if (ips.length) {
-                defaultNetworkInterface = iface;
-                break;
-            }
-        }
-        if (!defaultNetworkInterface) {
-            throw new Error('Could not determine the default network inteface. Please supply the interface name explicitly');
-        }
-        return defaultNetworkInterface;
-    }
     [getAddressForInterface](networkInterface) {
         const interfaces = os_1.networkInterfaces();
         const iface = interfaces[networkInterface];
         if (!iface) {
             throw new Error(`Unknown network interface ${networkInterface}. ` +
-                `Valid options are ${Object.keys(interfaces).join(', ')}`);
+                `Valid options are ${Object.keys(getAvailableInterfaces()).join(', ')}`);
         }
         let address;
         for (const binding of iface) {

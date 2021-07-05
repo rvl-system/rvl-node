@@ -34,6 +34,8 @@ __exportStar(require("./animation"), exports);
 var types_1 = require("./types");
 Object.defineProperty(exports, "LogLevel", { enumerable: true, get: function () { return types_1.LogLevel; } });
 var manager_2 = require("./manager");
+Object.defineProperty(exports, "getDefaultInterface", { enumerable: true, get: function () { return manager_2.getDefaultInterface; } });
+Object.defineProperty(exports, "getAvailableInterfaces", { enumerable: true, get: function () { return manager_2.getAvailableInterfaces; } });
 Object.defineProperty(exports, "RVLManager", { enumerable: true, get: function () { return manager_2.RVLManager; } });
 var controller_1 = require("./controller");
 Object.defineProperty(exports, "RVLController", { enumerable: true, get: function () { return controller_1.RVLController; } });

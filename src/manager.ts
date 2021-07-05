@@ -26,9 +26,10 @@ const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
 
+const VALID_INTERFACE_PREFIXES = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+
 // Private and friend class properties
 export const initManager = Symbol();
-const getDefaultInterface = Symbol();
 const getAddressForInterface = Symbol();
 const socket = Symbol();
 const serverAddress = Symbol();
@@ -40,6 +41,35 @@ const channels = Symbol();
 export interface IRVLManagerOptions {
   networkInterface?: string;
   port?: number;
+}
+
+export function getAvailableInterfaces(): string[] {
+  const interfaces = networkInterfaces();
+  const validInterfaces: string[] = [];
+  for (const iface in interfaces) {
+    if (!interfaces.hasOwnProperty(iface)) {
+      continue;
+    }
+    let isEstimate = false;
+    for (const estimate of VALID_INTERFACE_PREFIXES) {
+      if (iface.startsWith(estimate)) {
+        isEstimate = true;
+        break;
+      }
+    }
+    if (!isEstimate) {
+      continue;
+    }
+    const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+    if (ips.length) {
+      validInterfaces.push(iface);
+    }
+  }
+  return validInterfaces;
+}
+
+export function getDefaultInterface(): string | undefined {
+  return getAvailableInterfaces()[0];
 }
 
 export class RVLManager {
@@ -68,7 +98,10 @@ export class RVLManager {
 
   constructor({ networkInterface, port = DEFAULT_PORT }: IRVLManagerOptions = {}) {
     if (!networkInterface) {
-      networkInterface = this[getDefaultInterface]();
+      networkInterface = getDefaultInterface();
+      if (!networkInterface) {
+        throw new Error('Could not determine a usable default network interface');
+      }
     }
     const address = this[getAddressForInterface](networkInterface);
     this[serverNetworkInterface] = networkInterface;
@@ -182,42 +215,12 @@ export class RVLManager {
     return controller;
   }
 
-  private [getDefaultInterface](): string {
-    const interfaces = networkInterfaces();
-    let defaultNetworkInterface = '';
-    const bestKnownIfacePrefixes = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
-    for (const iface in interfaces) {
-      if (!interfaces.hasOwnProperty(iface)) {
-        continue;
-      }
-      let isEstimate = false;
-      for (const estimate of bestKnownIfacePrefixes) {
-        if (iface.startsWith(estimate)) {
-          isEstimate = true;
-          break;
-        }
-      }
-      if (!isEstimate) {
-        continue;
-      }
-      const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
-      if (ips.length) {
-        defaultNetworkInterface = iface;
-        break;
-      }
-    }
-    if (!defaultNetworkInterface) {
-      throw new Error('Could not determine the default network inteface. Please supply the interface name explicitly');
-    }
-    return defaultNetworkInterface;
-  }
-
   private[getAddressForInterface](networkInterface: string): string {
     const interfaces = networkInterfaces();
     const iface = interfaces[networkInterface];
     if (!iface) {
       throw new Error(`Unknown network interface ${networkInterface}. ` +
-        `Valid options are ${Object.keys(interfaces).join(', ')}`);
+        `Valid options are ${Object.keys(getAvailableInterfaces()).join(', ')}`);
     }
     let address: string | undefined;
     for (const binding of iface) {

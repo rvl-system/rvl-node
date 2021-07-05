@@ -40,6 +40,34 @@ If you're not familiar with TypeScript syntax, there are basically three things 
 1. A variables type is specified after the variable name, and separated by a `:`. For example, `x: number` means we have a variable named `x`, and it's a number.
 2. A `?` after the variable name and before the `:` means that the variable is optional. For example, `{ x?: number }` means the `x` property in this object can be left out.
 
+#### getAvailableInterfaces
+
+Gets the list of available network interfaces that RVL Node can use. To be considered valid, it must have an IPv4 address, and the name must start with `en`, `eth`, `wlan`, `Wi-Fi`, or `Ethernet`.
+
+_Signature:_
+
+```typescript
+function getAvailableInterfaces(): string[]
+```
+
+_Arguments:_ none.
+
+_Returns:_ a list of interface names that can be used with RVL Node
+
+#### getDefaultInterface
+
+Gets the default network interface that RVL Node will use, if no value is supplied for `networkInterface` in a call to `createManager`.
+
+_Signature:_
+
+```typescript
+function getDefaultInterface(): string | undefined
+```
+
+_Arguments:_ none.
+
+_Returns:_ The name of the interface that will be used, or `undefined` if there is no suitable interface.
+
 #### createManager
 
 Instantiates a new RVL manager, which can be used to create controllers.

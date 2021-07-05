@@ -61,6 +61,8 @@ const command = [
   '--js-library', join(__dirname, '..', 'src', 'library.js'),
   '-std=c++11',
   '-g4',
+  '--source-map-base',
+  SRC_DIR,
   '-o', OUTPUT_FILE_NAME,
   ...libraries.map((libName) => join('-Ilib', libName, 'src')),
   '-Isrc',

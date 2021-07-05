@@ -21,7 +21,7 @@ import { RVLManager, IRVLManagerOptions, initManager } from './manager';
 
 export * from './animation';
 export { LogLevel, IRVLControllerOptions } from './types';
-export { RVLManager, IRVLManagerOptions } from './manager';
+export { getDefaultInterface, getAvailableInterfaces, RVLManager, IRVLManagerOptions } from './manager';
 export { RVLController } from './controller';
 
 export async function createManager(options?: IRVLManagerOptions): Promise<RVLManager> {
