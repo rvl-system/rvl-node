@@ -26,7 +26,7 @@ const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
 
-const VALID_INTERFACE_PREFIXES = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+const VALID_INTERFACE_PREFIXES = ['en', 'wl', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
 
 // Private and friend class properties
 export const initManager = Symbol();

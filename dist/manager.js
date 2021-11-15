@@ -27,7 +27,7 @@ const types_1 = require("./types");
 const DEFAULT_PORT = 4978;
 const DEFAULT_LOG_LEVEL = types_1.LogLevel.Debug;
 const CHANNEL_OFFSET = 240;
-const VALID_INTERFACE_PREFIXES = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+const VALID_INTERFACE_PREFIXES = ['en', 'wl', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
 // Private and friend class properties
 exports.initManager = Symbol();
 const getAddressForInterface = Symbol();

@@ -1,3 +1,7 @@
+## 6.2.1 (2021-11-14)
+
+- Added "wl" prefix for interfaces to search
+
 ## 6.2.0 (2021-06-06)
 
 - Added `getDefaultInterface` and `getAvailableInterfaces` helper methods.
