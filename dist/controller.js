@@ -17,7 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RVLController = exports.processPacket = exports.initController = void 0;
 const path_1 = require("path");
@@ -33,20 +32,23 @@ const options = Symbol();
 const rvlWorker = Symbol();
 const sendPacket = Symbol();
 class RVLController {
-    constructor(channel, logLevel, deviceId, send) {
-        this[_a] = false;
-        this[options] = { channel, logLevel, deviceId };
-        this[sendPacket] = send;
-    }
+    [isInitialized] = false;
+    [options];
+    [rvlWorker];
+    [sendPacket];
     get channel() {
         return this[options].channel;
     }
     get logLevel() {
         return this[options].logLevel;
     }
-    [(_a = isInitialized, exports.initController)]() {
+    constructor(channel, logLevel, deviceId, send) {
+        this[options] = { channel, logLevel, deviceId };
+        this[sendPacket] = send;
+    }
+    [exports.initController]() {
         return new Promise((resolve, reject) => {
-            this[rvlWorker] = child_process_1.fork(path_1.join(__dirname, 'worker.js'), [JSON.stringify(this[options])]);
+            this[rvlWorker] = (0, child_process_1.fork)((0, path_1.join)(__dirname, 'worker.js'), [JSON.stringify(this[options])]);
             this[rvlWorker].on('error', reject);
             this[rvlWorker].on('exit', (code) => {
                 throw new Error(`Internal Error: worker thread unexpectedly quit with code ${code}`);
@@ -74,6 +76,9 @@ class RVLController {
         });
     }
     [exports.processPacket](packet) {
+        if (!this[rvlWorker]) {
+            throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
+        }
         const message = {
             type: 'receivedPacket',
             payload: packet.toString('base64')
@@ -83,6 +88,9 @@ class RVLController {
     setWaveParameters(newWaveParameters) {
         if (!this[isInitialized]) {
             throw new Error('Cannot call "setWaveParameters" before calling "init"');
+        }
+        if (!this[rvlWorker]) {
+            throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
         }
         if (newWaveParameters.waves.length > MAX_NUM_WAVES) {
             throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
@@ -103,6 +111,9 @@ class RVLController {
         if (!this[isInitialized]) {
             throw new Error('Cannot call "setPowerState" before calling "init"');
         }
+        if (!this[rvlWorker]) {
+            throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
+        }
         const message = {
             type: 'setPowerState',
             powerState: newPowerState
@@ -112,6 +123,9 @@ class RVLController {
     setBrightness(newBrightness) {
         if (!this[isInitialized]) {
             throw new Error('Cannot call "setBrightness" before calling "init"');
+        }
+        if (!this[rvlWorker]) {
+            throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
         }
         const message = {
             type: 'setBrightness',

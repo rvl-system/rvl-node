@@ -48,7 +48,7 @@ const sendPacket = Symbol();
 export class RVLController {
   private [isInitialized] = false;
   private [options]: IWorkerOptions;
-  private [rvlWorker]: ChildProcess;
+  private [rvlWorker]: ChildProcess | undefined;
   private [sendPacket]: SendPacket;
 
   public get channel() {
@@ -103,6 +103,9 @@ export class RVLController {
   }
 
   public [processPacket](packet: Buffer): void {
+    if (!this[rvlWorker]) {
+      throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
+    }
     const message: IReceivePacketMessage = {
       type: 'receivedPacket',
       payload: packet.toString('base64')
@@ -113,6 +116,9 @@ export class RVLController {
   public setWaveParameters(newWaveParameters: IWaveParameters): void {
     if (!this[isInitialized]) {
       throw new Error('Cannot call "setWaveParameters" before calling "init"');
+    }
+    if (!this[rvlWorker]) {
+      throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
     }
     if (newWaveParameters.waves.length > MAX_NUM_WAVES) {
       throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
@@ -134,6 +140,9 @@ export class RVLController {
     if (!this[isInitialized]) {
       throw new Error('Cannot call "setPowerState" before calling "init"');
     }
+    if (!this[rvlWorker]) {
+      throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
+    }
     const message: ISetPowerStateMessage = {
       type: 'setPowerState',
       powerState: newPowerState
@@ -144,6 +153,9 @@ export class RVLController {
   public setBrightness(newBrightness: number): void {
     if (!this[isInitialized]) {
       throw new Error('Cannot call "setBrightness" before calling "init"');
+    }
+    if (!this[rvlWorker]) {
+      throw new Error('Internal Error: this[rvlWorker] is unexpectedly undefined. This is a bug');
     }
     const message: ISetBrightnessMessage = {
       type: 'setBrightness',

@@ -17,7 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RVLManager = exports.getDefaultInterface = exports.getAvailableInterfaces = exports.initManager = void 0;
 const dgram_1 = require("dgram");
@@ -38,25 +37,29 @@ const serverPort = Symbol();
 const serverNetworkInterface = Symbol();
 const channels = Symbol();
 function getAvailableInterfaces() {
-    const interfaces = os_1.networkInterfaces();
+    const interfaces = (0, os_1.networkInterfaces)();
     const validInterfaces = [];
-    for (const iface in interfaces) {
-        if (!interfaces.hasOwnProperty(iface)) {
+    for (const ifaceName in interfaces) {
+        if (!interfaces.hasOwnProperty(ifaceName)) {
             continue;
         }
         let isEstimate = false;
         for (const estimate of VALID_INTERFACE_PREFIXES) {
-            if (iface.startsWith(estimate)) {
+            if (ifaceName.startsWith(estimate)) {
                 isEstimate = true;
                 break;
             }
         }
+        const iface = interfaces[ifaceName];
+        if (!iface) {
+            throw new Error('Internal Error: iface is unexepctedly undefined. This is a bug');
+        }
         if (!isEstimate) {
             continue;
         }
-        const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+        const ips = iface.filter((e) => !e.internal && e.family === 'IPv4');
         if (ips.length) {
-            validInterfaces.push(iface);
+            validInterfaces.push(ifaceName);
         }
     }
     return validInterfaces;
@@ -67,8 +70,25 @@ function getDefaultInterface() {
 }
 exports.getDefaultInterface = getDefaultInterface;
 class RVLManager {
+    [socket];
+    [serverNetworkInterface];
+    [serverAddress];
+    [serverPort];
+    [channels] = new Map();
+    [serverDeviceId];
+    get networkInterface() {
+        return this[serverNetworkInterface];
+    }
+    get address() {
+        return this[serverAddress];
+    }
+    get port() {
+        return this[serverPort];
+    }
+    get deviceId() {
+        return this[serverDeviceId];
+    }
     constructor({ networkInterface, port = DEFAULT_PORT } = {}) {
-        this[_a] = new Map();
         if (!networkInterface) {
             networkInterface = getDefaultInterface();
             if (!networkInterface) {
@@ -85,21 +105,9 @@ class RVLManager {
         this[serverDeviceId] = parseInt(addressOctets[3], 10);
         this[serverPort] = port;
     }
-    get networkInterface() {
-        return this[serverNetworkInterface];
-    }
-    get address() {
-        return this[serverAddress];
-    }
-    get port() {
-        return this[serverPort];
-    }
-    get deviceId() {
-        return this[serverDeviceId];
-    }
-    [(_a = channels, exports.initManager)]() {
+    [exports.initManager]() {
         return new Promise((resolve, reject) => {
-            this[socket] = dgram_1.createSocket({
+            this[socket] = (0, dgram_1.createSocket)({
                 type: 'udp4',
                 reuseAddr: true
             });
@@ -145,10 +153,16 @@ class RVLManager {
                 }
             });
             this[socket].on('error', (err) => {
+                if (!this[socket]) {
+                    throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+                }
                 this[socket].close();
                 reject(err);
             });
             this[socket].on('listening', () => {
+                if (!this[socket]) {
+                    throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+                }
                 this[socket].setBroadcast(true);
                 resolve();
             });
@@ -161,6 +175,9 @@ class RVLManager {
             throw new Error(`Channel ${controllerOptions.channel} is already in use`);
         }
         const sendPacket = (message) => {
+            if (!this[socket]) {
+                throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+            }
             let address = '';
             if (message.destination >= 240) {
                 address = '255.255.255.255';
@@ -179,7 +196,7 @@ class RVLManager {
         return controller;
     }
     [getAddressForInterface](networkInterface) {
-        const interfaces = os_1.networkInterfaces();
+        const interfaces = (0, os_1.networkInterfaces)();
         const iface = interfaces[networkInterface];
         if (!iface) {
             throw new Error(`Unknown network interface ${networkInterface}. ` +

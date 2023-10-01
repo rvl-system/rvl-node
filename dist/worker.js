@@ -24,26 +24,26 @@ const options = JSON.parse(process.argv[2]);
 process.on('message', (message) => {
     switch (message.type) {
         case 'setWaveParameters':
-            bridge_1.setWaveParameters(message.waveParameters);
+            (0, bridge_1.setWaveParameters)(message.waveParameters);
             break;
         case 'setBrightness':
-            bridge_1.setBrightness(message.brightness);
+            (0, bridge_1.setBrightness)(message.brightness);
             break;
         case 'setPowerState':
-            bridge_1.setPowerState(message.powerState);
+            (0, bridge_1.setPowerState)(message.powerState);
             break;
         case 'receivedPacket':
-            bridge_1.receivePacket(Buffer.from(message.payload, 'base64'));
+            (0, bridge_1.receivePacket)(Buffer.from(message.payload, 'base64'));
             break;
         default:
             throw new Error(`Internal Error: received unknown message type "${message.type}" from parent process`);
     }
 });
 (async () => {
-    await bridge_1.init(options.logLevel, options.channel, options.deviceId);
+    await (0, bridge_1.init)(options.logLevel, options.channel, options.deviceId);
     const initMessage = {
         type: 'initComplete'
     };
-    util_1.sendMessage(initMessage);
+    (0, util_1.sendMessage)(initMessage);
 })();
 //# sourceMappingURL=worker.js.map

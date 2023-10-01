@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { LogLevel, ISendPacketMessage } from './types';
 import { IWaveParameters } from './animation';
-export declare type SendPacket = (message: ISendPacketMessage) => void;
+export type SendPacket = (message: ISendPacketMessage) => void;
 export declare const initController: unique symbol;
 export declare const processPacket: unique symbol;
 declare const isInitialized: unique symbol;

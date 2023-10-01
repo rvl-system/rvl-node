@@ -24,7 +24,7 @@ const path_1 = require("path");
 const util_1 = require("./util");
 const nodePlatform_1 = require("./nodePlatform");
 const Module = require("./output");
-const structData = JSON.parse(fs_1.readFileSync(path_1.join(__dirname, 'structInfo.json')).toString());
+const structData = JSON.parse((0, fs_1.readFileSync)((0, path_1.join)(__dirname, 'structInfo.json')).toString());
 const pathSegmentArrayRegex = /^(.*?)\[([0-9]*)\]$/;
 for (const entryName in structData.entryDictionary) {
     if (!structData.entryDictionary.hasOwnProperty(entryName)) {
@@ -57,7 +57,7 @@ async function init(logLevel, channel, deviceId) {
         throw new Error(`Channel "${channel} is invalid. The channel must be an integer between 0 and 7 (inclusive)`);
     }
     while (!cInit) {
-        await util_1.wait(10);
+        await (0, util_1.wait)(10);
     }
     cInit(logLevel, channel, deviceId);
 }
@@ -142,7 +142,7 @@ function setBrightness(newBrightness) {
 }
 exports.setBrightness = setBrightness;
 function receivePacket(packet) {
-    nodePlatform_1.addPacketToQueue(packet);
+    (0, nodePlatform_1.addPacketToQueue)(packet);
 }
 exports.receivePacket = receivePacket;
 //# sourceMappingURL=bridge.js.map

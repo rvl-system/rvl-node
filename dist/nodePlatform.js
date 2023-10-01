@@ -34,7 +34,7 @@ function endWrite(destination, bufferPointer, length) {
         destination,
         payload: Buffer.from(payload).toString('base64')
     };
-    util_1.sendMessage(message);
+    (0, util_1.sendMessage)(message);
 }
 exports.endWrite = endWrite;
 // uint16_t parsePacket(uint8_t* buffer);

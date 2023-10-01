@@ -46,23 +46,27 @@ export interface IRVLManagerOptions {
 export function getAvailableInterfaces(): string[] {
   const interfaces = networkInterfaces();
   const validInterfaces: string[] = [];
-  for (const iface in interfaces) {
-    if (!interfaces.hasOwnProperty(iface)) {
+  for (const ifaceName in interfaces) {
+    if (!interfaces.hasOwnProperty(ifaceName)) {
       continue;
     }
     let isEstimate = false;
     for (const estimate of VALID_INTERFACE_PREFIXES) {
-      if (iface.startsWith(estimate)) {
+      if (ifaceName.startsWith(estimate)) {
         isEstimate = true;
         break;
       }
     }
+    const iface = interfaces[ifaceName];
+    if (!iface) {
+      throw new Error('Internal Error: iface is unexepctedly undefined. This is a bug');
+    }
     if (!isEstimate) {
       continue;
     }
-    const ips = interfaces[iface].filter((e) => !e.internal && e.family === 'IPv4');
+    const ips = iface.filter((e) => !e.internal && e.family === 'IPv4');
     if (ips.length) {
-      validInterfaces.push(iface);
+      validInterfaces.push(ifaceName);
     }
   }
   return validInterfaces;
@@ -74,7 +78,7 @@ export function getDefaultInterface(): string | undefined {
 
 export class RVLManager {
 
-  private [socket]: Socket;
+  private [socket]: Socket | undefined;
   private [serverNetworkInterface]: string;
   private [serverAddress]: string;
   private [serverPort]: number;
@@ -171,11 +175,17 @@ export class RVLManager {
       });
 
       this[socket].on('error', (err) => {
+        if (!this[socket]) {
+          throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+        }
         this[socket].close();
         reject(err);
       });
 
       this[socket].on('listening', () => {
+        if (!this[socket]) {
+          throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+        }
         this[socket].setBroadcast(true);
         resolve();
       });
@@ -192,6 +202,9 @@ export class RVLManager {
     }
 
     const sendPacket: SendPacket = (message: ISendPacketMessage): void => {
+      if (!this[socket]) {
+        throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
+      }
       let address = '';
       if (message.destination >= 240) {
         address = '255.255.255.255';
