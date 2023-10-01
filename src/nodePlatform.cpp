@@ -20,7 +20,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 #include <chrono>
 #include <emscripten.h>
 #include <string.h>
-#include <rvl.h>
+#include <rvl.hpp>
 #include "./nodePlatform.h"
 
 namespace NodePlatform {
@@ -108,6 +108,10 @@ void System::read(uint8_t* buffer, uint16_t length) {
   for (uint16_t i = 0; i < length; i++) {
     buffer[i] = receiveBuffer[receiveBufferPointer++];
   }
+}
+
+void System::endRead() {
+  // Do nothing. This method is required on other platforms.
 }
 
 uint16_t System::getDeviceId() {

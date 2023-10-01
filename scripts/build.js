@@ -74,7 +74,7 @@ exec(command.join(' '), {
 }, (err, stdout, stderr) => {
   if (err) {
     console.error(stderr);
-    process.exit(err);
+    process.exit(-1);
   }
   console.log(stderr, stdout);
 });

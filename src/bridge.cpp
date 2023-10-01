@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <rvl.h>
+#include <rvl.hpp>
 #include <emscripten.h>
 #include "./nodePlatform.h"
 

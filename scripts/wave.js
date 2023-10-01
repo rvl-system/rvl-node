@@ -21,7 +21,7 @@ const { readFileSync, writeFileSync } = require('fs');
 const { join } = require('path');
 const cloneDeep = require('clone-deep');
 
-const SRC_FILE = join(__dirname, '..', 'lib', 'rvl', 'src', 'wave.h');
+const SRC_FILE = join(__dirname, '..', 'lib', 'rvl', 'src', 'wave.hpp');
 const DIST_FILE = join(__dirname, '..', 'dist', 'structInfo.json');
 const ROOT_STRUCT_NAME = 'RVLWaveSettings';
 
