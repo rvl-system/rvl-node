@@ -272,7 +272,6 @@ assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at bui
 
 var wasmBinary;
 if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];legacyModuleProp('wasmBinary', 'wasmBinary');
-var noExitRuntime = Module['noExitRuntime'] || true;legacyModuleProp('noExitRuntime', 'noExitRuntime');
 
 if (typeof WebAssembly != 'object') {
   abort('no native wasm support detected');
@@ -403,12 +402,6 @@ var __ATEXIT__    = []; // functions called during shutdown
 var __ATPOSTRUN__ = []; // functions called after the main() is called
 
 var runtimeInitialized = false;
-
-var runtimeKeepaliveCounter = 0;
-
-function keepRuntimeAlive() {
-  return noExitRuntime || runtimeKeepaliveCounter > 0;
-}
 
 function preRun() {
   if (Module['preRun']) {
@@ -617,16 +610,17 @@ Module['FS_createPreloadedFile'] = FS.createPreloadedFile;
 // Prefix of data URIs emitted by SINGLE_FILE and related options.
 var dataURIPrefix = 'data:application/octet-stream;base64,';
 
-// Indicates whether filename is a base64 data URI.
-function isDataURI(filename) {
-  // Prefix of data URIs emitted by SINGLE_FILE and related options.
-  return filename.startsWith(dataURIPrefix);
-}
+/**
+ * Indicates whether filename is a base64 data URI.
+ * @noinline
+ */
+var isDataURI = (filename) => filename.startsWith(dataURIPrefix);
 
-// Indicates whether filename is delivered via file protocol (as opposed to http/https)
-function isFileURI(filename) {
-  return filename.startsWith('file://');
-}
+/**
+ * Indicates whether filename is delivered via file protocol (as opposed to http/https)
+ * @noinline
+ */
+var isFileURI = (filename) => filename.startsWith('file://');
 // end include: URIUtils.js
 function createExportWrapper(name) {
   return function() {
@@ -1155,6 +1149,8 @@ function dbg(text) {
     }
   }
 
+  var noExitRuntime = Module['noExitRuntime'] || true;
+
   var ptrToString = (ptr) => {
       assert(typeof ptr === 'number');
       // With CAN_ADDRESS_2GB or MEMORY64, pointers are already unsigned.
@@ -1379,6 +1375,9 @@ function dbg(text) {
     };
   
   
+  var runtimeKeepaliveCounter = 0;
+  var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
+  
   var SYSCALLS = {
   varargs:undefined,
   get() {
@@ -1402,6 +1401,7 @@ function dbg(text) {
       }
       quit_(code, new ExitStatus(code));
     };
+  
   /** @suppress {duplicate } */
   /** @param {boolean|number=} implicit */
   var exitJS = (status, implicit) => {
@@ -1418,6 +1418,7 @@ function dbg(text) {
       _proc_exit(status);
     };
   var _exit = exitJS;
+  
   
   var maybeExit = () => {
       if (!keepRuntimeAlive()) {
@@ -2672,7 +2673,6 @@ var unexportedSymbols = [
   'err',
   'callMain',
   'abort',
-  'keepRuntimeAlive',
   'wasmMemory',
   'wasmExports',
   'stackAlloc',
@@ -2703,10 +2703,11 @@ var unexportedSymbols = [
   'UNWIND_CACHE',
   'readEmAsmArgsArray',
   'handleException',
+  'keepRuntimeAlive',
   'callUserCallback',
   'maybeExit',
-  'safeSetTimeout',
   'wasmTable',
+  'noExitRuntime',
   'getCFunc',
   'ccall',
   'freeTableIndexes',
@@ -2732,6 +2733,7 @@ var unexportedSymbols = [
   'stackTrace',
   'ExitStatus',
   'flush_NO_FILESYSTEM',
+  'safeSetTimeout',
   'promiseMap',
   'uncaughtExceptionCount',
   'exceptionLast',

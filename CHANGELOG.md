@@ -1,3 +1,7 @@
+## 6.3.0 (2023-10-01)
+
+- Udated dependencies and build systems to work with the latest version of Node.js
+
 ## 6.2.0 (2021-06-06)
 
 - Added `getDefaultInterface` and `getAvailableInterfaces` helper methods.
