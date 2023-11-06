@@ -58,7 +58,7 @@ const command = [
   `-sEXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
   `-sEXPORTED_RUNTIME_METHODS="['cwrap', 'writeArrayToMemory']"`,
   '--js-library', join(__dirname, '..', 'src', 'library.js'),
-  '-std=c++11',
+  '-std=c++17',
   '-g',
   '--source-map-base',
   SRC_DIR,
