@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.println = exports.print = exports.parsePacket = exports.endWrite = exports.addPacketToQueue = void 0;
+exports.parsePacket = exports.endWrite = exports.addPacketToQueue = void 0;
 const util_1 = require("./util");
 const Module = require("./output");
 const packetQueue = [];
@@ -48,16 +48,4 @@ function parsePacket(bufferPointer) {
     return nextPacket.length;
 }
 exports.parsePacket = parsePacket;
-// void print(const char* str);
-function print(messagePointer) {
-    const str = Module.UTF8ToString(messagePointer);
-    process.stdout.write(str);
-}
-exports.print = print;
-// void println(const char* str);
-function println(messagePointer) {
-    const str = Module.UTF8ToString(messagePointer);
-    process.stdout.write(`${str}\n`);
-}
-exports.println = println;
 //# sourceMappingURL=nodePlatform.js.map

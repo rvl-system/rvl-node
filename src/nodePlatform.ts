@@ -48,15 +48,3 @@ export function parsePacket(bufferPointer: number): number {
   dataBuffer.set(nextPacket);
   return nextPacket.length;
 }
-
-// void print(const char* str);
-export function print(messagePointer: number): void {
-  const str = Module.UTF8ToString(messagePointer);
-  process.stdout.write(str);
-}
-
-// void println(const char* str);
-export function println(messagePointer: number): void {
-  const str = Module.UTF8ToString(messagePointer);
-  process.stdout.write(`${str}\n`);
-}

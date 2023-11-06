@@ -2307,16 +2307,6 @@ function dbg(text) {
       return parsePacket(...args);
     }
 
-  function _jsPrint(...args) {
-      const { print } = require('./nodePlatform');
-      return print(...args);
-    }
-
-  function _jsPrintln(...args) {
-      const { println } = require('./nodePlatform');
-      return println(...args);
-    }
-
   var getCFunc = (ident) => {
       var func = Module['_' + ident]; // closure exported function
       assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
@@ -2401,7 +2391,6 @@ function dbg(text) {
     };
 
 
-
       // exports
       Module["requestFullscreen"] = (lockPointer, resizeCanvas) => Browser.requestFullscreen(lockPointer, resizeCanvas);
       Module["requestFullScreen"] = () => Browser.requestFullScreen();
@@ -2446,11 +2435,7 @@ var wasmImports = {
   /** @export */
   jsEndWrite: _jsEndWrite,
   /** @export */
-  jsParsePacket: _jsParsePacket,
-  /** @export */
-  jsPrint: _jsPrint,
-  /** @export */
-  jsPrintln: _jsPrintln
+  jsParsePacket: _jsParsePacket
 };
 var wasmExports = createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors');
@@ -2480,7 +2465,6 @@ var dynCall_jiji = Module['dynCall_jiji'] = createExportWrapper('dynCall_jiji');
 // === Auto-generated postamble setup entry stuff ===
 
 Module['cwrap'] = cwrap;
-Module['UTF8ToString'] = UTF8ToString;
 Module['writeArrayToMemory'] = writeArrayToMemory;
 var missingLibrarySymbols = [
   'writeI53ToI64',
@@ -2718,6 +2702,7 @@ var unexportedSymbols = [
   'PATH_FS',
   'UTF8Decoder',
   'UTF8ArrayToString',
+  'UTF8ToString',
   'stringToUTF8Array',
   'stringToUTF8',
   'lengthBytesUTF8',

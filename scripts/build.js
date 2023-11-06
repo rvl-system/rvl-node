@@ -50,17 +50,16 @@ libraries.map((name) => join(LIB_DIR, name, 'src')).forEach(search);
 search(SRC_DIR);
 
 const command = [
-  'em++',
-  '-sWASM=1',
+  'emcc',
   '-sENVIRONMENT=node',
   '-sNODEJS_CATCH_EXIT=0',
   '-sDEMANGLE_SUPPORT=1',
   '-sASSERTIONS=2',
   `-sEXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
-  `-sEXPORTED_RUNTIME_METHODS="['cwrap', 'UTF8ToString', 'writeArrayToMemory']"`,
+  `-sEXPORTED_RUNTIME_METHODS="['cwrap', 'writeArrayToMemory']"`,
   '--js-library', join(__dirname, '..', 'src', 'library.js'),
   '-std=c++11',
-  '-gsource-map',
+  '-g',
   '--source-map-base',
   SRC_DIR,
   '-o', OUTPUT_FILE_NAME,

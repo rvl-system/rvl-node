@@ -21,6 +21,7 @@ along with RVL Node.  If not, see <http://www.gnu.org/licenses/>.
 #include <emscripten.h>
 #include <string.h>
 #include <rvl.hpp>
+#include <stdio.h>
 #include "./nodePlatform.h"
 
 namespace NodePlatform {
@@ -123,14 +124,12 @@ uint32_t System::localClock() {
   return duration.count() / 1000000;
 }
 
-extern "C" { extern void jsPrint(const char* str); }
 void System::print(const char* str) {
-  jsPrint(str);
+  printf("%s", str);
 }
 
-extern "C" { extern void jsPrintln(const char* str); }
 void System::println(const char* str) {
-  jsPrintln(str);
+  printf("%s\n", str);
 }
 
 }  // namespace NodePlatform
