@@ -1,3 +1,7 @@
+## 6.3.1 (2023-11-10)
+
+- Fixed some issues with the build system and rebuilt using newer emscripten to fix bugs
+
 ## 6.3.0 (2023-10-01)
 
 - Udated dependencies and build systems to work with the latest version of Node.js
