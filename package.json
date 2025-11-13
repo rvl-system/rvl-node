@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nebrius/RVLMessaging-Node.git"
+    "url": "git+https://github.com/rvl-system/rvl-node.git"
   },
   "author": "Bryan Hughes <bryan@nebri.us>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/nebrius/RVLMessaging-Node/issues"
+    "url": "https://github.com/rvl-system/rvl-node/issues"
   },
-  "homepage": "https://github.com/nebrius/RVLMessaging-Node#readme",
+  "homepage": "https://github.com/rvl-system/rvl-node#readme",
   "devDependencies": {
     "@types/node": "^20.8.0",
     "clone-deep": "^4.0.1",
