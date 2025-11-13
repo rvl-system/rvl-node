@@ -17,28 +17,32 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Node.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const { readdirSync, statSync } = require('fs');
-const { join } = require('path');
-const { exec } = require('child_process');
+const { readdirSync, statSync } = require("fs");
+const { join } = require("path");
+const { exec } = require("child_process");
 
 const EXPORTED_FUNCTIONS = [
-  '_init',
-  '_getWaveSettingsPointer',
-  '_updateWaveSettings',
-  '_updatePowerState',
-  '_updateBrightness'
+  "_init",
+  "_getWaveSettingsPointer",
+  "_updateWaveSettings",
+  "_updatePowerState",
+  "_updateBrightness",
 ];
 
-const OUTPUT_FILE_NAME = join('dist', 'output.js');
+const OUTPUT_FILE_NAME = join("dist", "output.js");
 
-const SRC_DIR = join(__dirname, '..', 'src');
-const LIB_DIR = join(__dirname, '..', 'lib');
+const SRC_DIR = join(__dirname, "..", "src");
+const LIB_DIR = join(__dirname, "..", "lib");
 
 const sourceFiles = [];
 function search(baseDir) {
   const dirContents = readdirSync(baseDir).map((entry) => join(baseDir, entry));
   for (const entry of dirContents) {
-    if (entry.endsWith('.cpp') || entry.endsWith('.c') || entry.endsWith('.cc')) {
+    if (
+      entry.endsWith(".cpp") ||
+      entry.endsWith(".c") ||
+      entry.endsWith(".cc")
+    ) {
       sourceFiles.push(entry);
     } else if (statSync(entry).isDirectory()) {
       search(entry);
@@ -46,34 +50,41 @@ function search(baseDir) {
   }
 }
 const libraries = readdirSync(LIB_DIR);
-libraries.map((name) => join(LIB_DIR, name, 'src')).forEach(search);
+libraries.map((name) => join(LIB_DIR, name, "src")).forEach(search);
 search(SRC_DIR);
 
 const command = [
-  'emcc',
-  '-sENVIRONMENT=node',
-  '-sNODEJS_CATCH_EXIT=0',
-  '-sDEMANGLE_SUPPORT=1',
-  '-sASSERTIONS=2',
-  `-sEXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map((entry) => `'${entry}'`).join(',')}]"`,
+  "emcc",
+  "-sENVIRONMENT=node",
+  "-sNODEJS_CATCH_EXIT=0",
+  "-sASSERTIONS=2",
+  `-sEXPORTED_FUNCTIONS="[${EXPORTED_FUNCTIONS.map(
+    (entry) => `'${entry}'`
+  ).join(",")}]"`,
   `-sEXPORTED_RUNTIME_METHODS="['cwrap', 'writeArrayToMemory']"`,
-  '--js-library', join(__dirname, '..', 'src', 'library.js'),
-  '-std=c++17',
-  '-g',
-  '--source-map-base',
+  "--js-library",
+  join(__dirname, "..", "src", "library.js"),
+  "-std=c++17",
+  "-g",
+  "--source-map-base",
   SRC_DIR,
-  '-o', OUTPUT_FILE_NAME,
-  ...libraries.map((libName) => join('-Ilib', libName, 'src')),
-  '-Isrc',
-  ...sourceFiles
+  "-o",
+  OUTPUT_FILE_NAME,
+  ...libraries.map((libName) => join("-Ilib", libName, "src")),
+  "-Isrc",
+  ...sourceFiles,
 ];
 
-exec(command.join(' '), {
-  cwd: join(__dirname, '..')
-}, (err, stdout, stderr) => {
-  if (err) {
-    console.error(stderr);
-    process.exit(-1);
+exec(
+  command.join(" "),
+  {
+    cwd: join(__dirname, ".."),
+  },
+  (err, stdout, stderr) => {
+    if (err) {
+      console.error(stderr);
+      process.exit(-1);
+    }
+    console.log(stderr, stdout);
   }
-  console.log(stderr, stdout);
-});
+);
