@@ -26,6 +26,7 @@ export declare class RVLManager {
     get port(): number;
     get deviceId(): number;
     constructor({ networkInterface, port }?: IRVLManagerOptions);
+    private sendReferenceBroadcast;
     [initManager](): Promise<void>;
     createController(controllerOptions: IRVLControllerOptions): Promise<RVLController>;
     private [getAddressForInterface];

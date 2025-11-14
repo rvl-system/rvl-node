@@ -69,6 +69,7 @@ function getDefaultInterface() {
     return getAvailableInterfaces()[0];
 }
 exports.getDefaultInterface = getDefaultInterface;
+let id = 0;
 class RVLManager {
     [socket];
     [serverNetworkInterface];
@@ -104,6 +105,33 @@ class RVLManager {
         }
         this[serverDeviceId] = parseInt(addressOctets[3], 10);
         this[serverPort] = port;
+        // Send reference broadcast packets at a regular interval
+        setInterval(() => this.sendReferenceBroadcast, 2000);
+    }
+    async sendReferenceBroadcast() {
+        if (!this[socket]) {
+            return;
+        }
+        for (let i = 0; i < 3; i++) {
+            const payload = Buffer.alloc(16);
+            // Header
+            payload.writeUInt8('R'.charCodeAt(0));
+            payload.writeUInt8('V'.charCodeAt(0));
+            payload.writeUInt8('L'.charCodeAt(0));
+            payload.writeUInt8('X'.charCodeAt(0));
+            payload.writeUInt8(1); // Protocol version
+            payload.writeUInt8(255); // Broadcast
+            payload.writeUInt8(this[serverDeviceId]);
+            payload.writeUInt8(3); // Clock sync packet type
+            // Payload
+            payload.writeUInt8(1); // Reference broadcast
+            payload.writeUint16LE(id++);
+            payload.writeUint8(0); // Reserved
+            payload.writeUint8(i === 0 ? 1 : 0);
+            payload.writeUint8(0); // Reserved
+            this[socket].send(payload, this[serverPort], '255.255.255.255');
+            await new Promise((resolve) => setTimeout(resolve, 100));
+        }
     }
     [exports.initManager]() {
         return new Promise((resolve, reject) => {
