@@ -110,7 +110,7 @@ export class RVLManager {
         'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
       );
     }
-    const address = `255.255.255.${String(channel ?? 255)}`;
+    const address = `255.255.255.${channel ?? 255}`;
     this.#socket.send(message, this.#serverPort, address);
   }
 

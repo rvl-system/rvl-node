@@ -3,7 +3,7 @@ export type RVLManagerOptions = {
   port?: number;
 };
 
-type WaveChannel = {
+export type WaveChannel = {
   a: number;
   b: number;
   w_t: number;
@@ -11,7 +11,7 @@ type WaveChannel = {
   phi: number;
 };
 
-type Wave = {
+export type Wave = {
   h: WaveChannel;
   s: WaveChannel;
   v: WaveChannel;

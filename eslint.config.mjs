@@ -55,6 +55,10 @@ export default defineConfig([
         { fixStyle: 'inline-type-imports' },
       ],
       'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        { allowNumber: true },
+      ],
     },
   },
   {
