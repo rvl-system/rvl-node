@@ -3,7 +3,7 @@ export type RVLManagerOptions = {
   port?: number;
 };
 
-export type WaveChannel = {
+export type AnimationColorParameters = {
   a: number;
   b: number;
   w_t: number;
@@ -11,15 +11,15 @@ export type WaveChannel = {
   phi: number;
 };
 
-export type Wave = {
-  h: WaveChannel;
-  s: WaveChannel;
-  v: WaveChannel;
-  a: WaveChannel;
+export type AnimationLayer = {
+  h: AnimationColorParameters;
+  s: AnimationColorParameters;
+  v: AnimationColorParameters;
+  a: AnimationColorParameters;
 };
 
-export type WaveParameters = {
+export type AnimationParameters = {
   timePeriod?: number; // Default 255
   distancePeriod?: number; // Default 32
-  waves: Wave[];
+  animations: AnimationLayer[];
 };

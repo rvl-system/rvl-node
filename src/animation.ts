@@ -1,6 +1,16 @@
-import { type Wave, type WaveChannel, type WaveParameters } from './types.js';
+import {
+  type AnimationColorParameters,
+  type AnimationLayer,
+  type AnimationParameters,
+} from './types.js';
 
-const EMPTY_CHANNEL: WaveChannel = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
+const EMPTY_CHANNEL: AnimationColorParameters = {
+  a: 0,
+  w_t: 0,
+  w_x: 0,
+  phi: 0,
+  b: 0,
+};
 
 function validateNum(
   num: number,
@@ -16,23 +26,23 @@ function validateNum(
   }
 }
 
-export function createWaveParameters(
-  wave1?: Wave,
-  wave2?: Wave,
-  wave3?: Wave,
-  wave4?: Wave
-): WaveParameters {
+export function createAnimationParameters(
+  animation1?: AnimationLayer,
+  animation2?: AnimationLayer,
+  animation3?: AnimationLayer,
+  animation4?: AnimationLayer
+): AnimationParameters {
   return {
-    waves: [
-      wave1 || createEmptyWave(),
-      wave2 || createEmptyWave(),
-      wave3 || createEmptyWave(),
-      wave4 || createEmptyWave(),
+    animations: [
+      animation1 || createEmptyAnimation(),
+      animation2 || createEmptyAnimation(),
+      animation3 || createEmptyAnimation(),
+      animation4 || createEmptyAnimation(),
     ],
   };
 }
 
-export function createEmptyWave(): Wave {
+export function createEmptyAnimation(): AnimationLayer {
   return {
     h: { ...EMPTY_CHANNEL },
     s: { ...EMPTY_CHANNEL },
@@ -41,11 +51,15 @@ export function createEmptyWave(): Wave {
   };
 }
 
-export function createSolidColorWave(h: number, s: number, a: number): Wave {
+export function createSolidColorAnimation(
+  h: number,
+  s: number,
+  a: number
+): AnimationLayer {
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');
   validateNum(a, 0, 255, 'alpha');
-  const wave = createEmptyWave();
+  const wave = createEmptyAnimation();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
   wave.v.b = 255;
@@ -53,10 +67,13 @@ export function createSolidColorWave(h: number, s: number, a: number): Wave {
   return wave;
 }
 
-export function createColorCycleWave(rate: number, a: number): Wave {
+export function createColorCycleAnimation(
+  rate: number,
+  a: number
+): AnimationLayer {
   validateNum(rate, 1, 32, 'rate');
   validateNum(a, 0, 255, 'alpha');
-  const wave = createEmptyWave();
+  const wave = createEmptyAnimation();
   wave.h.a = 255;
   wave.h.w_t = Math.round(rate);
   wave.h.w_x = 0;
@@ -66,17 +83,17 @@ export function createColorCycleWave(rate: number, a: number): Wave {
   return wave;
 }
 
-export function createMovingWave(
+export function createWaveAnimation(
   h: number,
   s: number,
   rate: number,
   spacing: number
-): Wave {
+): AnimationLayer {
   validateNum(rate, 0, 32, 'rate');
   validateNum(spacing, 1, 16, 'spacing');
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');
-  const wave = createEmptyWave();
+  const wave = createEmptyAnimation();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
   wave.v.b = 255;
@@ -86,11 +103,15 @@ export function createMovingWave(
   return wave;
 }
 
-export function createPulsingWave(h: number, s: number, rate: number): Wave {
+export function createPulsingAnimation(
+  h: number,
+  s: number,
+  rate: number
+): AnimationLayer {
   validateNum(rate, 1, 32, 'rate');
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');
-  const wave = createEmptyWave();
+  const wave = createEmptyAnimation();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
   wave.v.b = 255;
@@ -99,10 +120,13 @@ export function createPulsingWave(h: number, s: number, rate: number): Wave {
   return wave;
 }
 
-export function createRainbowWave(a: number, rate: number): Wave {
+export function createRainbowAnimation(
+  a: number,
+  rate: number
+): AnimationLayer {
   validateNum(rate, 1, 32, 'rate');
   validateNum(a, 0, 255, 'alpha');
-  const wave = createEmptyWave();
+  const wave = createEmptyAnimation();
 
   wave.h.a = 255;
   wave.h.w_t = Math.round(rate);

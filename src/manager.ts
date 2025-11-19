@@ -1,10 +1,19 @@
 import { createSocket, type Socket } from 'node:dgram';
 import { networkInterfaces } from 'node:os';
 
+import { createEmptyAnimation } from './animation.js';
 import { getAvailableInterfaces, getDefaultInterface } from './net.js';
-import { type RVLManagerOptions, type WaveParameters } from './types.js';
+import { type AnimationParameters, type RVLManagerOptions } from './types.js';
 
 const DEFAULT_PORT = 4978;
+const DEFAULT_TIME_PERIOD = 255;
+const DEFAULT_DISTANCE_PERIOD = 32;
+const MAX_NUM_WAVES = 4;
+
+const PACKET_TYPE_SYSTEM = 1;
+// const PACKET_TYPE_DISCOVER = 2; // Not used
+const PACKET_TYPE_CLOCK_SYNC = 3;
+const PACKET_TYPE_ANIMATION = 4;
 
 // Private and friend class properties
 export const initManager = Symbol();
@@ -13,10 +22,14 @@ let id = 0;
 
 export class RVLManager {
   #socket: Socket | undefined;
+
   #serverNetworkInterface: string;
   #serverAddress: string;
   #serverPort: number;
   #serverDeviceId: number;
+
+  #animationPackets = new Map<number, Buffer>();
+  #systemPackets = new Map<number, Buffer>();
 
   get networkInterface() {
     return this.#serverNetworkInterface;
@@ -79,6 +92,8 @@ export class RVLManager {
         resolve();
       });
 
+      // TODO: need to do time slicing for the below:
+
       // Send reference broadcast packets at a regular interval
       setInterval(() => {
         this.#sendReferenceBroadcast({ isFirst: true });
@@ -89,54 +104,129 @@ export class RVLManager {
           }, 100);
         }, 100);
       }, 2000);
+
+      // Send animation packets at a regular interval
+      setInterval(() => {
+        for (const packet of this.#animationPackets.values()) {
+          this.#sendPacket(packet);
+        }
+      }, 1000);
+
+      // Send system packets at a regular interval
+      setInterval(() => {
+        for (const packet of this.#systemPackets.values()) {
+          this.#sendPacket(packet);
+        }
+      }, 1000);
     });
   }
 
-  public setWaveParameters(channel: number, parameters: WaveParameters) {
-    // TODO
+  public setAnimationParameters(
+    channel: number,
+    parameters: AnimationParameters
+  ) {
+    this.#validateChannel(channel);
+    if (parameters.animations.length > MAX_NUM_WAVES) {
+      throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
+    }
+    if (typeof parameters.timePeriod !== 'number') {
+      parameters.timePeriod = DEFAULT_TIME_PERIOD;
+    }
+    if (typeof parameters.distancePeriod !== 'number') {
+      parameters.distancePeriod = DEFAULT_DISTANCE_PERIOD;
+    }
+
+    // Construct the payload
+    const message = Buffer.alloc(16);
+    message.writeUInt8(parameters.timePeriod);
+    message.writeUInt8(parameters.distancePeriod);
+    for (let i = 0; i < MAX_NUM_WAVES; i++) {
+      const animation = parameters.animations[i] ?? createEmptyAnimation();
+      for (const channel of Object.values(animation)) {
+        message.writeUInt8(channel.a);
+        message.writeUInt8(channel.b);
+        message.writeUInt8(channel.w_t);
+        message.writeUInt8(channel.w_x);
+        message.writeUInt8(channel.phi);
+      }
+    }
+
+    // Create the packet and store it
+    const newAnimationPacket = this.#createPacket({
+      packetType: PACKET_TYPE_ANIMATION,
+      message,
+      channel,
+    });
+    this.#animationPackets.set(channel, newAnimationPacket);
+
+    // Send the packet immediately to update receivers
+    this.#sendPacket(newAnimationPacket);
   }
 
   public setPowerState(channel: number, newPowerState: boolean): void {
-    // TODO
+    this.#validateChannel(channel);
+    const message = Buffer.alloc(16);
+    message.writeUInt8(newPowerState ? 1 : 0); // Power state
+    message.writeUInt8(255); // Brightness, which we don't support
+    message.writeUInt16LE(0); // Reserved
+    this.#sendPacket(
+      this.#createPacket({ packetType: PACKET_TYPE_SYSTEM, message, channel })
+    );
   }
 
-  public setBrightness(channel: number, newBrightness: number): void {
-    // TODO
-  }
-
-  #send(message: Buffer, channel?: number) {
+  #createPacket({
+    packetType,
+    message,
+    channel,
+  }: {
+    packetType: number;
+    message: Buffer;
+    channel?: number;
+  }) {
     if (!this.#socket) {
       throw new Error(
         'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
       );
     }
-    const address = `255.255.255.${channel ?? 255}`;
-    this.#socket.send(message, this.#serverPort, address);
+
+    // Header
+    const payload = Buffer.alloc(8 + message.length);
+    payload.write('RVLX', 'ascii');
+    payload.writeUInt8(1); // Protocol version
+    payload.writeUInt8(channel ?? 255); // Destination channel, default to broadcast
+    payload.writeUInt8(this.#serverDeviceId);
+    payload.writeUInt8(packetType);
+
+    // Append the message
+    message.copy(payload, 8);
+
+    return payload;
+  }
+
+  #sendPacket(packet: Buffer) {
+    if (!this.#socket) {
+      throw new Error(
+        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
+      );
+    }
+
+    // Send the payload. We always broadcast, even when doing multicast
+    const address = `255.255.255.255`;
+    this.#socket.send(packet, this.#serverPort, address);
   }
 
   #sendReferenceBroadcast({ isFirst }: { isFirst: boolean }) {
-    if (!this.#socket) {
-      throw new Error(
-        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
-      );
-    }
-    const payload = Buffer.alloc(16);
+    const message = Buffer.alloc(16);
 
-    // Header
-    payload.write('RVLX', 'ascii');
-    payload.writeUInt8(1); // Protocol version
-    payload.writeUInt8(255); // Broadcast
-    payload.writeUInt8(this.#serverDeviceId);
-    payload.writeUInt8(3); // Clock sync packet type
+    message.writeUInt8(1); // Reference broadcast
+    message.writeUint16LE(id++);
+    message.writeUint8(0); // Reserved
+    message.writeUint8(isFirst ? 1 : 0);
+    message.writeUint8(0); // Reserved
 
-    // Payload
-    payload.writeUInt8(1); // Reference broadcast
-    payload.writeUint16LE(id++);
-    payload.writeUint8(0); // Reserved
-    payload.writeUint8(isFirst ? 1 : 0);
-    payload.writeUint8(0); // Reserved
-
-    this.#send(payload);
+    this.#sendPacket(
+      this.#createPacket({ packetType: PACKET_TYPE_CLOCK_SYNC, message })
+    );
   }
 
   #getAddressForInterface(networkInterface: string): string {
@@ -161,5 +251,11 @@ export class RVLManager {
       );
     }
     return address;
+  }
+
+  #validateChannel(channel: number): void {
+    if (!Number.isInteger(channel) || channel < 0 || channel > 255) {
+      throw new Error(`Channel must be an integer between 0 and 255`);
+    }
   }
 }
