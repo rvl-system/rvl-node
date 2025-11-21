@@ -1,7 +1,7 @@
 {
   "name": "rvl-node",
-  "version": "6.3.1",
-  "description": "A Node.js implementation of the RVL* library family based on Web Assembly",
+  "version": "7.0.0",
+  "description": "A Node.js implementation of the RVL* library family",
   "type": "module",
   "exports": {
     ".": {

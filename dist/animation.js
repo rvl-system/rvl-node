@@ -52,7 +52,7 @@ export function createColorCycleAnimation(rate, a) {
     wave.a.b = Math.round(a);
     return wave;
 }
-export function createWaveAnimation(h, s, rate, spacing) {
+export function createMovingAnimation(h, s, rate, spacing) {
     validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');

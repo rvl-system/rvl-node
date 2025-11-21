@@ -3,13 +3,13 @@ import { type RVLManagerOptions } from './types.js';
 
 export { getDefaultInterface, getAvailableInterfaces } from './net.js';
 export {
-  createAnimationParameters as createWaveParameters,
-  createEmptyAnimation as createEmptyWave,
-  createSolidColorAnimation as createSolidColorWave,
-  createColorCycleAnimation as createColorCycleWave,
-  createWaveAnimation as createMovingWave,
-  createPulsingAnimation as createPulsingWave,
-  createRainbowAnimation as createRainbowWave,
+  createAnimationParameters,
+  createEmptyAnimation,
+  createSolidColorAnimation,
+  createColorCycleAnimation,
+  createMovingAnimation,
+  createPulsingAnimation,
+  createRainbowAnimation,
 } from './animation.js';
 
 export {
@@ -17,6 +17,8 @@ export {
   type AnimationLayer,
   type AnimationParameters,
 } from './types.js';
+
+export { type RVLManager };
 
 export async function createManager(options?: RVLManagerOptions) {
   const manager = new RVLManager(options);

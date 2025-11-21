@@ -83,7 +83,7 @@ export function createColorCycleAnimation(
   return wave;
 }
 
-export function createWaveAnimation(
+export function createMovingAnimation(
   h: number,
   s: number,
   rate: number,

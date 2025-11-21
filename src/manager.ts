@@ -10,15 +10,47 @@ const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 
+const PROTOCOL_VERSION = 1;
 const PACKET_TYPE_SYSTEM = 1;
 // const PACKET_TYPE_DISCOVER = 2; // Not used
 const PACKET_TYPE_CLOCK_SYNC = 3;
 const PACKET_TYPE_ANIMATION = 4;
 
+const CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST = 1;
+// const CLOCK_SYNC_PACKET_TYPE_OBSERVATION = 2; // Not used
+
 // Private and friend class properties
 export const initManager = Symbol();
 
+// Reference broadcast id counter
 let id = 0;
+
+class AppendBuffer {
+  protected bytes: number[] = [];
+
+  append8(value: number) {
+    this.bytes.push(value);
+  }
+
+  append16(value: number) {
+    this.bytes.push(value & 0xff);
+    this.bytes.push((value >> 8) & 0xff);
+  }
+
+  appendString(value: string) {
+    for (let i = 0; i < value.length; i++) {
+      this.bytes.push(value.charCodeAt(i));
+    }
+  }
+
+  appendBuffer(other: AppendBuffer): void {
+    this.bytes.push(...other.bytes);
+  }
+
+  toBuffer(): Buffer {
+    return Buffer.from(this.bytes);
+  }
+}
 
 export class RVLManager {
   #socket: Socket | undefined;
@@ -137,17 +169,17 @@ export class RVLManager {
     }
 
     // Construct the payload
-    const message = Buffer.alloc(16);
-    message.writeUInt8(parameters.timePeriod);
-    message.writeUInt8(parameters.distancePeriod);
+    const message = new AppendBuffer();
+    message.append8(parameters.timePeriod);
+    message.append8(parameters.distancePeriod);
     for (let i = 0; i < MAX_NUM_WAVES; i++) {
       const animation = parameters.animations[i] ?? createEmptyAnimation();
       for (const channel of Object.values(animation)) {
-        message.writeUInt8(channel.a);
-        message.writeUInt8(channel.b);
-        message.writeUInt8(channel.w_t);
-        message.writeUInt8(channel.w_x);
-        message.writeUInt8(channel.phi);
+        message.append8(channel.a);
+        message.append8(channel.b);
+        message.append8(channel.w_t);
+        message.append8(channel.w_x);
+        message.append8(channel.phi);
       }
     }
 
@@ -165,10 +197,10 @@ export class RVLManager {
 
   public setPowerState(channel: number, newPowerState: boolean): void {
     this.#validateChannel(channel);
-    const message = Buffer.alloc(16);
-    message.writeUInt8(newPowerState ? 1 : 0); // Power state
-    message.writeUInt8(255); // Brightness, which we don't support
-    message.writeUInt16LE(0); // Reserved
+    const message = new AppendBuffer();
+    message.append8(newPowerState ? 1 : 0); // Power state
+    message.append8(255); // Brightness, which we don't support
+    message.append16(0); // Reserved
     this.#sendPacket(
       this.#createPacket({ packetType: PACKET_TYPE_SYSTEM, message, channel })
     );
@@ -180,8 +212,8 @@ export class RVLManager {
     channel,
   }: {
     packetType: number;
-    message: Buffer;
-    channel?: number;
+    message: AppendBuffer;
+    channel: number;
   }) {
     if (!this.#socket) {
       throw new Error(
@@ -190,17 +222,19 @@ export class RVLManager {
     }
 
     // Header
-    const payload = Buffer.alloc(8 + message.length);
-    payload.write('RVLX', 'ascii');
-    payload.writeUInt8(1); // Protocol version
-    payload.writeUInt8(channel ?? 255); // Destination channel, default to broadcast
-    payload.writeUInt8(this.#serverDeviceId);
-    payload.writeUInt8(packetType);
+    const payload = new AppendBuffer();
+    payload.appendString('RVLX');
+    payload.append8(PROTOCOL_VERSION); // Protocol version
+    payload.append8(255); // Destination channel, default to broadcast
+    payload.append8(this.#serverDeviceId);
+    payload.append8(packetType);
+    payload.append8(channel); // Reserved
+    payload.append8(0); // Reserved
 
     // Append the message
-    message.copy(payload, 8);
+    payload.appendBuffer(message);
 
-    return payload;
+    return payload.toBuffer();
   }
 
   #sendPacket(packet: Buffer) {
@@ -216,16 +250,22 @@ export class RVLManager {
   }
 
   #sendReferenceBroadcast({ isFirst }: { isFirst: boolean }) {
-    const message = Buffer.alloc(16);
-
-    message.writeUInt8(1); // Reference broadcast
-    message.writeUint16LE(id++);
-    message.writeUint8(0); // Reserved
-    message.writeUint8(isFirst ? 1 : 0);
-    message.writeUint8(0); // Reserved
+    const message = new AppendBuffer();
+    message.append8(CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST); // Reference broadcast
+    message.append16(id++);
+    message.append8(0); // Reserved
+    message.append8(isFirst ? 1 : 0);
+    message.append8(0); // Reserved
+    message.append8(0); // Reserved
+    message.append8(0); // Reserved
+    message.append8(0); // Reserved
 
     this.#sendPacket(
-      this.#createPacket({ packetType: PACKET_TYPE_CLOCK_SYNC, message })
+      this.#createPacket({
+        packetType: PACKET_TYPE_CLOCK_SYNC,
+        message,
+        channel: 255,
+      })
     );
   }
 
