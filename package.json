@@ -1,6 +1,6 @@
 {
   "name": "rvl-node",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "A Node.js implementation of the RVL* library family",
   "type": "module",
   "exports": {
