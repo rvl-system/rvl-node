@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
 import { getDirname } from 'cross-dirname';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import { all } from 'eslint-plugin-fast-import';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
@@ -13,6 +13,7 @@ import tseslint from 'typescript-eslint';
 
 export default defineConfig([
   includeIgnoreFile(join(getDirname(), '.gitignore')),
+  globalIgnores(['dist/**/*']),
   {
     files: ['**/*.{js,mjs,jsx,ts,tsx,mts}'],
     languageOptions: {
