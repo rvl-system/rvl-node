@@ -91,31 +91,34 @@ export class RVLManager {
                     throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
                 }
                 this.#socket.setBroadcast(true);
-                resolve();
-            });
-            // TODO: need to do time slicing for the below:
-            // Send reference broadcast packets at a regular interval
-            setInterval(() => {
-                this.#sendReferenceBroadcast({ isFirst: true });
-                setTimeout(() => {
-                    this.#sendReferenceBroadcast({ isFirst: false });
+                // Send reference broadcast packets at slice 0ms
+                setInterval(() => {
+                    this.#sendReferenceBroadcast({ isFirst: true });
                     setTimeout(() => {
                         this.#sendReferenceBroadcast({ isFirst: false });
+                        setTimeout(() => {
+                            this.#sendReferenceBroadcast({ isFirst: false });
+                        }, 100);
                     }, 100);
-                }, 100);
-            }, 2000);
-            // Send animation packets at a regular interval
-            setInterval(() => {
-                for (const packet of this.#animationPackets.values()) {
-                    this.#sendPacket(packet);
-                }
-            }, 1000);
-            // Send system packets at a regular interval
-            setInterval(() => {
-                for (const packet of this.#systemPackets.values()) {
-                    this.#sendPacket(packet);
-                }
-            }, 1000);
+                }, 1000);
+                // Send animation packets at slice 500ms
+                setTimeout(() => {
+                    setInterval(() => {
+                        for (const packet of this.#animationPackets.values()) {
+                            this.#sendPacket(packet);
+                        }
+                    }, 1000);
+                }, 500);
+                // Send system packets at slice 750ms
+                setTimeout(() => {
+                    setInterval(() => {
+                        for (const packet of this.#systemPackets.values()) {
+                            this.#sendPacket(packet);
+                        }
+                    }, 1000);
+                }, 750);
+                resolve();
+            });
         });
     }
     setAnimationParameters(channel, parameters) {
@@ -174,16 +177,6 @@ export class RVLManager {
         payload.append8(packetType);
         payload.append8(channel); // Reserved
         payload.append8(0); // Reserved
-        /*
-    
-      Platform::system->write(signature, 4);
-      Platform::system->write8(PROTOCOL_VERSION);
-      Platform::system->write8(destination);
-      Platform::system->write8(Platform::system->getDeviceId());
-      Platform::system->write8(packetType);
-      Platform::system->write8(getChannel());
-      Platform::system->write8(0);
-      */
         // Append the message
         payload.appendBuffer(message);
         return payload.toBuffer();

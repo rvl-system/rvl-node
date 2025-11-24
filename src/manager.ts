@@ -121,35 +121,38 @@ export class RVLManager {
           );
         }
         this.#socket.setBroadcast(true);
-        resolve();
-      });
 
-      // TODO: need to do time slicing for the below:
-
-      // Send reference broadcast packets at a regular interval
-      setInterval(() => {
-        this.#sendReferenceBroadcast({ isFirst: true });
-        setTimeout(() => {
-          this.#sendReferenceBroadcast({ isFirst: false });
+        // Send reference broadcast packets at slice 0ms
+        setInterval(() => {
+          this.#sendReferenceBroadcast({ isFirst: true });
           setTimeout(() => {
             this.#sendReferenceBroadcast({ isFirst: false });
+            setTimeout(() => {
+              this.#sendReferenceBroadcast({ isFirst: false });
+            }, 100);
           }, 100);
-        }, 100);
-      }, 2000);
+        }, 1000);
 
-      // Send animation packets at a regular interval
-      setInterval(() => {
-        for (const packet of this.#animationPackets.values()) {
-          this.#sendPacket(packet);
-        }
-      }, 1000);
+        // Send animation packets at slice 500ms
+        setTimeout(() => {
+          setInterval(() => {
+            for (const packet of this.#animationPackets.values()) {
+              this.#sendPacket(packet);
+            }
+          }, 1000);
+        }, 500);
 
-      // Send system packets at a regular interval
-      setInterval(() => {
-        for (const packet of this.#systemPackets.values()) {
-          this.#sendPacket(packet);
-        }
-      }, 1000);
+        // Send system packets at slice 750ms
+        setTimeout(() => {
+          setInterval(() => {
+            for (const packet of this.#systemPackets.values()) {
+              this.#sendPacket(packet);
+            }
+          }, 1000);
+        }, 750);
+
+        resolve();
+      });
     });
   }
 
