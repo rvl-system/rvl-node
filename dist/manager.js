@@ -8,15 +8,9 @@ const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
 const PROTOCOL_VERSION = 1;
 const PACKET_TYPE_SYSTEM = 1;
-// const PACKET_TYPE_DISCOVER = 2; // Not used
-const PACKET_TYPE_CLOCK_SYNC = 3;
 const PACKET_TYPE_ANIMATION = 4;
-const CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST = 1;
-// const CLOCK_SYNC_PACKET_TYPE_OBSERVATION = 2; // Not used
 // Private and friend class properties
 export const initManager = Symbol();
-// Reference broadcast id counter
-let id = 0;
 class AppendBuffer {
     bytes = [];
     append8(value) {
@@ -91,16 +85,6 @@ export class RVLManager {
                     throw new Error('Internal Error: this[socket] is unexpectedly undefined. This is a bug');
                 }
                 this.#socket.setBroadcast(true);
-                // Send reference broadcast packets at slice 0ms
-                setInterval(() => {
-                    this.#sendReferenceBroadcast({ isFirst: true });
-                    setTimeout(() => {
-                        this.#sendReferenceBroadcast({ isFirst: false });
-                        setTimeout(() => {
-                            this.#sendReferenceBroadcast({ isFirst: false });
-                        }, 100);
-                    }, 100);
-                }, 1000);
                 // Send animation packets at slice 500ms
                 setTimeout(() => {
                     setInterval(() => {
@@ -188,22 +172,6 @@ export class RVLManager {
         // Send the payload. We always broadcast, even when doing multicast
         const address = `255.255.255.255`;
         this.#socket.send(packet, this.#serverPort, address);
-    }
-    #sendReferenceBroadcast({ isFirst }) {
-        const message = new AppendBuffer();
-        message.append8(CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST); // Reference broadcast
-        message.append16(id++);
-        message.append8(0); // Reserved
-        message.append8(isFirst ? 1 : 0);
-        message.append8(0); // Reserved
-        message.append8(0); // Reserved
-        message.append8(0); // Reserved
-        message.append8(0); // Reserved
-        this.#sendPacket(this.#createPacket({
-            packetType: PACKET_TYPE_CLOCK_SYNC,
-            message,
-            channel: 255,
-        }));
     }
     #getAddressForInterface(networkInterface) {
         const interfaces = networkInterfaces();
