@@ -174,7 +174,7 @@ _Arguments_:
     <tr>
       <td>parameters</td>
       <td>AnimationParameters</td>
-      <td>The animation parameters to set in the system. Throws if there are more than 4 layers, or if a value is out of range for its field: <code>timePeriod</code>, <code>distancePeriod</code>, <code>a</code> and <code>b</code> are 0 to 255, and <code>w_t</code>, <code>w_x</code> and <code>phi</code> are -128 to 127.</td>
+      <td>The animation parameters to set in the system. Throws if there are more than 4 layers, or if a value is out of range for its field: <code>timePeriod</code> and <code>distancePeriod</code> are 1 to 255, <code>a</code> and <code>b</code> are 0 to 255, and <code>w_t</code>, <code>w_x</code> and <code>phi</code> are -128 to 127.</td>
     </tr>
   </tbody>
 </table>

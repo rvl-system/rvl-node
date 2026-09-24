@@ -152,6 +152,9 @@ export class RVLManager extends EventEmitter {
         if (typeof parameters.distancePeriod !== 'number') {
             parameters.distancePeriod = DEFAULT_DISTANCE_PERIOD;
         }
+        // The firmware divides by both, and drops a packet where either is 0
+        checkRange(parameters.timePeriod, 1, 0xff);
+        checkRange(parameters.distancePeriod, 1, 0xff);
         const payload = new AppendBuffer();
         payload.append8(parameters.timePeriod);
         payload.append8(parameters.distancePeriod);

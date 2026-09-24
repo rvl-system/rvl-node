@@ -18,7 +18,7 @@ export type AnimationLayer = {
 };
 
 export type AnimationParameters = {
-  timePeriod?: number; // Default 255
-  distancePeriod?: number; // Default 32
+  timePeriod?: number; // 1 to 255, default 255
+  distancePeriod?: number; // 1 to 255, default 32
   animations: AnimationLayer[];
 };
