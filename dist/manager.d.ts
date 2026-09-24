@@ -12,7 +12,7 @@ export declare class RVLManager extends EventEmitter<RVLManagerEvents> {
     get connected(): boolean;
     constructor({ networkInterface }?: RVLManagerOptions);
     [initManager](): Promise<void>;
-    setAnimationParameters(channel: number, parameters: AnimationParameters): void;
-    setOff(channel: number): void;
+    setAnimationParameters(channel: number, parameters: AnimationParameters): Promise<void>;
+    setOff(channel: number): Promise<void>;
 }
 export {};

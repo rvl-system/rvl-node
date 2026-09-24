@@ -1,5 +1,10 @@
 import { networkInterfaces } from 'node:os';
 const VALID_INTERFACE_PREFIXES = ['en', 'eth', 'wlan', 'Wi-Fi', 'Ethernet'];
+// A self-assigned 169.254 address means DHCP hasn't answered, so it counts as
+// no address, the same as no link
+export function isUsableAddress({ family, internal, address, }) {
+    return family === 'IPv4' && !internal && !address.startsWith('169.254.');
+}
 export function getAvailableInterfaces() {
     const interfaces = networkInterfaces();
     const validInterfaces = [];
@@ -21,8 +26,7 @@ export function getAvailableInterfaces() {
         if (!isEstimate) {
             continue;
         }
-        const ips = iface.filter((e) => !e.internal && e.family === 'IPv4');
-        if (ips.length) {
+        if (iface.some(isUsableAddress)) {
             validInterfaces.push(ifaceName);
         }
     }

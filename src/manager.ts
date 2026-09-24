@@ -3,7 +3,11 @@ import { EventEmitter } from 'node:events';
 import { networkInterfaces } from 'node:os';
 
 import { createEmptyAnimation } from './animation.js';
-import { getAvailableInterfaces, getDefaultInterface } from './net.js';
+import {
+  getAvailableInterfaces,
+  getDefaultInterface,
+  isUsableAddress,
+} from './net.js';
 import { type AnimationParameters, type RVLManagerOptions } from './types.js';
 
 const DEFAULT_TIME_PERIOD = 255;
@@ -36,16 +40,39 @@ const ID_WARNING_INTERVAL = 10000;
 // Private and friend class properties
 export const initManager = Symbol();
 
+function checkRange(value: number, min: number, max: number) {
+  if (!Number.isInteger(value) || value < min || value > max) {
+    throw new Error(`Expected an integer from ${min} to ${max}, got ${value}`);
+  }
+}
+
+// Big-endian, like the firmware's read16() and read32()
 class AppendBuffer {
   protected bytes: number[] = [];
 
   append8(value: number) {
+    checkRange(value, 0, 0xff);
     this.bytes.push(value);
   }
 
-  append16(value: number) {
+  appendInt8(value: number) {
+    checkRange(value, -0x80, 0x7f);
     this.bytes.push(value & 0xff);
-    this.bytes.push((value >> 8) & 0xff);
+  }
+
+  append16(value: number) {
+    checkRange(value, 0, 0xffff);
+    this.bytes.push((value >>> 8) & 0xff, value & 0xff);
+  }
+
+  append32(value: number) {
+    checkRange(value, 0, 0xffffffff);
+    this.bytes.push(
+      (value >>> 24) & 0xff,
+      (value >>> 16) & 0xff,
+      (value >>> 8) & 0xff,
+      value & 0xff
+    );
   }
 
   appendString(value: string) {
@@ -87,7 +114,7 @@ type RVLManagerEvents = {
 };
 
 export class RVLManager extends EventEmitter<RVLManagerEvents> {
-  #socket: Socket | undefined;
+  #socket: Socket;
 
   #networkInterface: string;
   #deviceId: number | undefined;
@@ -125,16 +152,22 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
       }
     }
     this.#networkInterface = networkInterface;
+    this.#socket = createSocket({ type: 'udp4' });
   }
 
   public [initManager](): Promise<void> {
-    return new Promise((resolve) => {
-      const socket = createSocket({ type: 'udp4' });
-      this.#socket = socket;
+    return new Promise((resolve, reject) => {
+      const socket = this.#socket;
+      let listening = false;
 
+      // Before listening, an error is a failed bind that nothing retries
       socket.on('error', (err) => {
-        console.error(err);
-        this.#socket?.close();
+        if (listening) {
+          console.error(err);
+        } else {
+          socket.close();
+          reject(err);
+        }
       });
 
       socket.on('message', (message) => {
@@ -142,6 +175,7 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
       });
 
       socket.on('listening', () => {
+        listening = true;
         socket.setBroadcast(true);
 
         setInterval(() => {
@@ -165,10 +199,12 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
     });
   }
 
+  // The public sends validate synchronously and return a promise rather than
+  // being async, so a bad argument throws at the call site
   public setAnimationParameters(
     channel: number,
     parameters: AnimationParameters
-  ) {
+  ): Promise<void> {
     this.#validateChannel(channel);
     if (parameters.animations.length > MAX_NUM_WAVES) {
       throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
@@ -184,13 +220,13 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
     payload.append8(parameters.timePeriod);
     payload.append8(parameters.distancePeriod);
     for (let i = 0; i < MAX_NUM_WAVES; i++) {
-      const animation = parameters.animations[i] ?? createEmptyAnimation();
-      for (const channel of Object.values(animation)) {
-        payload.append8(channel.a);
-        payload.append8(channel.b);
-        payload.append8(channel.w_t);
-        payload.append8(channel.w_x);
-        payload.append8(channel.phi);
+      const layer = parameters.animations[i] ?? createEmptyAnimation();
+      for (const color of [layer.h, layer.s, layer.v, layer.a]) {
+        payload.append8(color.a);
+        payload.append8(color.b);
+        payload.appendInt8(color.w_t);
+        payload.appendInt8(color.w_x);
+        payload.appendInt8(color.phi);
       }
     }
 
@@ -198,25 +234,25 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
       packetType: PACKET_TYPE_WAVE_ANIMATION,
       payload,
     });
-    this.#sendAnimation(channel);
+    return this.#sendAnimation(channel);
   }
 
-  public setOff(channel: number): void {
+  public setOff(channel: number): Promise<void> {
     this.#validateChannel(channel);
     this.#channelAnimations.set(channel, {
       packetType: PACKET_TYPE_OFF,
       payload: new AppendBuffer(),
     });
-    this.#sendAnimation(channel);
+    return this.#sendAnimation(channel);
   }
 
-  #sendAnimation(channel: number) {
+  #sendAnimation(channel: number): Promise<void> {
     const animation = this.#channelAnimations.get(channel);
     const deviceId = this.#deviceId;
     // Dropped silently while there's no ID: that can last a while, and the ID
     // client already warns about it
     if (!animation || deviceId === undefined) {
-      return;
+      return Promise.resolve();
     }
 
     const packet = new AppendBuffer();
@@ -227,12 +263,12 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
     packet.append8(channel);
     packet.append8(0); // Reserved
     packet.appendBuffer(animation.payload);
-    this.#send(packet, RVLA_PORT);
+    return this.#send(packet, RVLA_PORT);
   }
 
   #sendAllAnimations() {
     for (const channel of this.#channelAnimations.keys()) {
-      this.#sendAnimation(channel);
+      void this.#sendAnimation(channel);
     }
   }
 
@@ -288,7 +324,7 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
     packet.append8(RVLI_PACKET_TYPE_ID_ASSIGNMENT);
     packet.append8(0); // Reserved
     packet.append8(ID_REQUEST_TYPE);
-    this.#send(packet, RVLI_PORT);
+    void this.#send(packet, RVLI_PORT);
   }
 
   #handleMessage(message: Buffer) {
@@ -322,26 +358,30 @@ export class RVLManager extends EventEmitter<RVLManagerEvents> {
     }
   }
 
-  #send(packet: AppendBuffer, port: number) {
-    if (!this.#socket) {
-      throw new Error(
-        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
-      );
-    }
+  // Never rejects, so callers can drop the promise
+  #send(packet: AppendBuffer, port: number): Promise<void> {
     const interfaceAddress = this.#getInterfaceAddress();
     if (!interfaceAddress) {
-      return;
+      return Promise.resolve();
     }
-    this.#socket.send(
-      packet.toBuffer(),
-      port,
-      getBroadcastAddress(interfaceAddress)
-    );
+    return new Promise((resolve) => {
+      this.#socket.send(
+        packet.toBuffer(),
+        port,
+        getBroadcastAddress(interfaceAddress),
+        (err) => {
+          if (err) {
+            console.error(err);
+          }
+          resolve();
+        }
+      );
+    });
   }
 
   #getInterfaceAddress(): InterfaceAddress | undefined {
     const bindings = networkInterfaces()[this.#networkInterface] ?? [];
-    const binding = bindings.find(({ family }) => family === 'IPv4');
+    const binding = bindings.find(isUsableAddress);
     if (!binding) {
       return undefined;
     }

@@ -1,6 +1,6 @@
 # RVL Node
 
-A Node.js implementation of [rvl](https://github.com/nebrius/rvl) based on Web Assembly. For a fully functioning example, take a look at the [Home Lights server](https://github.com/nebrius/home-lights/blob/master/server/src/index.ts) I wrote.
+A Node.js implementation of [rvl](https://github.com/rvl-system/rvl). For a fully functioning example, take a look at the [Home Lights server](https://github.com/nebrius/home-lights/blob/master/server/src/index.ts) I wrote.
 
 ## Installation
 
@@ -12,21 +12,21 @@ npm install rvl-node
 
 ## Usage
 
-The below code instantiates an RVL instance in controller mode, and then sets the animation pattern to be displayed on
-all other RVL devices listening on channel 1.
+The below code creates a manager, and then sets the animation pattern to be displayed on all RVL devices listening on
+channel 1.
 
 ```typescript
-import { createManager } from 'rvl-node';
 import {
-  createWaveParameters,
-  createSolidColorWave,
-} from 'rvl-node-animations';
+  createManager,
+  createAnimationParameters,
+  createSolidColorAnimation,
+} from 'rvl-node';
 
 const manager = await createManager();
-controller.setAnimationParameters(
+await manager.setAnimationParameters(
   1, // Channel 1
   createAnimationParameters(
-    createSolidColorAnimation(0, 255, 255) // Set the LED animation to solid red in the HSV space
+    createSolidColorAnimation(0, 255, 255) // Hue 0, full saturation, full alpha: solid red
   )
 );
 ```
@@ -35,7 +35,7 @@ controller.setAnimationParameters(
 
 #### getAvailableInterfaces
 
-Gets the list of available network interfaces that RVL Node can use. To be considered valid, it must have an IPv4 address, and the name must start with `en`, `eth`, `wlan`, `Wi-Fi`, or `Ethernet`.
+Gets the list of available network interfaces that RVL Node can use. To be considered valid, it must have an IPv4 address that isn't self-assigned (`169.254.x.x`), and the name must start with `en`, `eth`, `wlan`, `Wi-Fi`, or `Ethernet`.
 
 _Signature:_
 
@@ -63,7 +63,7 @@ _Returns:_ The name of the interface that will be used, or `undefined` if there 
 
 #### createManager
 
-Instantiates a new RVL manager, which can be used to create controllers.
+Creates the manager that sends animations to the fleet.
 
 _Signature:_
 
@@ -106,7 +106,7 @@ _Arguments_:
             <tr>
               <td>networkInterface (optional)</td>
               <td>string</td>
-              <td>The network interface to send/receive RVL packets on, e.g. "wlan0". If no value is provided, RVL will use the first interface it can find with an IPv4 address that's not 127.0.0.1, and throws if there isn't one. A named interface doesn't need an address yet, so name it if you're starting before the network is up.</td>
+              <td>The network interface to send/receive RVL packets on, e.g. "wlan0". If no value is provided, RVL will use the first interface it can find with an IPv4 address that isn't 127.0.0.1 or self-assigned, and throws if there isn't one. A named interface doesn't need an address yet, so name it if you're starting before the network is up.</td>
             </tr>
           </tbody>
         </table>
@@ -147,12 +147,12 @@ Emitted when the manager loses its device ID, which happens when the network int
 
 #### setAnimationParameters
 
-Sets the animation parameters for the system on a specific channel. These parameters will be synced to any other RVL devices on this channel within 2 seconds at most. You _can_ craft animation parameters by hand, but it's recommended to use the [rvl-node-animations](https://github.com/nebrius/rvl-node-animations) helper libraries instead. Crafting parameters by hand is a pain.
+Sets the animation parameters for the system on a specific channel. They're sent right away and re-sent every second. You _can_ craft animation parameters by hand, but it's recommended to use the helper functions exported by this package, such as `createAnimationParameters` and `createMovingAnimation`, instead. Crafting parameters by hand is a pain.
 
 _Signature:_
 
 ```typescript
-setAnimationParameters(channel: number, parameters: AnimationParameters): void
+setAnimationParameters(channel: number, parameters: AnimationParameters): Promise<void>
 ```
 
 _Arguments_:
@@ -174,12 +174,12 @@ _Arguments_:
     <tr>
       <td>parameters</td>
       <td>AnimationParameters</td>
-      <td>The animation parameters to set in the system.</td>
+      <td>The animation parameters to set in the system. Throws if there are more than 4 layers, or if a value is out of range for its field: <code>timePeriod</code>, <code>distancePeriod</code>, <code>a</code> and <code>b</code> are 0 to 255, and <code>w_t</code>, <code>w_x</code> and <code>phi</code> are -128 to 127.</td>
     </tr>
   </tbody>
 </table>
 
-_Returns:_ none.
+_Returns:_ a promise that resolves once the packet is sent, or right away if there's no device ID yet.
 
 #### setOff
 
@@ -188,7 +188,7 @@ Turns off the lights on a channel. Off is an animation like any other, so call `
 _Signature:_
 
 ```typescript
-setOff(channel: number): void
+setOff(channel: number): Promise<void>
 ```
 
 _Arguments_:
@@ -210,7 +210,7 @@ _Arguments_:
   </tbody>
 </table>
 
-_Returns:_ none
+_Returns:_ a promise that resolves once the packet is sent, or right away if there's no device ID yet.
 
 ## License
 

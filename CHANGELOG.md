@@ -8,14 +8,18 @@ Breaking changes:
 - Device IDs are now assigned by the coordinator instead of being derived from the IP address. `deviceId` is `undefined` until then, and animations set in the meantime are sent once it arrives
 - Replaced `setPowerState` with `setOff`. Off is an animation, so call `setAnimationParameters` to turn a channel back on
 - Channels must now be 0 through 7, and `setAnimationParameters` and `setOff` throw for anything else, including values that used to work
+- `setAnimationParameters` now throws when a parameter is out of range for its wire field, instead of silently sending a different value
 - Removed the `port` option and the `port` and `address` properties
 
 Other changes:
 
 - Added a `connected` property and `connected`/`disconnected` events
+- `setAnimationParameters` and `setOff` now return a promise that resolves once the packet is sent
 - Off is now re-sent every second, like animations
 - Packets are now sent to the interface's subnet broadcast address instead of `255.255.255.255`
-- The network interface no longer needs an IP address when the manager is created
+- The network interface no longer needs an IP address when the manager is created, and a self-assigned `169.254.x.x` address counts as none
+- Socket errors are now logged instead of crashing the process, and a failed bind now rejects `createManager`
+- Fixed wave layers being scrambled on the wire when their properties weren't defined in h, s, v, a order
 
 ## 7.0.3 (2025-11-24)
 
