@@ -33,61 +33,61 @@ export function createSolidColorAnimation(h, s, a) {
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
     validateNum(a, 0, 255, 'alpha');
-    const wave = createEmptyAnimation();
-    wave.h.b = Math.round(h);
-    wave.s.b = Math.round(s);
-    wave.v.b = 255;
-    wave.a.b = Math.round(a);
-    return wave;
+    const layer = createEmptyAnimation();
+    layer.h.b = Math.round(h);
+    layer.s.b = Math.round(s);
+    layer.v.b = 255;
+    layer.a.b = Math.round(a);
+    return layer;
 }
 export function createColorCycleAnimation(rate, a) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
-    const wave = createEmptyAnimation();
-    wave.h.a = 255;
-    wave.h.w_t = Math.round(rate);
-    wave.h.w_x = 0;
-    wave.s.b = 255;
-    wave.v.b = 255;
-    wave.a.b = Math.round(a);
-    return wave;
+    const layer = createEmptyAnimation();
+    layer.h.a = 255;
+    layer.h.w_t = Math.round(rate);
+    layer.h.w_x = 0;
+    layer.s.b = 255;
+    layer.v.b = 255;
+    layer.a.b = Math.round(a);
+    return layer;
 }
 export function createMovingAnimation(h, s, rate, spacing) {
     validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
-    const wave = createEmptyAnimation();
-    wave.h.b = Math.round(h);
-    wave.s.b = Math.round(s);
-    wave.v.b = 255;
-    wave.a.a = 255;
-    wave.a.w_t = Math.round(rate);
-    wave.a.w_x = Math.round(spacing);
-    return wave;
+    const layer = createEmptyAnimation();
+    layer.h.b = Math.round(h);
+    layer.s.b = Math.round(s);
+    layer.v.b = 255;
+    layer.a.a = 255;
+    layer.a.w_t = Math.round(rate);
+    layer.a.w_x = Math.round(spacing);
+    return layer;
 }
 export function createPulsingAnimation(h, s, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
-    const wave = createEmptyAnimation();
-    wave.h.b = Math.round(h);
-    wave.s.b = Math.round(s);
-    wave.v.b = 255;
-    wave.a.w_t = Math.round(rate);
-    wave.a.a = 255;
-    return wave;
+    const layer = createEmptyAnimation();
+    layer.h.b = Math.round(h);
+    layer.s.b = Math.round(s);
+    layer.v.b = 255;
+    layer.a.w_t = Math.round(rate);
+    layer.a.a = 255;
+    return layer;
 }
 export function createRainbowAnimation(a, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
-    const wave = createEmptyAnimation();
-    wave.h.a = 255;
-    wave.h.w_t = Math.round(rate);
-    wave.h.w_x = 2;
-    wave.s.b = 255;
-    wave.v.b = 255;
-    wave.a.b = Math.round(a);
-    return wave;
+    const layer = createEmptyAnimation();
+    layer.h.a = 255;
+    layer.h.w_t = Math.round(rate);
+    layer.h.w_x = 2;
+    layer.s.b = 255;
+    layer.v.b = 255;
+    layer.a.b = Math.round(a);
+    return layer;
 }
 //# sourceMappingURL=animation.js.map

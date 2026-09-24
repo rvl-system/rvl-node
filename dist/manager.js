@@ -5,7 +5,7 @@ import { createEmptyAnimation } from './animation.js';
 import { getAvailableInterfaces, getDefaultInterface, isUsableAddress, } from './net.js';
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
-const MAX_NUM_WAVES = 4;
+const MAX_NUM_LAYERS = 4;
 const NUM_CHANNELS = 8;
 // These mirror src/rvl/config.hpp in rvl (github.com/rvl-system/rvl)
 const RVLA_PORT = 4978;
@@ -15,7 +15,7 @@ const NUM_DEVICE_IDS = 240;
 const UNASSIGNED_DEVICE_ID = 255;
 const RVLA_SIGNATURE = 'RVLA';
 const PACKET_TYPE_OFF = 1;
-const PACKET_TYPE_WAVE_ANIMATION = 4;
+const PACKET_TYPE_PARAMETRIC_ANIMATION = 4;
 const RVLI_SIGNATURE = 'RVLI';
 const RVLI_PACKET_TYPE_ID_ASSIGNMENT = 1;
 const ID_REQUEST_TYPE = 1;
@@ -143,8 +143,8 @@ export class RVLManager extends EventEmitter {
     // being async, so a bad argument throws at the call site
     setAnimationParameters(channel, parameters) {
         this.#validateChannel(channel);
-        if (parameters.animations.length > MAX_NUM_WAVES) {
-            throw new Error(`Only ${MAX_NUM_WAVES} waves max are supported`);
+        if (parameters.animations.length > MAX_NUM_LAYERS) {
+            throw new Error(`Only ${MAX_NUM_LAYERS} layers max are supported`);
         }
         if (typeof parameters.timePeriod !== 'number') {
             parameters.timePeriod = DEFAULT_TIME_PERIOD;
@@ -158,7 +158,7 @@ export class RVLManager extends EventEmitter {
         const payload = new AppendBuffer();
         payload.append8(parameters.timePeriod);
         payload.append8(parameters.distancePeriod);
-        for (let i = 0; i < MAX_NUM_WAVES; i++) {
+        for (let i = 0; i < MAX_NUM_LAYERS; i++) {
             const layer = parameters.animations[i] ?? createEmptyAnimation();
             for (const color of [layer.h, layer.s, layer.v, layer.a]) {
                 payload.append8(color.a);
@@ -169,7 +169,7 @@ export class RVLManager extends EventEmitter {
             }
         }
         this.#channelAnimations.set(channel, {
-            packetType: PACKET_TYPE_WAVE_ANIMATION,
+            packetType: PACKET_TYPE_PARAMETRIC_ANIMATION,
             payload,
         });
         return this.#sendAnimation(channel);
