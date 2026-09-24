@@ -1,13 +1,18 @@
+import { EventEmitter } from 'node:events';
 import { type AnimationParameters, type RVLManagerOptions } from './types.js';
 export declare const initManager: unique symbol;
-export declare class RVLManager {
+type RVLManagerEvents = {
+    connected: [];
+    disconnected: [];
+};
+export declare class RVLManager extends EventEmitter<RVLManagerEvents> {
     #private;
     get networkInterface(): string;
-    get address(): string;
-    get port(): number;
-    get deviceId(): number;
-    constructor({ networkInterface, port, }?: RVLManagerOptions);
+    get deviceId(): number | undefined;
+    get connected(): boolean;
+    constructor({ networkInterface }?: RVLManagerOptions);
     [initManager](): Promise<void>;
     setAnimationParameters(channel: number, parameters: AnimationParameters): void;
-    setPowerState(channel: number, newPowerState: boolean): void;
+    setOff(channel: number): void;
 }
+export {};

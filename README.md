@@ -22,26 +22,16 @@ import {
   createSolidColorWave,
 } from 'rvl-node-animations';
 
-async function run() {
-  const manager = await createManager();
-  controller.setAnimationParameters(
-    1, // Channel 1
-    createAnimationParameters(
-      createSolidColorAnimation(0, 255, 255) // Set the LED animation to solid red in the HSV space
-    )
-  );
-}
-run();
+const manager = await createManager();
+controller.setAnimationParameters(
+  1, // Channel 1
+  createAnimationParameters(
+    createSolidColorAnimation(0, 255, 255) // Set the LED animation to solid red in the HSV space
+  )
+);
 ```
 
 ## API
-
-Note: the signatures below use the [TypeScript](https://www.typescriptlang.org/) definitions for clarity. The types are _not_ enforced in pure JavaScript, so in theory you can mix and match, but honestly I never tested that scenario and have no idea what will happen.
-
-If you're not familiar with TypeScript syntax, there are basically three things you need to know:
-
-1. A variables type is specified after the variable name, and separated by a `:`. For example, `x: number` means we have a variable named `x`, and it's a number.
-2. A `?` after the variable name and before the `:` means that the variable is optional. For example, `{ x?: number }` means the `x` property in this object can be left out.
 
 #### getAvailableInterfaces
 
@@ -80,7 +70,6 @@ _Signature:_
 ```typescript
 interface RVLManagerOptions {
   networkInterface?: string;
-  port?: number;
 }
 
 function createManager(options?: RVLManagerOptions): Promise<RVLManager>;
@@ -117,12 +106,7 @@ _Arguments_:
             <tr>
               <td>networkInterface (optional)</td>
               <td>string</td>
-              <td>The network interface to send/receive RVL packets on, e.g. "wlan0". If no value is provided, RVL will use the first interface it can find with an IPv4 address that's not 127.0.0.1</td>
-            </tr>
-            <tr>
-              <td>port (optional)</td>
-              <td>number</td>
-              <td>The UDP port to bind to. Default is <code>4978</code>.</td>
+              <td>The network interface to send/receive RVL packets on, e.g. "wlan0". If no value is provided, RVL will use the first interface it can find with an IPv4 address that's not 127.0.0.1, and throws if there isn't one. A named interface doesn't need an address yet, so name it if you're starting before the network is up.</td>
             </tr>
           </tbody>
         </table>
@@ -131,33 +115,39 @@ _Arguments_:
   </tbody>
 </table>
 
-_Returns:_ a promise that resolves to the manager once the manager has been initialized.
+_Returns:_ a promise that resolves to the manager once its socket is listening. Animations set before the coordinator assigns a device ID are sent as soon as its ID is acquired.
 
 ### RVL Manager Instance Properties
 
 #### networkInterface: string
 
-This read-only property returns the network interface the manager is bound to.
+This read-only property returns the network interface the manager sends on.
 
-#### address: string
+#### deviceId: number | undefined
 
-This read-only property returns the IP address of the network interface the manager is bound to.
+This read-only property returns the device ID that this manager appears as to other RVL nodes, or `undefined` if the coordinator hasn't assigned one yet. The ID is dropped when the interface loses its address, and may be different when it's reassigned.
 
-#### port: string
+#### connected: boolean
 
-This read-only property returns the port the manager is bound to.
+This read-only property returns whether the manager has a device ID and can send to the fleet.
 
-#### deviceId: string
+### RVL Manager Instance Events
 
-This read-only property returns the device ID that this manager will appear as to other RVL nodes. As of this writing, this is the last octet of the IP address.
+The manager is an [`EventEmitter`](https://nodejs.org/api/events.html).
+
+#### connected
+
+Emitted when the manager receives a device ID.
+
+#### disconnected
+
+Emitted when the manager loses its device ID, which happens when the network interface loses its address.
 
 ### RVL Manager Instance Methods
 
 #### setAnimationParameters
 
 Sets the animation parameters for the system on a specific channel. These parameters will be synced to any other RVL devices on this channel within 2 seconds at most. You _can_ craft animation parameters by hand, but it's recommended to use the [rvl-node-animations](https://github.com/nebrius/rvl-node-animations) helper libraries instead. Crafting parameters by hand is a pain.
-
-This method can only be called when the device is in controller mode, and cannot be called until the `initialized` event is emitted.
 
 _Signature:_
 
@@ -179,7 +169,7 @@ _Arguments_:
     <tr>
       <td>channel</td>
       <td>number</td>
-      <td>The channel number to set the animation parameters for.</td>
+      <td>The channel number to set the animation parameters for, from 0 to 7.</td>
     </tr>
     <tr>
       <td>parameters</td>
@@ -191,14 +181,14 @@ _Arguments_:
 
 _Returns:_ none.
 
-#### setPowerState
+#### setOff
 
-Sets the power state for the controller. This is a handy way to turn off lights instead of setting the color to black.
+Turns off the lights on a channel. Off is an animation like any other, so call `setAnimationParameters` to turn them back on.
 
 _Signature:_
 
 ```typescript
-setPowerState(channel: number, newPowerState: boolean): void
+setOff(channel: number): void
 ```
 
 _Arguments_:
@@ -215,12 +205,7 @@ _Arguments_:
     <tr>
       <td>channel</td>
       <td>number</td>
-      <td>The channel number to set the power state for.</td>
-    </tr>
-    <tr>
-      <td>newPowerState</td>
-      <td>boolean</td>
-      <td>The power state, with `true` meaning "on" and `false` meaning "off."</td>
+      <td>The channel number to turn off, from 0 to 7.</td>
     </tr>
   </tbody>
 </table>

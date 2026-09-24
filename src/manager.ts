@@ -1,18 +1,37 @@
 import { createSocket, type Socket } from 'node:dgram';
+import { EventEmitter } from 'node:events';
 import { networkInterfaces } from 'node:os';
 
 import { createEmptyAnimation } from './animation.js';
 import { getAvailableInterfaces, getDefaultInterface } from './net.js';
 import { type AnimationParameters, type RVLManagerOptions } from './types.js';
 
-const DEFAULT_PORT = 4978;
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_WAVES = 4;
+const NUM_CHANNELS = 8;
 
+// These mirror src/rvl/config.hpp in rvl (github.com/rvl-system/rvl)
+const RVLA_PORT = 4978;
+const RVLI_PORT = 4979;
 const PROTOCOL_VERSION = 1;
-const PACKET_TYPE_SYSTEM = 1;
-const PACKET_TYPE_ANIMATION = 4;
+const NUM_DEVICE_IDS = 240;
+const UNASSIGNED_DEVICE_ID = 255;
+
+const RVLA_SIGNATURE = 'RVLA';
+const PACKET_TYPE_OFF = 1;
+const PACKET_TYPE_WAVE_ANIMATION = 4;
+
+const RVLI_SIGNATURE = 'RVLI';
+const RVLI_PACKET_TYPE_ID_ASSIGNMENT = 1;
+const ID_REQUEST_TYPE = 1;
+const ID_REPLY_TYPE = 2;
+
+const ANIMATION_RESEND_INTERVAL = 1000;
+const IDENTITY_LOOP_INTERVAL = 250;
+const ID_RETRY_INTERVAL = 1000;
+const ID_RETRY_JITTER = 250;
+const ID_WARNING_INTERVAL = 10000;
 
 // Private and friend class properties
 export const initManager = Symbol();
@@ -44,36 +63,59 @@ class AppendBuffer {
   }
 }
 
-export class RVLManager {
+type ChannelAnimation = {
+  packetType: number;
+  payload: AppendBuffer;
+};
+
+type InterfaceAddress = {
+  address: string;
+  netmask: string;
+};
+
+function getBroadcastAddress({ address, netmask }: InterfaceAddress): string {
+  const netmaskOctets = netmask.split('.').map(Number);
+  return address
+    .split('.')
+    .map((octet, i) => Number(octet) | (~netmaskOctets[i] & 0xff))
+    .join('.');
+}
+
+type RVLManagerEvents = {
+  connected: [];
+  disconnected: [];
+};
+
+export class RVLManager extends EventEmitter<RVLManagerEvents> {
   #socket: Socket | undefined;
 
-  #serverNetworkInterface: string;
-  #serverAddress: string;
-  #serverPort: number;
-  #serverDeviceId: number;
+  #networkInterface: string;
+  #deviceId: number | undefined;
 
-  #animationPackets = new Map<number, Buffer>();
-  #systemPackets = new Map<number, Buffer>();
+  // Headers are written at send time, so re-sends carry the current ID
+  #channelAnimations = new Map<number, ChannelAnimation>();
+
+  #nextIdRequestTime = 0;
+  #idRequested = false;
+  #lastIdRequestTime = 0;
+  #lastIdWarningTime = 0;
 
   get networkInterface() {
-    return this.#serverNetworkInterface;
-  }
-  get address() {
-    return this.#serverAddress;
-  }
-
-  get port() {
-    return this.#serverPort;
+    return this.#networkInterface;
   }
 
   get deviceId() {
-    return this.#serverDeviceId;
+    return this.#deviceId;
   }
 
-  constructor({
-    networkInterface,
-    port = DEFAULT_PORT,
-  }: RVLManagerOptions = {}) {
+  // The ID is only ever held while the interface has an address, so this
+  // matches the firmware's isConnected()
+  get connected() {
+    return this.#deviceId !== undefined;
+  }
+
+  constructor({ networkInterface }: RVLManagerOptions = {}) {
+    super();
     if (!networkInterface) {
       networkInterface = getDefaultInterface();
       if (!networkInterface) {
@@ -82,58 +124,44 @@ export class RVLManager {
         );
       }
     }
-    const address = this.#getAddressForInterface(networkInterface);
-    this.#serverNetworkInterface = networkInterface;
-    this.#serverAddress = address;
-    const addressOctets = this.#serverAddress.split('.');
-    if (addressOctets.length !== 4) {
-      throw new Error(`Internal Error: could not parse server IP address`);
-    }
-    this.#serverDeviceId = parseInt(addressOctets[3], 10);
-    this.#serverPort = port;
+    this.#networkInterface = networkInterface;
   }
 
   public [initManager](): Promise<void> {
     return new Promise((resolve) => {
-      this.#socket = createSocket({
-        type: 'udp4',
-        reuseAddr: true,
-      });
+      const socket = createSocket({ type: 'udp4' });
+      this.#socket = socket;
 
-      this.#socket.on('error', (err) => {
+      socket.on('error', (err) => {
         console.error(err);
         this.#socket?.close();
       });
 
-      this.#socket.bind(this.#serverPort, this.#serverAddress);
-      this.#socket.on('listening', () => {
-        if (!this.#socket) {
-          throw new Error(
-            'Internal Error: this[socket] is unexpectedly undefined. This is a bug'
-          );
-        }
-        this.#socket.setBroadcast(true);
+      socket.on('message', (message) => {
+        this.#handleMessage(message);
+      });
 
-        // Send animation packets at slice 500ms
-        setTimeout(() => {
-          setInterval(() => {
-            for (const packet of this.#animationPackets.values()) {
-              this.#sendPacket(packet);
-            }
-          }, 1000);
-        }, 500);
+      socket.on('listening', () => {
+        socket.setBroadcast(true);
 
-        // Send system packets at slice 750ms
-        setTimeout(() => {
-          setInterval(() => {
-            for (const packet of this.#systemPackets.values()) {
-              this.#sendPacket(packet);
-            }
-          }, 1000);
-        }, 750);
+        setInterval(() => {
+          this.#sendAllAnimations();
+        }, ANIMATION_RESEND_INTERVAL);
+
+        const now = performance.now();
+        this.#nextIdRequestTime = now;
+        this.#lastIdWarningTime = now;
+        this.#identityLoop();
+        setInterval(() => {
+          this.#identityLoop();
+        }, IDENTITY_LOOP_INTERVAL);
 
         resolve();
       });
+
+      // Every address on an ephemeral port: each send's subnet broadcast is
+      // what picks the interface, and the coordinator replies to this port
+      socket.bind();
     });
   }
 
@@ -152,114 +180,179 @@ export class RVLManager {
       parameters.distancePeriod = DEFAULT_DISTANCE_PERIOD;
     }
 
-    // Construct the payload
-    const message = new AppendBuffer();
-    message.append8(parameters.timePeriod);
-    message.append8(parameters.distancePeriod);
+    const payload = new AppendBuffer();
+    payload.append8(parameters.timePeriod);
+    payload.append8(parameters.distancePeriod);
     for (let i = 0; i < MAX_NUM_WAVES; i++) {
       const animation = parameters.animations[i] ?? createEmptyAnimation();
       for (const channel of Object.values(animation)) {
-        message.append8(channel.a);
-        message.append8(channel.b);
-        message.append8(channel.w_t);
-        message.append8(channel.w_x);
-        message.append8(channel.phi);
+        payload.append8(channel.a);
+        payload.append8(channel.b);
+        payload.append8(channel.w_t);
+        payload.append8(channel.w_x);
+        payload.append8(channel.phi);
       }
     }
 
-    // Create the packet and store it
-    const newAnimationPacket = this.#createPacket({
-      packetType: PACKET_TYPE_ANIMATION,
-      message,
-      channel,
+    this.#channelAnimations.set(channel, {
+      packetType: PACKET_TYPE_WAVE_ANIMATION,
+      payload,
     });
-    this.#animationPackets.set(channel, newAnimationPacket);
-
-    // Send the packet immediately to update receivers
-    this.#sendPacket(newAnimationPacket);
+    this.#sendAnimation(channel);
   }
 
-  public setPowerState(channel: number, newPowerState: boolean): void {
+  public setOff(channel: number): void {
     this.#validateChannel(channel);
-    const message = new AppendBuffer();
-    message.append8(newPowerState ? 1 : 0); // Power state
-    message.append8(255); // Brightness, which we don't support
-    message.append16(0); // Reserved
-    this.#sendPacket(
-      this.#createPacket({ packetType: PACKET_TYPE_SYSTEM, message, channel })
+    this.#channelAnimations.set(channel, {
+      packetType: PACKET_TYPE_OFF,
+      payload: new AppendBuffer(),
+    });
+    this.#sendAnimation(channel);
+  }
+
+  #sendAnimation(channel: number) {
+    const animation = this.#channelAnimations.get(channel);
+    const deviceId = this.#deviceId;
+    // Dropped silently while there's no ID: that can last a while, and the ID
+    // client already warns about it
+    if (!animation || deviceId === undefined) {
+      return;
+    }
+
+    const packet = new AppendBuffer();
+    packet.appendString(RVLA_SIGNATURE);
+    packet.append8(PROTOCOL_VERSION);
+    packet.append8(deviceId);
+    packet.append8(animation.packetType);
+    packet.append8(channel);
+    packet.append8(0); // Reserved
+    packet.appendBuffer(animation.payload);
+    this.#send(packet, RVLA_PORT);
+  }
+
+  #sendAllAnimations() {
+    for (const channel of this.#channelAnimations.keys()) {
+      this.#sendAnimation(channel);
+    }
+  }
+
+  // A port of the firmware's ProtocolIdentity::loop(), with the interface
+  // having an IPv4 address standing in for the transport's link state. Only
+  // whether it has one matters, never which one
+  #identityLoop() {
+    const now = performance.now();
+    const interfaceAddress = this.#getInterfaceAddress();
+    if (!interfaceAddress) {
+      if (this.#deviceId !== undefined) {
+        this.#deviceId = undefined;
+        this.#lastIdWarningTime = now;
+        this.emit('disconnected');
+      }
+      this.#nextIdRequestTime = now;
+      this.#idRequested = false;
+    } else if (this.#deviceId === undefined && now >= this.#nextIdRequestTime) {
+      if (!this.#idRequested) {
+        console.info('Requesting device ID');
+        this.#idRequested = true;
+      }
+      this.#lastIdRequestTime = now;
+      this.#sendIdRequest();
+      this.#nextIdRequestTime =
+        now + ID_RETRY_INTERVAL + Math.random() * ID_RETRY_JITTER;
+    }
+
+    if (
+      this.#deviceId === undefined &&
+      now - this.#lastIdWarningTime >= ID_WARNING_INTERVAL
+    ) {
+      this.#lastIdWarningTime = now;
+      if (interfaceAddress) {
+        console.warn(
+          `No device ID from the coordinator yet. Is ${this.#networkInterface} ` +
+            `(${interfaceAddress.address}) on the fleet's network?`
+        );
+      } else {
+        console.warn(
+          `Waiting for ${this.#networkInterface} to get an IPv4 address. ` +
+            `Available interfaces: ${getAvailableInterfaces().join(', ')}`
+        );
+      }
+    }
+  }
+
+  #sendIdRequest() {
+    const packet = new AppendBuffer();
+    packet.appendString(RVLI_SIGNATURE);
+    packet.append8(PROTOCOL_VERSION);
+    packet.append8(UNASSIGNED_DEVICE_ID);
+    packet.append8(RVLI_PACKET_TYPE_ID_ASSIGNMENT);
+    packet.append8(0); // Reserved
+    packet.append8(ID_REQUEST_TYPE);
+    this.#send(packet, RVLI_PORT);
+  }
+
+  #handleMessage(message: Buffer) {
+    if (
+      message.length < 10 ||
+      message.toString('latin1', 0, 4) !== RVLI_SIGNATURE ||
+      message[4] !== PROTOCOL_VERSION ||
+      message[5] >= NUM_DEVICE_IDS ||
+      message[6] !== RVLI_PACKET_TYPE_ID_ASSIGNMENT ||
+      message[8] !== ID_REPLY_TYPE
+    ) {
+      return;
+    }
+    const id = message[9];
+    if (id >= NUM_DEVICE_IDS) {
+      return;
+    }
+
+    if (id === this.#deviceId) {
+      return;
+    }
+    const roundTrip = performance.now() - this.#lastIdRequestTime;
+    console.info(
+      `Assigned device ID ${id}, ${roundTrip.toFixed(1)} ms after the request`
+    );
+    const wasConnected = this.connected;
+    this.#deviceId = id;
+    this.#sendAllAnimations();
+    if (!wasConnected) {
+      this.emit('connected');
+    }
+  }
+
+  #send(packet: AppendBuffer, port: number) {
+    if (!this.#socket) {
+      throw new Error(
+        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
+      );
+    }
+    const interfaceAddress = this.#getInterfaceAddress();
+    if (!interfaceAddress) {
+      return;
+    }
+    this.#socket.send(
+      packet.toBuffer(),
+      port,
+      getBroadcastAddress(interfaceAddress)
     );
   }
 
-  #createPacket({
-    packetType,
-    message,
-    channel,
-  }: {
-    packetType: number;
-    message: AppendBuffer;
-    channel: number;
-  }) {
-    if (!this.#socket) {
-      throw new Error(
-        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
-      );
+  #getInterfaceAddress(): InterfaceAddress | undefined {
+    const bindings = networkInterfaces()[this.#networkInterface] ?? [];
+    const binding = bindings.find(({ family }) => family === 'IPv4');
+    if (!binding) {
+      return undefined;
     }
-
-    // Header
-    const payload = new AppendBuffer();
-    payload.appendString('RVLX');
-    payload.append8(PROTOCOL_VERSION); // Protocol version
-    payload.append8(255); // Destination channel, default to broadcast
-    payload.append8(this.#serverDeviceId);
-    payload.append8(packetType);
-    payload.append8(channel); // Reserved
-    payload.append8(0); // Reserved
-
-    // Append the message
-    payload.appendBuffer(message);
-
-    return payload.toBuffer();
-  }
-
-  #sendPacket(packet: Buffer) {
-    if (!this.#socket) {
-      throw new Error(
-        'Internal Error: this.#socket is unexpectedly undefined. This is a bug'
-      );
-    }
-
-    // Send the payload. We always broadcast, even when doing multicast
-    const address = `255.255.255.255`;
-    this.#socket.send(packet, this.#serverPort, address);
-  }
-
-  #getAddressForInterface(networkInterface: string): string {
-    const interfaces = networkInterfaces();
-    const iface = interfaces[networkInterface];
-    if (!iface) {
-      throw new Error(
-        `Unknown network interface ${networkInterface}. ` +
-          `Valid options are ${Object.keys(getAvailableInterfaces()).join(', ')}`
-      );
-    }
-    let address: string | undefined;
-    for (const binding of iface) {
-      if (binding.family === 'IPv4') {
-        address = binding.address;
-        break;
-      }
-    }
-    if (!address) {
-      throw new Error(
-        `Could not find an IPv4 address for interface "${networkInterface}"`
-      );
-    }
-    return address;
+    return { address: binding.address, netmask: binding.netmask };
   }
 
   #validateChannel(channel: number): void {
-    if (!Number.isInteger(channel) || channel < 0 || channel > 255) {
-      throw new Error(`Channel must be an integer between 0 and 255`);
+    if (!Number.isInteger(channel) || channel < 0 || channel >= NUM_CHANNELS) {
+      throw new Error(
+        `Channel must be an integer between 0 and ${NUM_CHANNELS - 1}`
+      );
     }
   }
 }

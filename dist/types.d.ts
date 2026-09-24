@@ -1,6 +1,5 @@
 export type RVLManagerOptions = {
     networkInterface?: string;
-    port?: number;
 };
 export type AnimationColorParameters = {
     a: number;
