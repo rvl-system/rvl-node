@@ -12,6 +12,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "typecheck": "tsc --noEmit && tsc -p demo",
+    "demo:waves": "node demo/waves.ts",
     "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\""
   },
   "repository": {
