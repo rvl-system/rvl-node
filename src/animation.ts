@@ -2,7 +2,7 @@ import {
   type AnimationColorParameters,
   type AnimationLayer,
   type AnimationParameters,
-} from './types.js';
+} from './types.ts';
 
 const EMPTY_CHANNEL: AnimationColorParameters = {
   a: 0,

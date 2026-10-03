@@ -1,4 +1,4 @@
-import { type AnimationLayer, type AnimationParameters } from './types.js';
+import { type AnimationLayer, type AnimationParameters } from './types.ts';
 export declare function createAnimationParameters(animation1?: AnimationLayer, animation2?: AnimationLayer, animation3?: AnimationLayer, animation4?: AnimationLayer): AnimationParameters;
 export declare function createEmptyAnimation(): AnimationLayer;
 export declare function createSolidColorAnimation(h: number, s: number, a: number): AnimationLayer;

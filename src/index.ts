@@ -1,7 +1,7 @@
-import { initManager, RVLManager } from './manager.js';
-import { type RVLManagerOptions } from './types.js';
+import { initManager, RVLManager } from './manager.ts';
+import { type RVLManagerOptions } from './types.ts';
 
-export { getDefaultInterface, getAvailableInterfaces } from './net.js';
+export { getDefaultInterface, getAvailableInterfaces } from './net.ts';
 export {
   createAnimationParameters,
   createEmptyAnimation,
@@ -10,13 +10,13 @@ export {
   createMovingAnimation,
   createPulsingAnimation,
   createRainbowAnimation,
-} from './animation.js';
+} from './animation.ts';
 
 export {
   type AnimationColorParameters,
   type AnimationLayer,
   type AnimationParameters,
-} from './types.js';
+} from './types.ts';
 
 export { type RVLManager };
 

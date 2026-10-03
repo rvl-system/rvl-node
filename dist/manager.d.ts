@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { type AnimationParameters, type RVLManagerOptions } from './types.js';
+import { type AnimationParameters, type RVLManagerOptions } from './types.ts';
 export declare const initManager: unique symbol;
 type RVLManagerEvents = {
     connected: [];

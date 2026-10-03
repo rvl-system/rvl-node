@@ -2,13 +2,13 @@ import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { networkInterfaces } from 'node:os';
 
-import { createEmptyAnimation } from './animation.js';
+import { createEmptyAnimation } from './animation.ts';
 import {
   getAvailableInterfaces,
   getDefaultInterface,
   isUsableAddress,
-} from './net.js';
-import { type AnimationParameters, type RVLManagerOptions } from './types.js';
+} from './net.ts';
+import { type AnimationParameters, type RVLManagerOptions } from './types.ts';
 
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;

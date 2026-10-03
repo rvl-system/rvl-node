@@ -4,10 +4,12 @@
     "rootDir": "src",
     "declaration": true,
     "target": "ES2024",
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": ["esnext"],
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "rewriteRelativeImportExtensions": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -17,7 +19,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "allowJs": true,
     "types": ["node"]
   },
   "include": [

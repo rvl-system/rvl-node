@@ -1,8 +1,9 @@
 import { createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { networkInterfaces } from 'node:os';
-import { createEmptyAnimation } from './animation.js';
-import { getAvailableInterfaces, getDefaultInterface, isUsableAddress, } from './net.js';
+import { createEmptyAnimation } from "./animation.js";
+import { getAvailableInterfaces, getDefaultInterface, isUsableAddress, } from "./net.js";
+import {} from "./types.js";
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_LAYERS = 4;

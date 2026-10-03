@@ -9,7 +9,7 @@ import {
   createMovingAnimation,
   createPulsingAnimation,
   createRainbowAnimation,
-} from '../dist/index.js';
+} from '../src/index.ts';
 
 const { values } = parseArgs({
   options: {
