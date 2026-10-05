@@ -5,10 +5,14 @@ import {
   type AnimationParameters,
   createAnimationParameters,
   createColorCycleAnimation,
-  createManager,
   createMovingAnimation,
   createPulsingAnimation,
   createRainbowAnimation,
+  getNetworkInterface,
+  init,
+  on,
+  setAnimationParameters,
+  setOff,
 } from '../src/index.ts';
 
 const { values } = parseArgs({
@@ -52,12 +56,12 @@ const slots: { name: string; parameters: AnimationParameters | null }[] = [
   { name: 'off', parameters: null },
 ];
 
-const manager = await createManager({ networkInterface: values.interface });
-console.log(`Sending on channel ${channel} over ${manager.networkInterface}`);
-manager.on('connected', () => {
+await init({ networkInterface: values.interface });
+console.log(`Sending on channel ${channel} over ${getNetworkInterface()}`);
+on('connected', () => {
   console.log('Connected');
 });
-manager.on('disconnected', () => {
+on('disconnected', () => {
   console.log('Disconnected');
 });
 
@@ -67,13 +71,13 @@ function playNextSlot() {
   slotIndex = (slotIndex + 1) % slots.length;
   console.log(`Playing ${name}`);
   void (parameters
-    ? manager.setAnimationParameters(channel, parameters)
-    : manager.setOff(channel));
+    ? setAnimationParameters(channel, parameters)
+    : setOff(channel));
 }
 playNextSlot();
 setInterval(playNextSlot, slotDuration);
 
 process.on('SIGINT', () => {
   console.log(`Turning off channel ${channel}`);
-  void manager.setOff(channel).then(() => process.exit());
+  void setOff(channel).then(() => process.exit());
 });

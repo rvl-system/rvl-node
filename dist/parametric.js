@@ -91,4 +91,4 @@ export function createRainbowAnimation(a, rate) {
     layer.a.b = Math.round(a);
     return layer;
 }
-//# sourceMappingURL=animation.js.map
+//# sourceMappingURL=parametric.js.map

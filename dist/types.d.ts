@@ -1,4 +1,4 @@
-export type RVLManagerOptions = {
+export type RVLInitOptions = {
     networkInterface?: string;
 };
 export type AnimationColorParameters = {

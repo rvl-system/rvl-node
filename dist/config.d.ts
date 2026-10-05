@@ -1,0 +1,13 @@
+export declare const RVLA_VERSION = 1;
+export declare const RVLI_VERSION = 1;
+export declare const NUM_DEVICE_IDS = 240;
+export declare const UNASSIGNED_DEVICE_ID = 255;
+export declare const RVLA_PORT = 4978;
+export declare const RVLI_PORT = 4979;
+export declare const PACKET_TYPE_OFF = 1;
+export declare const PACKET_TYPE_PARAMETRIC_ANIMATION = 4;
+export declare const RVLI_PACKET_TYPE_ID_ASSIGNMENT = 1;
+export declare const ID_REQUEST_TYPE = 1;
+export declare const ID_REPLY_TYPE = 2;
+export declare const RVLA_SIGNATURE = "RVLA";
+export declare const RVLI_SIGNATURE = "RVLI";

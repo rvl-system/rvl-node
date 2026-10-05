@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "node --test",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit && tsc -p demo",
     "demo:waves": "node demo/waves.ts",
     "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\""
