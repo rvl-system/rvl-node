@@ -1,30 +1,84 @@
 import {
   ID_REPLY_TYPE,
   NUM_DEVICE_IDS,
+  RVLI_PACKET_TYPE_CLOCK_SYNC,
   RVLI_PACKET_TYPE_ID_ASSIGNMENT,
   RVLI_SIGNATURE,
   RVLI_VERSION,
 } from '../config.ts';
 
-type InfrastructureMessage = { type: 'idReply'; deviceId: number };
+// These mirror src/rvl/protocols/clock_sync in rvl
+// (github.com/rvl-system/rvl)
+const CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST = 1;
+const CLOCK_SYNC_PACKET_TYPE_OBSERVATION = 2;
 
-// Reads one RVLI datagram. Returns undefined for anything to drop
+const HEADER_LENGTH = 8;
+
+type InfrastructureMessage =
+  | { type: 'idReply'; source: number; deviceId: number }
+  | { type: 'reference'; source: number; id: number; startOfSet: boolean }
+  | { type: 'observation'; source: number; id: number; observedTime: number };
+
+// Reads one RVLI datagram. Returns undefined for anything to drop: another
+// version, a source that can't be a node or is this one, an unknown type, or a
+// packet too short for its type
 export function decodeInfrastructurePacket(
-  message: Buffer
+  message: Buffer,
+  ownId: number | undefined
 ): InfrastructureMessage | undefined {
   if (
-    message.length < 10 ||
+    message.length < HEADER_LENGTH ||
     message.toString('latin1', 0, 4) !== RVLI_SIGNATURE ||
-    message[4] !== RVLI_VERSION ||
-    message[5] >= NUM_DEVICE_IDS ||
-    message[6] !== RVLI_PACKET_TYPE_ID_ASSIGNMENT ||
-    message[8] !== ID_REPLY_TYPE
+    message[4] !== RVLI_VERSION
   ) {
     return undefined;
   }
-  const deviceId = message[9];
-  if (deviceId >= NUM_DEVICE_IDS) {
+  const source = message[5];
+  if (source >= NUM_DEVICE_IDS || source === ownId) {
     return undefined;
   }
-  return { type: 'idReply', deviceId };
+  switch (message[6]) {
+    case RVLI_PACKET_TYPE_ID_ASSIGNMENT: {
+      if (message.length < 10 || message[8] !== ID_REPLY_TYPE) {
+        return undefined;
+      }
+      const deviceId = message[9];
+      if (deviceId >= NUM_DEVICE_IDS) {
+        return undefined;
+      }
+      return { type: 'idReply', source, deviceId };
+    }
+    case RVLI_PACKET_TYPE_CLOCK_SYNC: {
+      if (message.length < 12) {
+        return undefined;
+      }
+      const id = message.readUInt16BE(9);
+      switch (message[8]) {
+        case CLOCK_SYNC_PACKET_TYPE_REFERENCE_BROADCAST:
+          if (message.length < 14) {
+            return undefined;
+          }
+          return {
+            type: 'reference',
+            source,
+            id,
+            startOfSet: message[12] === 1,
+          };
+        case CLOCK_SYNC_PACKET_TYPE_OBSERVATION:
+          if (message.length < 16) {
+            return undefined;
+          }
+          return {
+            type: 'observation',
+            source,
+            id,
+            observedTime: message.readUInt32BE(12),
+          };
+        default:
+          return undefined;
+      }
+    }
+    default:
+      return undefined;
+  }
 }

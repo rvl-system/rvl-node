@@ -1,14 +1,28 @@
+import { handleObservation, handleReference } from "./clock.js";
 import { getDefaultInterface } from "./net.js";
 import { startAnimationProtocol } from "./protocols/animation.js";
-import { handleIdReply, startIdentityProtocol } from "./protocols/identity.js";
+import { getDeviceId, handleIdReply, startIdentityProtocol, } from "./protocols/identity.js";
 import { decodeInfrastructurePacket } from "./protocols/infrastructure.js";
 import { bindTransport } from "./transport.js";
 import {} from "./types.js";
 let initCalled = false;
-function handleInfrastructurePacket(message) {
-    const decoded = decodeInfrastructurePacket(message);
-    if (decoded?.type === 'idReply') {
-        handleIdReply(decoded.deviceId);
+// Clock sync needs no device ID: the firmware gates it on one because it files
+// its own observation under it, and this node keeps its own time in its own
+// slot
+function handleInfrastructurePacket(message, arrivalTime) {
+    const decoded = decodeInfrastructurePacket(message, getDeviceId());
+    switch (decoded?.type) {
+        case 'idReply':
+            handleIdReply(decoded.deviceId);
+            break;
+        case 'reference':
+            handleReference(decoded.id, decoded.startOfSet, arrivalTime);
+            break;
+        case 'observation':
+            handleObservation(decoded.id, decoded.source, decoded.observedTime);
+            break;
+        case undefined:
+            break;
     }
 }
 export async function init({ networkInterface, } = {}) {

@@ -1,16 +1,37 @@
+import { handleObservation, handleReference } from './clock.ts';
 import { getDefaultInterface } from './net.ts';
 import { startAnimationProtocol } from './protocols/animation.ts';
-import { handleIdReply, startIdentityProtocol } from './protocols/identity.ts';
+import {
+  getDeviceId,
+  handleIdReply,
+  startIdentityProtocol,
+} from './protocols/identity.ts';
 import { decodeInfrastructurePacket } from './protocols/infrastructure.ts';
 import { bindTransport } from './transport.ts';
 import { type RVLInitOptions } from './types.ts';
 
 let initCalled = false;
 
-function handleInfrastructurePacket(message: Buffer): void {
-  const decoded = decodeInfrastructurePacket(message);
-  if (decoded?.type === 'idReply') {
-    handleIdReply(decoded.deviceId);
+// Clock sync needs no device ID: the firmware gates it on one because it files
+// its own observation under it, and this node keeps its own time in its own
+// slot
+function handleInfrastructurePacket(
+  message: Buffer,
+  arrivalTime: number
+): void {
+  const decoded = decodeInfrastructurePacket(message, getDeviceId());
+  switch (decoded?.type) {
+    case 'idReply':
+      handleIdReply(decoded.deviceId);
+      break;
+    case 'reference':
+      handleReference(decoded.id, decoded.startOfSet, arrivalTime);
+      break;
+    case 'observation':
+      handleObservation(decoded.id, decoded.source, decoded.observedTime);
+      break;
+    case undefined:
+      break;
   }
 }
 

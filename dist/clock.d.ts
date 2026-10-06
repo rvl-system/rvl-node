@@ -1,0 +1,8 @@
+export declare function subtractFrames(a: number, b: number): number;
+export declare function handleReference(id: number, startOfSet: boolean, arrivalTime: number): void;
+export declare function handleObservation(id: number, source: number, observedTime: number): void;
+export declare function _testOnlyResetClockSync(): void;
+export declare function waitForClockSync(): Promise<void>;
+export declare function getAnimationClock(): number;
+export declare function toAnimationClock(localTime: number): number;
+export declare function toLocalTime(animationClock: number): number;

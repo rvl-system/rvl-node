@@ -2,6 +2,7 @@ import { createSocket, type Socket } from 'node:dgram';
 import { networkInterfaces } from 'node:os';
 
 import { type AppendBuffer } from './buffer.ts';
+import { RVLI_PORT } from './config.ts';
 import { isUsableAddress } from './net.ts';
 
 type InterfaceAddress = {
@@ -22,6 +23,20 @@ function getBroadcastAddress({ address, netmask }: InterfaceAddress): string {
     .split('.')
     .map((octet, i) => Number(octet) | (~netmaskOctets[i] & 0xff))
     .join('.');
+}
+
+function parseAddress(address: string): number {
+  return address
+    .split('.')
+    .reduce((value, octet) => ((value << 8) | Number(octet)) >>> 0, 0);
+}
+
+function isOnSubnet(
+  address: string,
+  { address: own, netmask }: InterfaceAddress
+): boolean {
+  const mask = parseAddress(netmask);
+  return (parseAddress(address) & mask) === (parseAddress(own) & mask);
 }
 
 // The socket is bound once init() resolves, so this is what every public
@@ -45,7 +60,7 @@ export function getNetworkInterface(): string {
 
 export function bindTransport(
   networkInterface: string,
-  onMessage: (message: Buffer) => void
+  onMessage: (message: Buffer, arrivalTime: number) => void
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const socket = createSocket({ type: 'udp4' });
@@ -55,14 +70,31 @@ export function bindTransport(
     socket.on('error', (err) => {
       if (listening) {
         console.error(err);
+        return;
+      }
+      socket.close();
+      if ('code' in err && err.code === 'EADDRINUSE') {
+        reject(
+          new Error(
+            `UDP port ${RVLI_PORT} is already in use on this host, most ` +
+              'likely by another rvl-node process. Running more than one ' +
+              'rvl-node instance per host is unsupported, and one instance ' +
+              'sends on every channel.',
+            { cause: err }
+          )
+        );
       } else {
-        socket.close();
         reject(err);
       }
     });
 
-    socket.on('message', (message) => {
-      onMessage(message);
+    socket.on('message', (message, remote) => {
+      // Read first, so the arrival time doesn't include the filtering
+      const arrivalTime = performance.now();
+      const interfaceAddress = getInterfaceAddress();
+      if (interfaceAddress && isOnSubnet(remote.address, interfaceAddress)) {
+        onMessage(message, arrivalTime);
+      }
     });
 
     socket.on('listening', () => {
@@ -72,9 +104,11 @@ export function bindTransport(
       resolve();
     });
 
-    // Every address on an ephemeral port: each send's subnet broadcast is
-    // what picks the interface, and the coordinator replies to this port
-    socket.bind();
+    // The RVLI port on every address, as a board binds it: the clock-sync
+    // broadcasts arrive on it, the coordinator replies to it, and each send's
+    // subnet broadcast is what picks the interface. RVLA only goes out, so the
+    // RVLA port is never bound
+    socket.bind(RVLI_PORT);
   });
 }
 
