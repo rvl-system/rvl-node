@@ -6,3 +6,9 @@ export declare function createColorCycleAnimation(rate: number, a: number): Anim
 export declare function createMovingAnimation(h: number, s: number, rate: number, spacing: number): AnimationLayer;
 export declare function createPulsingAnimation(h: number, s: number, rate: number): AnimationLayer;
 export declare function createRainbowAnimation(a: number, rate: number): AnimationLayer;
+export declare function createSimpleWaveParameters({ rate, waveHue, backgroundHue, brightness, }: {
+    rate: number;
+    waveHue: number;
+    backgroundHue: number;
+    brightness: number;
+}): AnimationParameters;

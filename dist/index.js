@@ -5,6 +5,6 @@ export { getEarliestStartFrame, setAnimationParameters, setOff, } from "./protoc
 export { getDeviceId, isConnected, on } from "./protocols/identity.js";
 export { getNetworkInterface } from "./transport.js";
 export { getDefaultInterface, getAvailableInterfaces } from "./net.js";
-export { createAnimationParameters, createEmptyAnimation, createSolidColorAnimation, createColorCycleAnimation, createMovingAnimation, createPulsingAnimation, createRainbowAnimation, } from "./parametric.js";
+export { createAnimationParameters, createEmptyAnimation, createSolidColorAnimation, createColorCycleAnimation, createMovingAnimation, createPulsingAnimation, createRainbowAnimation, createSimpleWaveParameters, } from "./parametric.js";
 export {} from "./types.js";
 //# sourceMappingURL=index.js.map

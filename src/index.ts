@@ -23,6 +23,7 @@ export {
   createMovingAnimation,
   createPulsingAnimation,
   createRainbowAnimation,
+  createSimpleWaveParameters,
 } from './parametric.ts';
 
 export {

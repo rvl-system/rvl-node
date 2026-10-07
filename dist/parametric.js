@@ -91,4 +91,25 @@ export function createRainbowAnimation(a, rate) {
     layer.a.b = Math.round(a);
     return layer;
 }
+// The Wave preset without its foreground layer: the wave over the background,
+// so the strip's average color holds still while the pattern moves
+export function createSimpleWaveParameters({ rate, waveHue, backgroundHue, brightness, }) {
+    validateNum(rate, 0, 32, 'rate');
+    validateNum(waveHue, 0, 255, 'wave hue');
+    validateNum(backgroundHue, 0, 255, 'background hue');
+    validateNum(brightness, 0, 255, 'brightness');
+    const wave = createEmptyAnimation();
+    wave.h.b = Math.round(waveHue);
+    wave.s.b = 255;
+    wave.v.b = Math.round(brightness);
+    wave.a.a = 255;
+    wave.a.w_t = Math.round(rate);
+    wave.a.w_x = 2;
+    const background = createEmptyAnimation();
+    background.h.b = Math.round(backgroundHue);
+    background.s.b = 255;
+    background.v.b = Math.round(brightness);
+    background.a.a = 255;
+    return createAnimationParameters(wave, undefined, background);
+}
 //# sourceMappingURL=parametric.js.map
