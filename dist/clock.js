@@ -25,6 +25,9 @@ const events = new EventEmitter();
 function convertToAnimationClock(localTime) {
     return wrap32(Math.floor(localTime) + offset);
 }
+function convertToAnimationFrame(localTime) {
+    return Math.floor(convertToAnimationClock(localTime) / FRAME_PERIOD);
+}
 // Rows are keyed by id % NUM_OBSERVATIONS_IN_SET, as the boards key theirs,
 // and another id takes a row over, so a coordinator that restarts its ids is
 // followed at once
@@ -38,11 +41,19 @@ function getObservationRow(id) {
     rows[index] = fresh;
     return fresh;
 }
+// A step of a frame or more re-bases the scenes, as adjustAnimationClock does
+// on a board. Both frames come from one local read, so the shift is exact
 function adjustOffset(correction) {
+    const localTime = performance.now();
+    const before = convertToAnimationFrame(localTime);
     offset = wrap32(offset + correction);
     if (!synchronized) {
         synchronized = true;
         events.emit('synchronized');
+    }
+    else if (Math.abs(correction) >= FRAME_PERIOD) {
+        const after = convertToAnimationFrame(localTime);
+        events.emit('step', subtractFrames(after, before), after);
     }
 }
 function processObservations() {
@@ -107,6 +118,12 @@ function assertClockSynchronized() {
         throw new Error('The fleet clock has not synchronized yet. Wait for waitForClockSync()');
     }
 }
+export function isClockSynchronized() {
+    return synchronized;
+}
+export function subscribeToClockSteps(listener) {
+    events.on('step', listener);
+}
 // Resolves once the fleet clock has synced, at once if it already has
 export function waitForClockSync() {
     if (synchronized) {
@@ -119,6 +136,10 @@ export function waitForClockSync() {
 export function getAnimationClock() {
     assertClockSynchronized();
     return convertToAnimationClock(performance.now());
+}
+export function getAnimationFrame() {
+    assertClockSynchronized();
+    return convertToAnimationFrame(performance.now());
 }
 export function toAnimationClock(localTime) {
     assertClockSynchronized();

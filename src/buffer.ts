@@ -39,8 +39,8 @@ export class AppendBuffer {
     }
   }
 
-  appendBuffer(other: AppendBuffer): void {
-    this.bytes.push(...other.bytes);
+  appendBytes(bytes: Uint8Array): void {
+    this.bytes.push(...bytes);
   }
 
   toBuffer(): Buffer {

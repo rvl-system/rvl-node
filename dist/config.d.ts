@@ -1,5 +1,10 @@
 export declare const FRAME_PERIOD = 32;
-export declare const RVLA_VERSION = 1;
+export declare const MIN_FADE_FRAMES = 16;
+export declare const DEFAULT_FADE_FRAMES = 16;
+export declare const SCENE_LEAD_FRAMES = 5;
+export declare const REPEAT_SEND_FRAMES = 4;
+export declare const SCENE_MAX_AGE_FRAMES = 2700000;
+export declare const RVLA_VERSION = 2;
 export declare const RVLI_VERSION = 1;
 export declare const NUM_DEVICE_IDS = 240;
 export declare const UNASSIGNED_DEVICE_ID = 255;

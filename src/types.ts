@@ -22,3 +22,8 @@ export type AnimationParameters = {
   distancePeriod?: number; // 1 to 255, default 32
   animations: AnimationLayer[];
 };
+
+export type SceneOptions = {
+  startFrame?: number; // a fleet frame, default the gate's choice
+  fadeFrames?: number; // 16 to 255, default 16
+};

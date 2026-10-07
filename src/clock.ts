@@ -29,6 +29,7 @@ type ObservationRow = {
 
 type ClockEvents = {
   synchronized: [];
+  step: [shift: number, frame: number];
 };
 
 // The firmware's ProtocolClockSync without voting: this node observes the
@@ -42,6 +43,10 @@ const events = new EventEmitter<ClockEvents>();
 
 function convertToAnimationClock(localTime: number): number {
   return wrap32(Math.floor(localTime) + offset);
+}
+
+function convertToAnimationFrame(localTime: number): number {
+  return Math.floor(convertToAnimationClock(localTime) / FRAME_PERIOD);
 }
 
 // Rows are keyed by id % NUM_OBSERVATIONS_IN_SET, as the boards key theirs,
@@ -58,11 +63,18 @@ function getObservationRow(id: number): ObservationRow {
   return fresh;
 }
 
+// A step of a frame or more re-bases the scenes, as adjustAnimationClock does
+// on a board. Both frames come from one local read, so the shift is exact
 function adjustOffset(correction: number): void {
+  const localTime = performance.now();
+  const before = convertToAnimationFrame(localTime);
   offset = wrap32(offset + correction);
   if (!synchronized) {
     synchronized = true;
     events.emit('synchronized');
+  } else if (Math.abs(correction) >= FRAME_PERIOD) {
+    const after = convertToAnimationFrame(localTime);
+    events.emit('step', subtractFrames(after, before), after);
   }
 }
 
@@ -148,6 +160,16 @@ function assertClockSynchronized(): void {
   }
 }
 
+export function isClockSynchronized(): boolean {
+  return synchronized;
+}
+
+export function subscribeToClockSteps(
+  listener: (shift: number, frame: number) => void
+): void {
+  events.on('step', listener);
+}
+
 // Resolves once the fleet clock has synced, at once if it already has
 export function waitForClockSync(): Promise<void> {
   if (synchronized) {
@@ -161,6 +183,11 @@ export function waitForClockSync(): Promise<void> {
 export function getAnimationClock(): number {
   assertClockSynchronized();
   return convertToAnimationClock(performance.now());
+}
+
+export function getAnimationFrame(): number {
+  assertClockSynchronized();
+  return convertToAnimationFrame(performance.now());
 }
 
 export function toAnimationClock(localTime: number): number {

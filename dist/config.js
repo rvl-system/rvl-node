@@ -1,9 +1,12 @@
 // These mirror src/rvl/config.hpp in rvl (github.com/rvl-system/rvl), in its
 // order
 export const FRAME_PERIOD = 32;
-// The boards are on 2. This sender still writes version 1's format, which they
-// drop, until it can schedule scenes
-export const RVLA_VERSION = 1;
+export const MIN_FADE_FRAMES = 16;
+export const DEFAULT_FADE_FRAMES = 16;
+export const SCENE_LEAD_FRAMES = 5;
+export const REPEAT_SEND_FRAMES = 4;
+export const SCENE_MAX_AGE_FRAMES = 2700000;
+export const RVLA_VERSION = 2;
 export const RVLI_VERSION = 1;
 export const NUM_DEVICE_IDS = 240;
 export const UNASSIGNED_DEVICE_ID = 255;

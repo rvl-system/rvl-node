@@ -27,8 +27,8 @@ export class AppendBuffer {
             this.bytes.push(value.charCodeAt(i));
         }
     }
-    appendBuffer(other) {
-        this.bytes.push(...other.bytes);
+    appendBytes(bytes) {
+        this.bytes.push(...bytes);
     }
     toBuffer() {
         return Buffer.from(this.bytes);

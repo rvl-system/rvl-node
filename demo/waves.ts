@@ -75,9 +75,12 @@ function playNextSlot() {
     : setOff(channel));
 }
 playNextSlot();
-setInterval(playNextSlot, slotDuration);
+const slotTimer = setInterval(playNextSlot, slotDuration);
 
+// Off can wait behind a pending scene and its fade, and a slot change in that
+// wait would replace it
 process.on('SIGINT', () => {
+  clearInterval(slotTimer);
   console.log(`Turning off channel ${channel}`);
   void setOff(channel).then(() => process.exit());
 });

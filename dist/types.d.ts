@@ -19,3 +19,7 @@ export type AnimationParameters = {
     distancePeriod?: number;
     animations: AnimationLayer[];
 };
+export type SceneOptions = {
+    startFrame?: number;
+    fadeFrames?: number;
+};

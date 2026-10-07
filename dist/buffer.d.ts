@@ -6,6 +6,6 @@ export declare class AppendBuffer {
     append16(value: number): void;
     append32(value: number): void;
     appendString(value: string): void;
-    appendBuffer(other: AppendBuffer): void;
+    appendBytes(bytes: Uint8Array): void;
     toBuffer(): Buffer;
 }
