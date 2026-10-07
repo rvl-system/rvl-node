@@ -1,50 +1,46 @@
-import assert from 'node:assert/strict';
-import { beforeEach, test } from 'node:test';
+import { beforeEach, expect, test } from 'vitest';
 
-import {
-  _testOnlyResetClockSync,
-  getAnimationClock,
-  handleObservation,
-  handleReference,
-  subtractFrames,
-  toAnimationClock,
-  toLocalTime,
-  waitForClockSync,
-} from '../src/clock.ts';
+import { subtractFrames } from '../src/clock.ts';
+import { type Node, startNode } from './harness.ts';
+import { buildObservation, buildReference, FIRST_BOARD } from './packets.ts';
 
 // Mirrors test_clock_sync and test_frames in rvl-firmware, by name where the
-// behavior is shared. rvl-node's own observation is never in the median, so
-// rows with few boards average differently than on a board
-
-const FIRST_PEER = 20;
+// behavior is shared, fed through the socket as the coordinator and the boards
+// feed a board. rvl-node's own observation is never in the median, so rows
+// with few boards average differently than on a board
 
 // Frame numbers run 0..FRAME_COUNT - 1, and subtractFrames's range is half of
 // that either side of zero
 const FRAME_COUNT = 2 ** 27;
 const HALF = 2 ** 26;
 
-beforeEach(_testOnlyResetClockSync);
+let node: Node;
+
+beforeEach(async () => {
+  node = await startNode();
+});
 
 // The offset is 0 until the first sync, and reading the clock throws until
 // then
 function readOffset(): number {
   try {
-    return toAnimationClock(0);
+    return node.clock.toAnimationClock(0);
   } catch {
     return 0;
   }
 }
 
-// Boards from firstPeer up each report observing reference id at this node's
-// observed time plus their delta
-function row(
+// At local time `time`, the coordinator's reference `id`, then boards from
+// firstPeer up each observing it at this node's observed time plus their delta
+async function row(
   time: number,
   id: number,
   startOfSet: boolean,
   deltas: number[],
-  firstPeer = FIRST_PEER
-): void {
-  handleReference(id, startOfSet, time);
+  firstPeer = FIRST_BOARD
+): Promise<void> {
+  await node.advance(time - node.now());
+  node.deliver(buildReference(id, startOfSet));
   observations(id, (time + readOffset()) >>> 0, deltas, firstPeer);
 }
 
@@ -52,168 +48,182 @@ function observations(
   id: number,
   observed: number,
   deltas: number[],
-  firstPeer = FIRST_PEER
+  firstPeer = FIRST_BOARD
 ): void {
   deltas.forEach((delta, i) => {
-    handleObservation(id, firstPeer + i, (observed + delta) >>> 0);
+    node.deliver(buildObservation(firstPeer + i, id, (observed + delta) >>> 0));
   });
 }
 
-// Starts the next set, which processes the current one
-function processSet(time: number, id: number): number {
+// Starts the next set at local time `time`, which processes the current one
+async function processSet(time: number, id: number): Promise<number> {
   const before = readOffset();
-  handleReference(id, true, time);
+  await node.advance(time - node.now());
+  node.deliver(buildReference(id, true));
   return (readOffset() - before) | 0;
 }
 
 // A first set that moves the offset by correction, so the test goes on synced
-function syncClock(correction = 0): void {
-  row(1000, 0, true, [correction, correction]);
-  processSet(1100, 1);
+async function syncClock(correction = 0): Promise<void> {
+  await row(1000, 0, true, [correction, correction]);
+  await processSet(1100, 1);
 }
 
-test('each row takes the upper median', () => {
-  syncClock();
-  row(2000, 1, false, [10, 20, 30]);
-  row(2100, 2, false, [10, 20, 30]);
-  assert.equal(processSet(4000, 3), 20);
+test('each row takes the upper median', async () => {
+  await syncClock();
+  await row(2000, 1, false, [10, 20, 30]);
+  await row(2100, 2, false, [10, 20, 30]);
+  expect(await processSet(4000, 3)).toBe(20);
 });
 
-test('rows with mixed numbers of observations are averaged', () => {
-  row(1000, 0, true, [10, 20, 30]);
-  row(1100, 1, false, [10, 50]);
-  row(1200, 2, false, [60]);
+test('rows with mixed numbers of observations are averaged', async () => {
+  await row(1000, 0, true, [10, 20, 30]);
+  await row(1100, 1, false, [10, 50]);
+  await row(1200, 2, false, [60]);
   // A board's own 0 would make the middle row's median 10 and the average 30
-  assert.equal(processSet(3300, 3), 43);
+  expect(await processSet(3300, 3)).toBe(43);
 });
 
-test('the start of set observation uses the corrected clock', () => {
-  row(1000, 0, true, [20, 20]);
-  row(1100, 1, false, [20, 20]);
-  row(1200, 2, false, [20, 20]);
-  assert.equal(processSet(3300, 3), 20);
+test('the start of set observation uses the corrected clock', async () => {
+  await row(1000, 0, true, [20, 20]);
+  await row(1100, 1, false, [20, 20]);
+  await row(1200, 2, false, [20, 20]);
+  expect(await processSet(3300, 3)).toBe(20);
   // Boards that observed reference 3 on the corrected clock agree with it
   observations(3, 3300 + 20, [0, 0]);
-  row(3400, 4, false, [0, 0]);
-  row(3500, 5, false, [0, 0]);
-  assert.equal(processSet(5600, 6), 0);
+  await row(3400, 4, false, [0, 0]);
+  await row(3500, 5, false, [0, 0]);
+  expect(await processSet(5600, 6)).toBe(0);
 });
 
-test('a row is discarded when this node missed its reference', () => {
-  row(1000, 0, true, [20, 20]);
+test('a row is discarded when this node missed its reference', async () => {
+  await row(1000, 0, true, [20, 20]);
   observations(1, 1100, [90, 90]);
-  row(1200, 2, false, [20, 20]);
-  assert.equal(processSet(3300, 3), 20);
+  await row(1200, 2, false, [20, 20]);
+  expect(await processSet(3300, 3)).toBe(20);
 });
 
 // A set whose start this node missed is never processed, so its rows still
 // hold data when the next set reuses them
-test('a reused row is cleared of an older reference', () => {
+test('a reused row is cleared of an older reference', async () => {
   const stale = [1000, 1000, 1000, 1000, 1000];
-  row(1000, 0, true, stale, FIRST_PEER + 10);
-  row(1100, 1, false, stale, FIRST_PEER + 10);
-  row(1200, 2, false, stale, FIRST_PEER + 10);
+  await row(1000, 0, true, stale, FIRST_BOARD + 10);
+  await row(1100, 1, false, stale, FIRST_BOARD + 10);
+  await row(1200, 2, false, stale, FIRST_BOARD + 10);
   observations(3, 3300, [20, 20]);
-  row(3400, 4, false, [20, 20]);
-  row(3500, 5, false, [20, 20]);
-  assert.equal(processSet(5600, 6), 20);
+  await row(3400, 4, false, [20, 20]);
+  await row(3500, 5, false, [20, 20]);
+  expect(await processSet(5600, 6)).toBe(20);
 });
 
-test('a lone rvl-node syncs with a zero correction', () => {
-  row(1000, 0, true, []);
-  row(1100, 1, false, []);
-  row(1200, 2, false, []);
-  assert.throws(() => getAnimationClock());
-  assert.equal(processSet(3300, 3), 0);
-  assert.doesNotThrow(() => getAnimationClock());
+test('a lone rvl-node syncs with a zero correction', async () => {
+  await row(1000, 0, true, []);
+  await row(1100, 1, false, []);
+  await row(1200, 2, false, []);
+  expect(() => node.clock.getAnimationClock()).toThrow();
+  expect(await processSet(3300, 3)).toBe(0);
+  expect(() => node.clock.getAnimationClock()).not.toThrow();
 });
 
 // Every board's observation of the middle reference was lost, so that row
 // would otherwise pull the correction toward this node's own clock
-test('a row no other node observed is discarded when others were', () => {
-  row(1000, 0, true, [20, 20]);
-  row(1100, 1, false, []);
-  row(1200, 2, false, [20, 20]);
-  assert.equal(processSet(3300, 3), 20);
+test('a row no other node observed is discarded when others were', async () => {
+  await row(1000, 0, true, [20, 20]);
+  await row(1100, 1, false, []);
+  await row(1200, 2, false, [20, 20]);
+  expect(await processSet(3300, 3)).toBe(20);
 });
 
-test('a cold start against a long-running fleet', () => {
+test('a cold start against a long-running fleet', async () => {
   const fleetAhead = 2999990000;
   const delta = fleetAhead | 0;
-  row(1000, 0, true, [delta, delta]);
-  row(1100, 1, false, [delta, delta]);
-  row(1200, 2, false, [delta, delta]);
-  assert.equal(processSet(3300, 3) >>> 0, fleetAhead);
+  await row(1000, 0, true, [delta, delta]);
+  await row(1100, 1, false, [delta, delta]);
+  await row(1200, 2, false, [delta, delta]);
+  expect((await processSet(3300, 3)) >>> 0).toBe(fleetAhead);
 });
 
 // Reference 3 reuses reference 0's row, so an observation of 0 arriving after
-// it clears the row, taking this node's observation of 3 with it
-test(
-  'a straggler from the last set keeps this sets row',
-  { skip: 'Known bug, deferred to Phase 3' },
-  () => {
-    row(1000, 0, true, [0]);
-    row(1100, 1, false, [0]);
-    row(1200, 2, false, [0]);
-    handleReference(3, true, 3300);
-    const observed = (3300 + readOffset()) >>> 0;
-    observations(0, observed, [0], FIRST_PEER + 10);
-    observations(3, observed, [30, 30]);
-    row(3400, 4, false, [0, 0]);
-    row(3500, 5, false, [0, 0]);
-    assert.equal(processSet(5600, 6), 10);
-  }
-);
+// it clears the row, taking this node's observation of 3 with it. Known bug,
+// deferred to Phase 3
+test.skip('a straggler from the last set keeps this sets row', async () => {
+  await row(1000, 0, true, [0]);
+  await row(1100, 1, false, [0]);
+  await row(1200, 2, false, [0]);
+  await node.advance(3300 - node.now());
+  node.deliver(buildReference(3, true));
+  const observed = (3300 + readOffset()) >>> 0;
+  observations(0, observed, [0], FIRST_BOARD + 10);
+  observations(3, observed, [30, 30]);
+  await row(3400, 4, false, [0, 0]);
+  await row(3500, 5, false, [0, 0]);
+  expect(await processSet(5600, 6)).toBe(10);
+});
 
-test('the animation clock wraps with its offset', () => {
-  syncClock(-0x100);
-  assert.equal(readOffset(), 0xffffff00);
-  assert.equal(toAnimationClock(0x200), 0x100);
+test('packets from a source of 240 and up or this nodes own ID are dropped', async () => {
+  node.assignId(10);
+  await row(1000, 0, true, [20]);
+  const own = (1000 + readOffset()) >>> 0;
+  node.deliver(buildObservation(240, 0, own + 90));
+  node.deliver(buildObservation(10, 0, own + 90));
+  await row(1100, 1, false, [20]);
+  // References this node can't have observed leave their rows discarded
+  await node.advance(100);
+  node.deliver(buildReference(2, false, 240));
+  node.deliver(buildReference(2, false, 10));
+  observations(2, 1200, [90]);
+  expect(await processSet(3300, 3)).toBe(20);
+});
+
+test('the animation clock wraps with its offset', async () => {
+  await syncClock(-0x100);
+  expect(readOffset()).toBe(0xffffff00);
+  expect(node.clock.toAnimationClock(0x200)).toBe(0x100);
   for (const clock of [0, 0x100, 0x7fffffff, 0xffffff80]) {
-    const localTime = toLocalTime(clock);
-    assert.equal(toAnimationClock(localTime), clock);
-    assert.ok(Math.abs(localTime - performance.now()) <= 2 ** 31);
+    const localTime = node.clock.toLocalTime(clock);
+    expect(node.clock.toAnimationClock(localTime)).toBe(clock);
+    expect(Math.abs(localTime - node.now())).toBeLessThanOrEqual(2 ** 31);
   }
 });
 
 test('the first sync resolves the wait for it', async () => {
   let synced = false;
-  const waiting = waitForClockSync().then(() => {
+  const waiting = node.clock.waitForClockSync().then(() => {
     synced = true;
   });
-  row(1000, 0, true, [5000, 5000]);
-  await new Promise((resolve) => setImmediate(resolve));
-  assert.equal(synced, false);
-
-  processSet(1100, 1);
+  await row(1000, 0, true, [5000, 5000]);
+  expect(synced).toBe(false);
+  await processSet(1100, 1);
   await waiting;
-  assert.equal(synced, true);
-  await waitForClockSync();
+  expect(synced).toBe(true);
+  await node.clock.waitForClockSync();
+  expect(node.clock.getAnimationClock()).toBe(1100 + 5000);
 });
 
 test('the fleet clock is unreadable before the first sync', () => {
-  assert.throws(() => getAnimationClock(), /not synchronized/);
-  assert.throws(() => toAnimationClock(0), /not synchronized/);
-  assert.throws(() => toLocalTime(0), /not synchronized/);
+  expect(() => node.clock.getAnimationClock()).toThrow(/not synchronized/);
+  expect(() => node.clock.getAnimationFrame()).toThrow(/not synchronized/);
+  expect(() => node.clock.toAnimationClock(0)).toThrow(/not synchronized/);
+  expect(() => node.clock.toLocalTime(0)).toThrow(/not synchronized/);
 });
 
 test('frame differences are signed', () => {
-  assert.equal(subtractFrames(7, 7), 0);
-  assert.equal(subtractFrames(7, 5), 2);
-  assert.equal(subtractFrames(5, 7), -2);
+  expect(subtractFrames(7, 7)).toBe(0);
+  expect(subtractFrames(7, 5)).toBe(2);
+  expect(subtractFrames(5, 7)).toBe(-2);
 });
 
 test('a frame past the wrap is one ahead', () => {
-  assert.equal(subtractFrames(0, FRAME_COUNT - 1), 1);
-  assert.equal(subtractFrames(FRAME_COUNT - 1, 0), -1);
+  expect(subtractFrames(0, FRAME_COUNT - 1)).toBe(1);
+  expect(subtractFrames(FRAME_COUNT - 1, 0)).toBe(-1);
 });
 
 test('the signed range is half the cycle', () => {
-  assert.equal(subtractFrames(HALF - 1, 0), HALF - 1);
-  assert.equal(subtractFrames(HALF, 0), -HALF);
-  assert.equal(subtractFrames(0, HALF), -HALF);
-  assert.equal(subtractFrames(0, HALF + 1), HALF - 1);
-  assert.equal(subtractFrames(0, HALF - 1), -(HALF - 1));
+  expect(subtractFrames(HALF - 1, 0)).toBe(HALF - 1);
+  expect(subtractFrames(HALF, 0)).toBe(-HALF);
+  expect(subtractFrames(0, HALF)).toBe(-HALF);
+  expect(subtractFrames(0, HALF + 1)).toBe(HALF - 1);
+  expect(subtractFrames(0, HALF - 1)).toBe(-(HALF - 1));
 });
 
 test('differences hold from any frame', () => {
@@ -223,10 +233,8 @@ test('differences hold from any frame', () => {
     for (const delta of deltas) {
       const frame =
         (((base + delta) % FRAME_COUNT) + FRAME_COUNT) % FRAME_COUNT;
-      assert.equal(
-        subtractFrames(frame, base),
-        delta,
-        `base ${base}, delta ${delta}`
+      expect(subtractFrames(frame, base), `base ${base}, delta ${delta}`).toBe(
+        delta
       );
     }
   }
@@ -236,6 +244,6 @@ test('differences hold from any frame', () => {
 // compares correctly with a frame that has wrapped
 test('an unmasked sum compares with a wrapped frame', () => {
   const end = FRAME_COUNT - 10 + 16;
-  assert.equal(subtractFrames(end, 3), 3);
-  assert.equal(subtractFrames(3, end), -3);
+  expect(subtractFrames(end, 3)).toBe(3);
+  expect(subtractFrames(3, end)).toBe(-3);
 });

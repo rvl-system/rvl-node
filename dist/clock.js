@@ -20,7 +20,7 @@ function signed32(value) {
 // board's median and leaves itself out of its own
 let offset = 0;
 let synchronized = false;
-let rows = [];
+const rows = [];
 const events = new EventEmitter();
 function convertToAnimationClock(localTime) {
     return wrap32(Math.floor(localTime) + offset);
@@ -105,13 +105,6 @@ export function handleReference(id, startOfSet, arrivalTime) {
 }
 export function handleObservation(id, source, observedTime) {
     getObservationRow(id).boards.set(source, observedTime);
-}
-// Back to a clock that has never synced
-export function _testOnlyResetClockSync() {
-    offset = 0;
-    synchronized = false;
-    rows = [];
-    events.removeAllListeners();
 }
 function assertClockSynchronized() {
     if (!synchronized) {

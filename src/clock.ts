@@ -38,7 +38,7 @@ type ClockEvents = {
 // board's median and leaves itself out of its own
 let offset = 0;
 let synchronized = false;
-let rows: (ObservationRow | undefined)[] = [];
+const rows: (ObservationRow | undefined)[] = [];
 const events = new EventEmitter<ClockEvents>();
 
 function convertToAnimationClock(localTime: number): number {
@@ -142,14 +142,6 @@ export function handleObservation(
   observedTime: number
 ): void {
   getObservationRow(id).boards.set(source, observedTime);
-}
-
-// Back to a clock that has never synced
-export function _testOnlyResetClockSync(): void {
-  offset = 0;
-  synchronized = false;
-  rows = [];
-  events.removeAllListeners();
 }
 
 function assertClockSynchronized(): void {

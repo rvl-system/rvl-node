@@ -72,15 +72,6 @@ export default defineConfig([
         'error',
         { allowNumber: true },
       ],
-      // The test runner tracks every test it is handed, awaited or not
-      '@typescript-eslint/no-floating-promises': [
-        'error',
-        {
-          allowForKnownSafeCalls: [
-            { from: 'package', name: ['test', 'suite'], package: 'node:test' },
-          ],
-        },
-      ],
     },
   },
   {

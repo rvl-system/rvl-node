@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "test": "node --test",
+    "test": "vitest run",
     "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit && tsc -p demo && tsc -p test",
     "demo:waves": "node demo/waves.ts",
@@ -39,6 +39,7 @@
     "import-integrity-lint": "^1.3.0",
     "prettier": "^3.9.9",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.70.1"
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.2"
   }
 }
