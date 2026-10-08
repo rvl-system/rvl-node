@@ -147,7 +147,7 @@ export function handleObservation(
 function assertClockSynchronized(): void {
   if (!synchronized) {
     throw new Error(
-      'The fleet clock has not synchronized yet. Wait for waitForClockSync()'
+      'The fleet clock has not synchronized yet. Wait for the connected event'
     );
   }
 }

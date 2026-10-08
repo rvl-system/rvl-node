@@ -221,7 +221,7 @@ function scheduleOrHoldContent(
     if (startFrame !== undefined) {
       throw new Error(
         'startFrame needs the fleet clock, which has not synchronized yet. ' +
-          'Wait for waitForClockSync()'
+          'Wait for the connected event'
       );
     }
     state.scenes.holdRequest({ fade: fadeFrames, content });
