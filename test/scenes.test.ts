@@ -1,5 +1,6 @@
 import { beforeEach, expect, test } from 'vitest';
 
+import { DEFAULT_FADE_FRAMES } from '../src/config.ts';
 import { type Node, startNode } from './harness.ts';
 import { type SentScene } from './packets.ts';
 
@@ -10,7 +11,6 @@ import { type SentScene } from './packets.ts';
 
 const CHANNEL = 0;
 const LEAD = 5;
-const DEFAULT_FADE = 16;
 const FRAME = 32;
 const LAST_FRAME = 2 ** 27 - 1;
 
@@ -69,20 +69,20 @@ function track(promise: Promise<void>): () => boolean {
 test('a controllers change starts a lead from now', async () => {
   const n = node.frame();
   const settled = track(setScene(1));
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
   node.clearSent();
   await advanceFrames(3);
   expect(sentScenes()).toEqual([]);
   expect(settled()).toBe(false);
   await advanceFrames(1);
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
   expect(settled()).toBe(true);
   // Then about once a second
   node.clearSent();
   await advanceFrames(31);
   expect(sentScenes()).toEqual([]);
   await advanceFrames(1);
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('changes during the lead and fade are held and the last wins', async () => {
@@ -91,14 +91,14 @@ test('changes during the lead and fade are held and the last wins', async () => 
   await advanceFrames(2);
   void setScene(2);
   void setScene(3);
-  const fadeEnd = n + LEAD + DEFAULT_FADE;
+  const fadeEnd = n + LEAD + DEFAULT_FADE_FRAMES;
   await advanceFrames(fadeEnd - 1 - node.frame());
   expect(sentScenes().every(([id]) => id === 1)).toBe(true);
   node.clearSent();
   await advanceFrames(1);
   expect(sentScenes()).toEqual([
-    [1, n + LEAD, DEFAULT_FADE],
-    [3, fadeEnd + LEAD, DEFAULT_FADE],
+    [1, n + LEAD, DEFAULT_FADE_FRAMES],
+    [3, fadeEnd + LEAD, DEFAULT_FADE_FRAMES],
   ]);
 });
 
@@ -108,7 +108,7 @@ test('the gate opens in a late iteration too', async () => {
   const n = node.frame();
   void setScene(1);
   void setScene(2);
-  const fadeEnd = n + LEAD + DEFAULT_FADE;
+  const fadeEnd = n + LEAD + DEFAULT_FADE_FRAMES;
   await advanceFrames(fadeEnd - 1 - node.frame());
   await node.advance(10);
   await node.syncClock(31);
@@ -116,8 +116,8 @@ test('the gate opens in a late iteration too', async () => {
   await node.advance(FRAME - 10);
   expect(node.frame()).toBe(fadeEnd + 1);
   expect(sentScenes()).toEqual([
-    [1, n + LEAD, DEFAULT_FADE],
-    [2, fadeEnd + 1 + LEAD, DEFAULT_FADE],
+    [1, n + LEAD, DEFAULT_FADE_FRAMES],
+    [2, fadeEnd + 1 + LEAD, DEFAULT_FADE_FRAMES],
   ]);
 });
 
@@ -166,8 +166,8 @@ test('repeating the held request holds it', async () => {
   await advanceFrames(60);
   expect(sentScenes().at(-1)).toEqual([
     2,
-    n + LEAD + DEFAULT_FADE + LEAD,
-    DEFAULT_FADE,
+    n + LEAD + DEFAULT_FADE_FRAMES + LEAD,
+    DEFAULT_FADE_FRAMES,
   ]);
 });
 
@@ -177,7 +177,7 @@ test('a held request is released with its own fade', async () => {
   const n = node.frame();
   void setScene(1);
   void setScene(2, { fadeFrames: 40 });
-  const fadeEnd = n + LEAD + DEFAULT_FADE;
+  const fadeEnd = n + LEAD + DEFAULT_FADE_FRAMES;
   await advanceFrames(fadeEnd - node.frame());
   expect(sentScenes().at(-1)).toEqual([2, fadeEnd + LEAD, 40]);
 });
@@ -186,7 +186,7 @@ test('off as a channels first call schedules off', () => {
   const n = node.frame();
   void node.animation.setOff(CHANNEL);
   expect(node.scenes()[0].type).toBe('off');
-  expect(sentScenes()).toEqual([[-1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[-1, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('a call before the first sync is held and released at the lead after it', async () => {
@@ -209,7 +209,7 @@ test('a call before the first sync is held and released at the lead after it', a
 
   await node.syncClock();
   const n = node.frame();
-  expect(sentScenes()).toEqual([[3, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[3, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('an explicit start is at least the lead ahead', async () => {
@@ -217,7 +217,7 @@ test('an explicit start is at least the lead ahead', async () => {
   expect(earliest()).toBe(n + LEAD);
   expect(() => setScene(1, { startFrame: n + LEAD - 1 })).toThrow(/earliest/);
   void setScene(1, { startFrame: n + LEAD });
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
   await advanceFrames(1);
 });
 
@@ -232,7 +232,7 @@ test('an explicit start waits out a running fade', async () => {
   void setScene(2, { startFrame: fadeEnd });
   expect(sentScenes()).toEqual([
     [1, n + LEAD, 64],
-    [2, fadeEnd, DEFAULT_FADE],
+    [2, fadeEnd, DEFAULT_FADE_FRAMES],
   ]);
 });
 
@@ -271,10 +271,10 @@ test('a call in the frame pending comes due sees it as current', async () => {
   await node.advance(LEAD * FRAME - 1);
   expect(node.frame()).toBe(n + LEAD);
   node.clearSent();
-  void setScene(2, { startFrame: n + LEAD + DEFAULT_FADE });
+  void setScene(2, { startFrame: n + LEAD + DEFAULT_FADE_FRAMES });
   expect(sentScenes()).toEqual([
-    [1, n + LEAD, DEFAULT_FADE],
-    [2, n + LEAD + DEFAULT_FADE, DEFAULT_FADE],
+    [1, n + LEAD, DEFAULT_FADE_FRAMES],
+    [2, n + LEAD + DEFAULT_FADE_FRAMES, DEFAULT_FADE_FRAMES],
   ]);
 });
 
@@ -286,7 +286,7 @@ test('a replaced or dropped request settles at the repeat of the scene that goes
   await advanceFrames(1);
   const second = track(setScene(2));
   const third = track(setScene(3));
-  const fadeEnd = n + LEAD + DEFAULT_FADE;
+  const fadeEnd = n + LEAD + DEFAULT_FADE_FRAMES;
   await advanceFrames(fadeEnd + 4 - 1 - node.frame());
   expect(first()).toBe(false);
   expect(second()).toBe(false);
@@ -331,7 +331,7 @@ test('a scene with no device ID is sent once the ID arrives', async () => {
   node.assignId(20);
   node.clearSent();
   await advanceFrames(32);
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('a correction under a frame leaves the repeat at its local time', async () => {
@@ -344,7 +344,7 @@ test('a correction under a frame leaves the repeat at its local time', async () 
   await node.advance(128 - node.now());
   expect(sentScenes()).toEqual([]);
   await node.advance(21);
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('a step re-sends at once and repeats four frames after it', async () => {
@@ -354,12 +354,12 @@ test('a step re-sends at once and repeats four frames after it', async () => {
   node.clearSent();
   await node.syncClock(2 * FRAME);
   expect(node.frame()).toBe(n + 3);
-  expect(sentScenes()).toEqual([[1, n + 3 + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + 3 + LEAD, DEFAULT_FADE_FRAMES]]);
   node.clearSent();
   await node.advance(127);
   expect(sentScenes()).toEqual([]);
   await node.advance(1);
-  expect(sentScenes()).toEqual([[1, n + 3 + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + 3 + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 test('a step reschedules the held request over pending', async () => {
@@ -421,7 +421,7 @@ test('a correction under a frame changes nothing', async () => {
   await node.syncClock(FRAME - 1);
   expect(sentScenes()).toEqual([]);
   await advanceFrames(5);
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE]]);
+  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
 // Driven by a day of ticks, so this is the slow one
@@ -435,8 +435,8 @@ test('a controller rekeys a scene older than a day', async () => {
   await node.advance(1);
   expect(node.frame()).toBe(rekeyFrame);
   expect(sentScenes()).toEqual([
-    [1, n + LEAD, DEFAULT_FADE],
-    [1, rekeyFrame + LEAD, DEFAULT_FADE],
+    [1, n + LEAD, DEFAULT_FADE_FRAMES],
+    [1, rekeyFrame + LEAD, DEFAULT_FADE_FRAMES],
   ]);
 
   // An explicit start replaces a pending re-key
@@ -444,8 +444,8 @@ test('a controller rekeys a scene older than a day', async () => {
   node.clearSent();
   void setScene(2, { startFrame: rekeyFrame + 10 });
   expect(sentScenes()).toEqual([
-    [1, n + LEAD, DEFAULT_FADE],
-    [2, rekeyFrame + 10, DEFAULT_FADE],
+    [1, n + LEAD, DEFAULT_FADE_FRAMES],
+    [2, rekeyFrame + 10, DEFAULT_FADE_FRAMES],
   ]);
 });
 
@@ -474,9 +474,9 @@ test('scenes and fades cross the frame wrap', async () => {
   expect(node.frame()).toBe(28);
   node.clearSent();
   await advanceFrames(1);
-  expect(earliest()).toBe(29 + DEFAULT_FADE);
+  expect(earliest()).toBe(29 + DEFAULT_FADE_FRAMES);
   await advanceFrames(32);
-  expect(sentScenes().at(-1)).toEqual([2, 29, DEFAULT_FADE]);
+  expect(sentScenes().at(-1)).toEqual([2, 29, DEFAULT_FADE_FRAMES]);
 });
 
 test('a step across the frame wrap keeps the fade', async () => {

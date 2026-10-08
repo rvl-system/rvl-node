@@ -1,6 +1,6 @@
 export declare const FRAME_PERIOD = 32;
 export declare const MIN_FADE_FRAMES = 16;
-export declare const DEFAULT_FADE_FRAMES = 16;
+export declare const DEFAULT_FADE_FRAMES = 32;
 export declare const SCENE_LEAD_FRAMES = 5;
 export declare const REPEAT_SEND_FRAMES = 4;
 export declare const SCENE_MAX_AGE_FRAMES = 2700000;

@@ -2,7 +2,7 @@
 // order
 export const FRAME_PERIOD = 32;
 export const MIN_FADE_FRAMES = 16;
-export const DEFAULT_FADE_FRAMES = 16;
+export const DEFAULT_FADE_FRAMES = 32;
 export const SCENE_LEAD_FRAMES = 5;
 export const REPEAT_SEND_FRAMES = 4;
 export const SCENE_MAX_AGE_FRAMES = 2700000;
