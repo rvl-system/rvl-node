@@ -4,21 +4,27 @@
 
 Breaking changes:
 
+- Removed `createManager` and the manager. `init()` sets the package up, returns at once, and finishes in the background; the functions that were methods are now exports, and `on()` subscribes to events. One instance per host: `init()` throws when called twice, and a second process's bind fails
+- Every change is now a scene with a start frame and a fade, and the boards dissolve into it together. `setAnimationParameters` and `setOff` take a third argument, `{ startFrame?, fadeFrames? }`. Without a start, a scene is scheduled five frames ahead once the channel's last scene has finished fading, and held until then; with one, it is placed on that frame. The fade is 16 to 255 frames, half a second to eight, and defaults to 16. Nothing takes effect immediately any more
+- The promises from `setAnimationParameters` and `setOff` now resolve once the channel has settled, which can be seconds after the call when the scene waited behind a fade, rather than when a packet was sent. They never reject
 - Removed reference broadcasts, since the coordinator sends them now
-- Device IDs are now assigned by the coordinator instead of being derived from the IP address. `deviceId` is `undefined` until then, and animations set in the meantime are sent once it arrives
-- Replaced `setPowerState` with `setOff`. Off is an animation, so call `setAnimationParameters` to turn a channel back on
+- Device IDs are now assigned by the coordinator instead of being derived from the IP address. `getDeviceId()` is `undefined` until then, and scenes set in the meantime are sent once it arrives
+- Replaced `setPowerState` with `setOff`. Off is a scene like any other, so call `setAnimationParameters` to turn a channel back on
 - Channels must now be 0 through 7, and `setAnimationParameters` and `setOff` throw for anything else, including values that used to work
 - `setAnimationParameters` now throws when a parameter is out of range for its wire field, instead of silently sending a different value
 - Removed the `port` option and the `port` and `address` properties
+- The package now ships `dist/` only
 
 Other changes:
 
-- Added a `connected` property and `connected`/`disconnected` events
-- `setAnimationParameters` and `setOff` now return a promise that resolves once the packet is sent
-- Off is now re-sent every second, like animations
+- Added `connected` and `disconnected` events and `isConnected()`. Connected means a device ID and the fleet clock, so waiting for `connected` is the way to know the fleet can be driven
+- Added an `error` event, which carries a failed bind, most likely the port already in use by another instance
+- Added the fleet clock: `getAnimationClock()`, `toAnimationClock()`, `toLocalTime()`, `FRAME_PERIOD` and `subtractFrames()`, for placing scenes on a grid, and `getEarliestStartFrame()` for the earliest start a channel can take
+- Added `createSimpleWaveParameters()`, the controller boards' Wave preset without its foreground layer
+- Scenes are now re-sent every second, off included, and a new scene is sent twice, four frames apart, so a board that loses the first copy gets the second
 - Packets are now sent to the interface's subnet broadcast address instead of `255.255.255.255`
-- The network interface no longer needs an IP address when the manager is created, and a self-assigned `169.254.x.x` address counts as none
-- Socket errors are now logged instead of crashing the process, and a failed bind now rejects `createManager`
+- The network interface no longer needs an IP address at `init()`, and a self-assigned `169.254.x.x` address counts as none
+- Socket errors after the bind are now logged instead of crashing the process
 - Fixed wave layers being scrambled on the wire when their properties weren't defined in h, s, v, a order
 
 ## 7.0.3 (2025-11-24)
