@@ -6,13 +6,11 @@ import {
   getEarliestStartFrame,
   getNetworkInterface,
   init,
-  isConnected,
   on,
   setAnimationParameters,
   setOff,
   subtractFrames,
   toLocalTime,
-  waitForClockSync,
 } from '../src/index.ts';
 
 const { values } = parseArgs({
@@ -82,6 +80,8 @@ function findFirstBarAtOrAfter(
 // Runs once the last scene is promoted, and looks again a frame later while
 // the channel can't take an explicit start yet
 function scheduleNextScene(): void {
+  // A reconnect calls this while a look may already be armed
+  clearTimeout(timer);
   const earliest = getEarliestStartFrame(channel);
   if (earliest === undefined) {
     timer = setTimeout(scheduleNextScene, FRAME_PERIOD);
@@ -136,10 +136,11 @@ function scheduleNextScene(): void {
   );
 }
 
-await init({ networkInterface: values.interface });
+init({ networkInterface: values.interface });
 console.log(`Sending on channel ${channel} over ${getNetworkInterface()}`);
 on('connected', () => {
   console.log('Connected');
+  scheduleNextScene();
 });
 on('disconnected', () => {
   console.log('Disconnected');
@@ -152,14 +153,3 @@ process.on('SIGINT', () => {
   console.log(`Turning off channel ${channel}`);
   void setOff(channel).then(() => process.exit());
 });
-
-// Without an ID every scene would be dropped
-await new Promise<void>((resolve) => {
-  if (isConnected()) {
-    resolve();
-  } else {
-    on('connected', resolve);
-  }
-});
-await waitForClockSync();
-scheduleNextScene();

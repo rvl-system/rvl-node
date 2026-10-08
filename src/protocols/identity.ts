@@ -1,6 +1,5 @@
-import { EventEmitter } from 'node:events';
-
 import { AppendBuffer } from '../buffer.ts';
+import { isClockSynchronized, waitForClockSync } from '../clock.ts';
 import {
   ID_REQUEST_TYPE,
   RVLI_PACKET_TYPE_ID_ASSIGNMENT,
@@ -9,6 +8,7 @@ import {
   RVLI_VERSION,
   UNASSIGNED_DEVICE_ID,
 } from '../config.ts';
+import { emit } from '../events.ts';
 import { getAvailableInterfaces } from '../net.ts';
 import {
   assertInitialized,
@@ -22,14 +22,9 @@ const ID_RETRY_INTERVAL = 1000;
 const ID_RETRY_JITTER = 250;
 const ID_WARNING_INTERVAL = 10000;
 
-type IdentityEvents = {
-  connected: [];
-  disconnected: [];
-};
-
-const events = new EventEmitter<IdentityEvents>();
-
 let deviceId: number | undefined;
+// Whether connected has been announced and not yet taken back
+let connected = false;
 let nextIdRequestTime = 0;
 let idRequested = false;
 let lastIdRequestTime = 0;
@@ -40,21 +35,26 @@ export function getDeviceId(): number | undefined {
   return deviceId;
 }
 
-// The ID is only ever held while the interface has an address, so this
-// matches the firmware's isConnected()
+// Connected is being able to address the fleet and share its time: a device
+// ID, which is only held while the interface has an address, and the first
+// clock sync, which lasts
 export function isConnected(): boolean {
   assertInitialized();
-  return deviceId !== undefined;
+  return deviceId !== undefined && isClockSynchronized();
 }
 
-export function on(event: keyof IdentityEvents, listener: () => void): void {
-  events.on(event, listener);
+function announceIfConnected(): void {
+  if (!connected && deviceId !== undefined && isClockSynchronized()) {
+    connected = true;
+    emit('connected');
+  }
 }
 
 export function startIdentityProtocol(): void {
   const now = performance.now();
   nextIdRequestTime = now;
   lastIdWarningTime = now;
+  void waitForClockSync().then(announceIfConnected);
   runIdentityLoop();
   setInterval(runIdentityLoop, IDENTITY_LOOP_INTERVAL);
 }
@@ -69,7 +69,10 @@ function runIdentityLoop(): void {
     if (deviceId !== undefined) {
       deviceId = undefined;
       lastIdWarningTime = now;
-      events.emit('disconnected');
+      if (connected) {
+        connected = false;
+        emit('disconnected');
+      }
     }
     nextIdRequestTime = now;
     idRequested = false;
@@ -122,9 +125,6 @@ export function handleIdReply(id: number): void {
   console.info(
     `Assigned device ID ${id}, ${roundTrip.toFixed(1)} ms after the request`
   );
-  const wasConnected = deviceId !== undefined;
   deviceId = id;
-  if (!wasConnected) {
-    events.emit('connected');
-  }
+  announceIfConnected();
 }

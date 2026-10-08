@@ -155,7 +155,7 @@ export async function loadNode(options: NodeOptions = {}) {
   fakes.portInUse = options.portInUse ?? false;
   fakes.socket = undefined;
   vi.resetModules();
-  const [rvl, clock, animation, identity, transport, net, parametric] =
+  const [rvl, clock, animation, identity, transport, net, parametric, events] =
     await Promise.all([
       import('../src/rvl.ts'),
       import('../src/clock.ts'),
@@ -164,6 +164,7 @@ export async function loadNode(options: NodeOptions = {}) {
       import('../src/transport.ts'),
       import('../src/net.ts'),
       import('../src/parametric.ts'),
+      import('../src/events.ts'),
     ]);
 
   let nextSetId = 0;
@@ -224,6 +225,7 @@ export async function loadNode(options: NodeOptions = {}) {
     transport,
     net,
     parametric,
+    events,
     warn,
     get socket() {
       return getSocket();
@@ -246,6 +248,8 @@ export async function startNode(
   options: NodeOptions & { networkInterface?: string } = {}
 ): Promise<Node> {
   const node = await loadNode(options);
-  await node.rvl.init({ networkInterface: options.networkInterface ?? 'en0' });
+  node.rvl.init({ networkInterface: options.networkInterface ?? 'en0' });
+  // The bind finishes on a microtask
+  await node.advance(0);
   return node;
 }

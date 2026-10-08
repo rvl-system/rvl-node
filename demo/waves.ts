@@ -56,7 +56,7 @@ const slots: { name: string; parameters: AnimationParameters | null }[] = [
   { name: 'off', parameters: null },
 ];
 
-await init({ networkInterface: values.interface });
+init({ networkInterface: values.interface });
 console.log(`Sending on channel ${channel} over ${getNetworkInterface()}`);
 on('connected', () => {
   console.log('Connected');

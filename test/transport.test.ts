@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 
 import {
   DEFAULT_INTERFACES,
@@ -11,7 +11,7 @@ import {
 } from './harness.ts';
 import { buildIdReply, RVLA_PORT, RVLI_PORT } from './packets.ts';
 
-test('init binds the RVLI port for broadcast and resolves', async () => {
+test('init binds the RVLI port for broadcast', async () => {
   const node = await startNode();
   expect(node.socket.boundPort).toBe(RVLI_PORT);
   expect(node.socket.broadcast).toBe(true);
@@ -19,7 +19,7 @@ test('init binds the RVLI port for broadcast and resolves', async () => {
   expect(node.now()).toBe(0);
 });
 
-test('the public functions throw until init resolves', async () => {
+test('the public functions throw until init is called', async () => {
   const node = await loadNode();
   const notInitialized = /not initialized/;
   expect(() => node.animation.setOff(0)).toThrow(notInitialized);
@@ -36,22 +36,33 @@ test('the public functions throw until init resolves', async () => {
 
 test('a second init throws', async () => {
   const node = await startNode();
-  await expect(node.rvl.init({ networkInterface: 'en0' })).rejects.toThrow(
-    /already been called/
-  );
+  expect(() => {
+    node.rvl.init({ networkInterface: 'en0' });
+  }).toThrow(/already been called/);
 });
 
-test('a port in use is an explicit error, and init can be tried again', async () => {
+test('a port in use is an error event, and init can be tried again', async () => {
   const node = await loadNode({ portInUse: true });
-  const attempt = node.rvl.init({ networkInterface: 'en0' });
-  await expect(attempt).rejects.toThrow(/already in use/);
-  await expect(attempt).rejects.toMatchObject({
-    cause: { code: 'EADDRINUSE' },
-  });
+  const errors = vi.fn();
+  node.events.on('error', errors);
+  node.rvl.init({ networkInterface: 'en0' });
+  await node.advance(0);
+  expect(errors).toHaveBeenCalledTimes(1);
+  const [error] = errors.mock.calls[0] as [Error];
+  expect(error.message).toMatch(/already in use/);
+  expect(error.cause).toMatchObject({ code: 'EADDRINUSE' });
   expect(node.socket.closed).toBe(true);
+  expect(() => node.identity.getDeviceId()).toThrow(/not initialized/);
+  expect(node.sent()).toHaveLength(0);
+
   setPortInUse(false);
-  await node.rvl.init({ networkInterface: 'en0' });
+  node.rvl.init({ networkInterface: 'en0' });
+  await node.advance(0);
   expect(node.socket.boundPort).toBe(RVLI_PORT);
+  // The protocols started once, on the bind that worked
+  expect(node.sent()).toHaveLength(1);
+  await node.advance(10000);
+  expect(node.warn).toHaveBeenCalledTimes(1);
 });
 
 test('the default interface is the first usable one', async () => {
@@ -64,7 +75,7 @@ test('the default interface is the first usable one', async () => {
   const node = await loadNode({ interfaces });
   expect(node.net.getAvailableInterfaces()).toEqual(['en0', 'en2']);
   expect(node.net.getDefaultInterface()).toBe('en0');
-  await node.rvl.init();
+  node.rvl.init();
   expect(node.transport.getNetworkInterface()).toBe('en0');
 });
 
@@ -72,7 +83,9 @@ test('init throws with no usable interface', async () => {
   const node = await loadNode({
     interfaces: { lo0: [ipv4('127.0.0.1', '255.0.0.0', true)] },
   });
-  await expect(node.rvl.init()).rejects.toThrow(/usable default/);
+  expect(() => {
+    node.rvl.init();
+  }).toThrow(/usable default/);
 });
 
 test('sends go to the subnet broadcast, RVLI on 4979 and RVLA on 4978', async () => {

@@ -33,12 +33,17 @@ test('the request is repeated every second or so until a reply', async () => {
   expect(node.sent()).toHaveLength(3);
 });
 
-test('a reply assigns the ID and connects once', async () => {
+// Connected means the fleet can be addressed and its clock followed, so it
+// waits for whichever of the ID and the first sync comes second
+test('a reply assigns the ID, and the clock completes the connection', async () => {
   const node = await startNode();
   const connected = vi.fn();
-  node.identity.on('connected', connected);
+  node.events.on('connected', connected);
   node.assignId(7);
   expect(node.identity.getDeviceId()).toBe(7);
+  expect(node.identity.isConnected()).toBe(false);
+  expect(connected).not.toHaveBeenCalled();
+  await node.syncClock();
   expect(node.identity.isConnected()).toBe(true);
   expect(connected).toHaveBeenCalledTimes(1);
   node.assignId(7);
@@ -46,6 +51,18 @@ test('a reply assigns the ID and connects once', async () => {
   // A changed ID while connected is taken without a second event
   node.assignId(8);
   expect(node.identity.getDeviceId()).toBe(8);
+  expect(connected).toHaveBeenCalledTimes(1);
+});
+
+test('the clock first, then the ID, connects just the same', async () => {
+  const node = await startNode();
+  const connected = vi.fn();
+  node.events.on('connected', connected);
+  await node.syncClock();
+  expect(node.identity.isConnected()).toBe(false);
+  expect(connected).not.toHaveBeenCalled();
+  node.assignId(7);
+  expect(node.identity.isConnected()).toBe(true);
   expect(connected).toHaveBeenCalledTimes(1);
 });
 
@@ -79,9 +96,11 @@ test('losing the address disconnects, and the ID is requested again on return', 
   const node = await startNode();
   const connected = vi.fn();
   const disconnected = vi.fn();
-  node.identity.on('connected', connected);
-  node.identity.on('disconnected', disconnected);
+  node.events.on('connected', connected);
+  node.events.on('disconnected', disconnected);
   node.assignId(7);
+  await node.syncClock();
+  expect(connected).toHaveBeenCalledTimes(1);
   setInterfaces({});
   await node.advance(250);
   expect(disconnected).toHaveBeenCalledTimes(1);
@@ -94,9 +113,21 @@ test('losing the address disconnects, and the ID is requested again on return', 
   await node.advance(250);
   expect(node.sent()).toHaveLength(2);
   expect(node.sent()[1].bytes).toEqual(ID_REQUEST);
+  // The clock stays synced, so the ID alone reconnects
   node.assignId(9);
   expect(connected).toHaveBeenCalledTimes(2);
   expect(node.identity.getDeviceId()).toBe(9);
+});
+
+test('losing the address before the clock synced is no disconnection', async () => {
+  const node = await startNode();
+  const disconnected = vi.fn();
+  node.events.on('disconnected', disconnected);
+  node.assignId(7);
+  setInterfaces({});
+  await node.advance(250);
+  expect(node.identity.getDeviceId()).toBeUndefined();
+  expect(disconnected).not.toHaveBeenCalled();
 });
 
 test('a missing ID is warned about every ten seconds', async () => {
@@ -119,7 +150,8 @@ test('a missing address is warned about instead', async () => {
   const node = await loadNode({
     interfaces: { en0: [], en1: [ipv4('10.1.2.3')] },
   });
-  await node.rvl.init({ networkInterface: 'en0' });
+  node.rvl.init({ networkInterface: 'en0' });
+  await node.advance(0);
   expect(node.sent()).toHaveLength(0);
   await node.advance(10000);
   expect(node.warn).toHaveBeenCalledTimes(1);
