@@ -1,8 +1,9 @@
 ## 8.1.0 (unreleased)
 
 - The default fade, taken by a call without `fadeFrames`, is now 32 frames, a second, up from 16, to match the controller boards' own changes
+- A `startFrame` read from `getEarliestStartFrame` no longer throws when a frame boundary passes between the two calls
 
-## 8.0.0 (unreleased)
+## 8.0.0 (2026-10-08)
 
 8.0.0 needs firmware and a coordinator that speak the new RVLA/RVLI wire protocol, and changes the API in the ways below.
 

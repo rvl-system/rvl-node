@@ -212,13 +212,41 @@ test('a call before the first sync is held and released at the lead after it', a
   expect(sentScenes()).toEqual([[3, n + LEAD, DEFAULT_FADE_FRAMES]]);
 });
 
-test('an explicit start is at least the lead ahead', async () => {
+test('an explicit start can be one frame short of the lead, not two', () => {
   const n = node.frame();
   expect(earliest()).toBe(n + LEAD);
-  expect(() => setScene(1, { startFrame: n + LEAD - 1 })).toThrow(/earliest/);
-  void setScene(1, { startFrame: n + LEAD });
-  expect(sentScenes()).toEqual([[1, n + LEAD, DEFAULT_FADE_FRAMES]]);
+  expect(() => setScene(1, { startFrame: n + LEAD - 2 })).toThrow(/earliest/);
+  void setScene(1, { startFrame: n + LEAD - 1 });
+  expect(sentScenes()).toEqual([[1, n + LEAD - 1, DEFAULT_FADE_FRAMES]]);
+});
+
+// A frame boundary between the two calls would otherwise make the start the
+// caller just read one frame too early
+test('an earliest start read in the previous frame is still taken', async () => {
+  const n = node.frame();
+  const start = earliest() ?? 0;
+  await node.advance(FRAME - 1);
+  expect(node.frame()).toBe(n + 1);
+  expect(earliest()).toBe(start + 1);
+  void setScene(1, { startFrame: start });
+  expect(sentScenes()).toEqual([[1, start, DEFAULT_FADE_FRAMES]]);
+});
+
+test('the slack never reaches into a running fade', async () => {
+  const n = node.frame();
+  void setScene(1, { startFrame: n + LEAD, fadeFrames: 64 });
+  const fadeEnd = n + LEAD + 64;
+  // Where the lead from now meets the end, the end still binds
+  await advanceFrames(fadeEnd - LEAD - node.frame());
+  expect(earliest()).toBe(fadeEnd);
+  expect(() => setScene(2, { startFrame: fadeEnd - 1 })).toThrow(/earliest/);
+  // A frame on, the lead passes the end, and the slack reaches back to the
+  // end and no further
   await advanceFrames(1);
+  expect(earliest()).toBe(fadeEnd + 1);
+  node.clearSent();
+  void setScene(2, { startFrame: fadeEnd });
+  expect(sentScenes().at(-1)).toEqual([2, fadeEnd, DEFAULT_FADE_FRAMES]);
 });
 
 test('an explicit start waits out a running fade', async () => {

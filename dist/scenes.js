@@ -57,7 +57,10 @@ export class ChannelScenes {
         if (earliest === undefined) {
             throw new Error('A scene is already scheduled ahead on this channel. Wait for it to start');
         }
-        if (subtractFrames(scene.start, earliest) < 0) {
+        // One frame of slack, for a frame boundary between the caller's
+        // getEarliestStartFrame and this call. A running fade's end still binds
+        const floor = this.#computeNextStart(currentFrame, SCENE_LEAD_FRAMES - 1);
+        if (subtractFrames(scene.start, floor) < 0) {
             throw new Error(`Start frame ${scene.start} is before the earliest this channel can take, frame ${earliest}`);
         }
         this.#pending = scene;
@@ -138,8 +141,8 @@ export class ChannelScenes {
             this.#fadeStart = this.#fadeEnd;
         }
     }
-    #computeNextStart(currentFrame) {
-        const start = addFrames(currentFrame, SCENE_LEAD_FRAMES);
+    #computeNextStart(currentFrame, lead = SCENE_LEAD_FRAMES) {
+        const start = addFrames(currentFrame, lead);
         if (this.#isFading(currentFrame) &&
             subtractFrames(this.#fadeEnd, start) > 0) {
             return this.#fadeEnd;
