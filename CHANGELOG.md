@@ -2,6 +2,7 @@
 
 - The default fade, taken by a call without `fadeFrames`, is now 32 frames, a second, up from 16, to match the controller boards' own changes
 - A `startFrame` read from `getEarliestStartFrame` no longer throws when a frame boundary passes between the two calls
+- A board's clock-sync observation straggling in from the previous set no longer discards the current set's row, and a set whose start-of-set reference was lost is now processed a reference late instead of being dropped
 
 ## 8.0.0 (2026-10-08)
 

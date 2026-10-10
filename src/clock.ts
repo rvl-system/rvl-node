@@ -50,9 +50,9 @@ function convertToAnimationFrame(localTime: number): number {
 }
 
 // Rows are keyed by id % NUM_OBSERVATIONS_IN_SET, as the boards key theirs,
-// and another id takes a row over, so a coordinator that restarts its ids is
-// followed at once
-function getObservationRow(id: number): ObservationRow {
+// and another reference takes a row over, so a coordinator that restarts its
+// ids is followed at once
+function claimObservationRow(id: number): ObservationRow {
   const index = id % NUM_OBSERVATIONS_IN_SET;
   const row = rows[index];
   if (row?.id === id) {
@@ -61,6 +61,13 @@ function getObservationRow(id: number): ObservationRow {
   const fresh = { id, own: undefined, boards: new Map<number, number>() };
   rows[index] = fresh;
   return fresh;
+}
+
+// A row still holding this node's observation of another reference was never
+// processed, so the reference that starts this set was lost
+function holdsUnprocessedReference(id: number): boolean {
+  const row = rows[id % NUM_OBSERVATIONS_IN_SET];
+  return row !== undefined && row.id !== id && row.own !== undefined;
 }
 
 // A step of a frame or more re-bases the scenes, as adjustAnimationClock does
@@ -124,24 +131,30 @@ function processObservations(): void {
 }
 
 // A start of set processes the set before it first, so the observed time is on
-// the corrected clock
+// the corrected clock. A lost start of set is processed a reference late
 export function handleReference(
   id: number,
   startOfSet: boolean,
   arrivalTime: number
 ): void {
-  if (startOfSet) {
+  if (startOfSet || holdsUnprocessedReference(id)) {
     processObservations();
   }
-  getObservationRow(id).own = convertToAnimationClock(arrivalTime);
+  claimObservationRow(id).own = convertToAnimationClock(arrivalTime);
 }
 
+// An observation of a reference this node missed has nothing to be compared
+// with, and one straggling from the last set must not take the row from its
+// successor
 export function handleObservation(
   id: number,
   source: number,
   observedTime: number
 ): void {
-  getObservationRow(id).boards.set(source, observedTime);
+  const row = rows[id % NUM_OBSERVATIONS_IN_SET];
+  if (row?.id === id) {
+    row.boards.set(source, observedTime);
+  }
 }
 
 function assertClockSynchronized(): void {

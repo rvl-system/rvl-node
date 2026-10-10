@@ -103,15 +103,17 @@ test('a row is discarded when this node missed its reference', async () => {
   expect(await processSet(3300, 3)).toBe(20);
 });
 
-// A set whose start this node missed is never processed, so its rows still
-// hold data when the next set reuses them
-test('a reused row is cleared of an older reference', async () => {
-  const stale = [1000, 1000, 1000, 1000, 1000];
-  await row(1000, 0, true, stale, FIRST_BOARD + 10);
-  await row(1100, 1, false, stale, FIRST_BOARD + 10);
-  await row(1200, 2, false, stale, FIRST_BOARD + 10);
+// Reference 3, the start of the next set, was lost, so the set before it is
+// still in the rows when 4 arrives, and the observations of 3 have no row to go
+// in
+test('a set whose start was missed is processed a reference late', async () => {
+  await row(1000, 0, true, [1000, 1000]);
+  await row(1100, 1, false, [1000, 1000]);
+  await row(1200, 2, false, [1000, 1000]);
   observations(3, 3300, [20, 20]);
+  const before = readOffset();
   await row(3400, 4, false, [20, 20]);
+  expect((readOffset() - before) | 0).toBe(1000);
   await row(3500, 5, false, [20, 20]);
   expect(await processSet(5600, 6)).toBe(20);
 });
@@ -144,9 +146,9 @@ test('a cold start against a long-running fleet', async () => {
 });
 
 // Reference 3 reuses reference 0's row, so an observation of 0 arriving after
-// it clears the row, taking this node's observation of 3 with it. Known bug,
-// deferred to Phase 3
-test.skip('a straggler from the last set keeps this sets row', async () => {
+// it is dropped rather than taking the row, and this node's observation of 3
+// stays
+test('a straggler from the last set keeps this sets row', async () => {
   await row(1000, 0, true, [0]);
   await row(1100, 1, false, [0]);
   await row(1200, 2, false, [0]);
@@ -167,7 +169,7 @@ test('packets from a source of 240 and up or this nodes own ID are dropped', asy
   node.deliver(buildObservation(240, 0, own + 90));
   node.deliver(buildObservation(10, 0, own + 90));
   await row(1100, 1, false, [20]);
-  // References this node can't have observed leave their rows discarded
+  // References this node can't have observed leave their observations dropped
   await node.advance(100);
   node.deliver(buildReference(2, false, 240));
   node.deliver(buildReference(2, false, 10));
