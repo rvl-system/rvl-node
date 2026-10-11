@@ -177,6 +177,24 @@ test('packets from a source of 240 and up or this nodes own ID are dropped', asy
   expect(await processSet(3300, 3)).toBe(20);
 });
 
+test('a reference or an observation of the wrong length is dropped', async () => {
+  await row(1000, 0, true, [20, 20]);
+  // Reference 1 a byte short and a byte long, then boards observing it at 90:
+  // had either reference landed, its row would count
+  await node.advance(100);
+  const reference = buildReference(1, false);
+  node.deliver(reference.subarray(0, reference.length - 1));
+  node.deliver(Buffer.concat([reference, Buffer.from([0])]));
+  observations(1, 1100, [90, 90]);
+  // Reference 2 lands, with its observations a byte short and a byte long: had
+  // either observation landed, its row would count
+  await row(1200, 2, false, []);
+  const observation = buildObservation(FIRST_BOARD, 2, 1200 + 90);
+  node.deliver(observation.subarray(0, observation.length - 1));
+  node.deliver(Buffer.concat([observation, Buffer.from([0])]));
+  expect(await processSet(3300, 3)).toBe(20);
+});
+
 test('the animation clock wraps with its offset', async () => {
   await syncClock(-0x100);
   expect(readOffset()).toBe(0xffffff00);

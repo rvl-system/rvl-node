@@ -80,6 +80,7 @@ test('replies that are not a reply to this node are dropped', async () => {
     badSignature,
     otherVersion,
     other.subarray(0, 9),
+    Buffer.concat([other, Buffer.from([0])]),
     buildIdReply(240),
     // Another node's request, which is the same RVLI type with the request
     // subtype
