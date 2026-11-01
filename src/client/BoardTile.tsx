@@ -1,21 +1,20 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  Text,
-  UnstyledButton,
-} from '@mantine/core';
+import { Badge, Card, Group, Text, UnstyledButton } from '@mantine/core';
+import { useAtomValue } from 'jotai';
 
-import { type Board } from '../common/messages.ts';
-import { BoardName, getBoardLabel } from './BoardName.tsx';
+import { BoardName } from './BoardName.tsx';
+import { IdentifyButton } from './IdentifyButton.tsx';
+import { boardFamily } from './state.ts';
 
 type Props = {
-  board: Board;
+  deviceId: number;
   onOpen: (deviceId: number) => void;
 };
 
-export function BoardTile({ board, onOpen }: Props) {
+export function BoardTile({ deviceId, onOpen }: Props) {
+  const board = useAtomValue(boardFamily(deviceId));
+  if (board === undefined) {
+    return null;
+  }
   return (
     <Card
       withBorder
@@ -25,14 +24,14 @@ export function BoardTile({ board, onOpen }: Props) {
       <Group justify="space-between" wrap="nowrap">
         <UnstyledButton
           onClick={() => {
-            onOpen(board.deviceId);
+            onOpen(deviceId);
           }}
           style={{ flex: 1, minWidth: 0 }}
         >
           <BoardName board={board} />
           <Group gap="xs">
             <Text size="sm" c="dimmed">
-              ID {board.deviceId}
+              ID {deviceId}
             </Text>
             {!board.answering && (
               <Badge color="gray" size="sm">
@@ -41,15 +40,7 @@ export function BoardTile({ board, onOpen }: Props) {
             )}
           </Group>
         </UnstyledButton>
-        <Button
-          variant="default"
-          onClick={() => {
-            // Slice 3 sends the identify request
-            alert(`Identifying ${getBoardLabel(board)}`);
-          }}
-        >
-          Identify
-        </Button>
+        <IdentifyButton deviceId={deviceId} />
       </Group>
     </Card>
   );

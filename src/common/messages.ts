@@ -25,7 +25,15 @@ export type Fleet = { interface: string } & (
   { connected: true; deviceId: number } | { connected: false }
 );
 
+export type ClientMessage = {
+  type: 'identify';
+  requestId: number;
+  deviceId: number;
+};
+
 export type ServerMessage =
   | { type: 'hello'; fleet: Fleet; boards: Board[] }
   | { type: 'fleet'; fleet: Fleet }
-  | { type: 'boards'; boards: Board[] };
+  | { type: 'boards'; boards: Board[] }
+  | { type: 'result'; requestId: number; board: Board }
+  | { type: 'result'; requestId: number; error: string };

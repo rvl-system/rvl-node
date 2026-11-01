@@ -2,6 +2,7 @@ import {
   getDeviceId,
   getNetworkInterface,
   getNodes,
+  identifyNode,
   init,
   isConnected,
   type NodeStatus,
@@ -70,6 +71,16 @@ export function unwatchBoards(): void {
   if (watchers === 0) {
     stopListing();
   }
+}
+
+export async function identifyBoard(deviceId: number): Promise<Board> {
+  return mergeBoard(await identifyNode(deviceId));
+}
+
+function mergeBoard(status: NodeStatus): Board {
+  roster.set(status.deviceId, { status, misses: 0 });
+  notifyChange('boards');
+  return { ...status, answering: true };
 }
 
 function startListing(): void {

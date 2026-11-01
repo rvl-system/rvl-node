@@ -1,9 +1,11 @@
 import { Badge, Group, Text } from '@mantine/core';
+import { useAtomValue } from 'jotai';
 
-import { useAppState } from './connection.ts';
+import { fleetAtom, socketAtom } from './state.ts';
 
 export function FleetStatus() {
-  const { socket, fleet } = useAppState();
+  const socket = useAtomValue(socketAtom);
+  const fleet = useAtomValue(fleetAtom);
   return (
     <Group gap="sm">
       <Badge variant="light" color={socket === 'open' ? 'green' : 'yellow'}>

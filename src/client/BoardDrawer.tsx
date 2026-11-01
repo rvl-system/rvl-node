@@ -1,7 +1,9 @@
-import { Drawer } from '@mantine/core';
+import { Drawer, Text } from '@mantine/core';
+import { useAtomValue } from 'jotai';
 
+import { BoardDetails } from './BoardDetails.tsx';
 import { BoardName } from './BoardName.tsx';
-import { useAppState } from './connection.ts';
+import { boardFamily } from './state.ts';
 
 type Props = {
   deviceId: number;
@@ -9,11 +11,8 @@ type Props = {
   onClose: () => void;
 };
 
-// Read from the store rather than given the board, so the title follows a
-// rename while it is open. Slice 3 fills it
 export function BoardDrawer({ deviceId, opened, onClose }: Props) {
-  const { boards } = useAppState();
-  const board = boards.find((candidate) => candidate.deviceId === deviceId);
+  const board = useAtomValue(boardFamily(deviceId));
   return (
     <Drawer
       opened={opened}
@@ -21,6 +20,12 @@ export function BoardDrawer({ deviceId, opened, onClose }: Props) {
       position="right"
       size="md"
       title={board ? <BoardName board={board} /> : `Board ${deviceId}`}
-    />
+    >
+      {board ? (
+        <BoardDetails board={board} />
+      ) : (
+        <Text c="dimmed">This board has stopped answering.</Text>
+      )}
+    </Drawer>
   );
 }

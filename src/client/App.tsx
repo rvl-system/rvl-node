@@ -1,11 +1,13 @@
 import { Container, Group, Loader, Stack, Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 
+import { type Fleet } from '../common/messages.ts';
 import { BoardDrawer } from './BoardDrawer.tsx';
 import { BoardGrid } from './BoardGrid.tsx';
-import { type AppState, useAppState } from './connection.ts';
 import { FleetStatus } from './FleetStatus.tsx';
+import { boardIdsAtom, fleetAtom } from './state.ts';
 
 function Waiting({ message }: { message: string }) {
   return (
@@ -17,7 +19,8 @@ function Waiting({ message }: { message: string }) {
 }
 
 function renderBoards(
-  { fleet, boards }: AppState,
+  fleet: Fleet | undefined,
+  hasBoards: boolean,
   onOpen: (deviceId: number) => void
 ) {
   if (fleet === undefined) {
@@ -26,14 +29,15 @@ function renderBoards(
   if (!fleet.connected) {
     return <Waiting message={`Waiting for the fleet on ${fleet.interface}`} />;
   }
-  if (boards.length === 0) {
+  if (!hasBoards) {
     return <Waiting message="No boards have answered yet" />;
   }
-  return <BoardGrid boards={boards} onOpen={onOpen} />;
+  return <BoardGrid onOpen={onOpen} />;
 }
 
 export function App() {
-  const state = useAppState();
+  const fleet = useAtomValue(fleetAtom);
+  const boardIds = useAtomValue(boardIdsAtom);
   // The ID outlives the open flag, so the title holds through the slide-out
   const [selectedId, setSelectedId] = useState<number>();
   const [opened, { open, close }] = useDisclosure();
@@ -42,7 +46,7 @@ export function App() {
       <Stack>
         <Title order={1}>RVL Setup</Title>
         <FleetStatus />
-        {renderBoards(state, (deviceId) => {
+        {renderBoards(fleet, boardIds.length > 0, (deviceId) => {
           setSelectedId(deviceId);
           open();
         })}

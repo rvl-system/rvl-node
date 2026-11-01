@@ -1,18 +1,15 @@
 import { SimpleGrid } from '@mantine/core';
+import { useAtomValue } from 'jotai';
 
-import { type Board } from '../common/messages.ts';
 import { BoardTile } from './BoardTile.tsx';
+import { boardIdsAtom } from './state.ts';
 
-type Props = {
-  boards: Board[];
-  onOpen: (deviceId: number) => void;
-};
-
-export function BoardGrid({ boards, onOpen }: Props) {
+export function BoardGrid({ onOpen }: { onOpen: (deviceId: number) => void }) {
+  const boardIds = useAtomValue(boardIdsAtom);
   return (
     <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }}>
-      {boards.map((board) => (
-        <BoardTile key={board.deviceId} board={board} onOpen={onOpen} />
+      {boardIds.map((deviceId) => (
+        <BoardTile key={deviceId} deviceId={deviceId} onOpen={onOpen} />
       ))}
     </SimpleGrid>
   );
