@@ -155,17 +155,27 @@ export async function loadNode(options: NodeOptions = {}) {
   fakes.portInUse = options.portInUse ?? false;
   fakes.socket = undefined;
   vi.resetModules();
-  const [rvl, clock, animation, identity, transport, net, parametric, events] =
-    await Promise.all([
-      import('../src/rvl.ts'),
-      import('../src/clock.ts'),
-      import('../src/protocols/animation.ts'),
-      import('../src/protocols/identity.ts'),
-      import('../src/transport.ts'),
-      import('../src/net.ts'),
-      import('../src/parametric.ts'),
-      import('../src/events.ts'),
-    ]);
+  const [
+    rvl,
+    clock,
+    animation,
+    configuration,
+    identity,
+    transport,
+    net,
+    parametric,
+    events,
+  ] = await Promise.all([
+    import('../src/rvl.ts'),
+    import('../src/clock.ts'),
+    import('../src/protocols/animation.ts'),
+    import('../src/protocols/configuration.ts'),
+    import('../src/protocols/identity.ts'),
+    import('../src/transport.ts'),
+    import('../src/net.ts'),
+    import('../src/parametric.ts'),
+    import('../src/events.ts'),
+  ]);
 
   let nextSetId = 0;
 
@@ -221,6 +231,7 @@ export async function loadNode(options: NodeOptions = {}) {
     rvl,
     clock,
     animation,
+    configuration,
     identity,
     transport,
     net,

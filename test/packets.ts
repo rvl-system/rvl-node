@@ -50,6 +50,55 @@ export function buildObservation(
   return rvli(source, 2, [2, id >> 8, id & 0xff, 0, ...clock]);
 }
 
+type StatusFields = {
+  capabilities?: number;
+  mode?: number;
+  channel?: number;
+  brightness?: number;
+  pixelCount?: number;
+  colorOrder?: number;
+  statusLedBrightness?: number;
+  nickname?: string;
+};
+
+// A board's status as the firmware's sendStatus writes it, addressed to the
+// node that asked. The defaults are a receiver with every capability, GRB,
+// 300 pixels and no nickname
+export function buildStatus(
+  source: number,
+  destination: number,
+  fields: StatusFields = {}
+): Buffer {
+  const {
+    capabilities = 0x3f,
+    mode = 1,
+    channel = 0,
+    brightness = 50,
+    pixelCount = 300,
+    colorOrder = 2,
+    statusLedBrightness = 60,
+    nickname = '',
+  } = fields;
+  const name = Buffer.alloc(16);
+  name.write(nickname, 'latin1');
+  return rvli(
+    source,
+    6,
+    [
+      capabilities,
+      mode,
+      channel,
+      brightness,
+      pixelCount >> 8,
+      pixelCount & 0xff,
+      colorOrder,
+      statusLedBrightness,
+      ...name,
+    ],
+    destination
+  );
+}
+
 export type SentScene = {
   source: number;
   channel: number;
