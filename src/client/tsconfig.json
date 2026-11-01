@@ -9,5 +9,5 @@
     "jsx": "react-jsx",
     "types": ["vite/client"]
   },
-  "include": ["./**/*.ts", "./**/*.tsx"]
+  "include": ["./**/*.ts", "./**/*.tsx", "../common/**/*.ts"]
 }
