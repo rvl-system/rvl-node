@@ -54,6 +54,12 @@ The fleet shares an animation clock, a millisecond count the boards agree on thr
 
 The fleet clock is available a few seconds after `init`, and `connected` waits for it as well as for a device ID. Until then the clock accessors throw, scenes without a start are held, and scenes with a start can't be placed, so `setAnimationParameters` and `setOff` throw for those.
 
+### Configuring boards
+
+A board's channel, brightness, pixel count, color order, status LED brightness and nickname can be set over the wire, and the board stores them, so they survive a reboot. `getNodes` asks every board to report itself and returns what came back: each board's settings, its mode, and which of the six properties it honors, since a board without a status LED ignores that one and a board with physical controls reads channel and brightness from them. `configureNode` sets one property on one board and resolves with the board's report once it has applied it. `identifyNode` makes a board flash white for five seconds, strip and status LED, so you can tell which physical board an ID is.
+
+Boards answer with a broadcast addressed to this node, which is lost a few percent of the time like any broadcast, so a listing asks twice and a targeted request asks once more before rejecting.
+
 ## API
 
 ### Setup
@@ -247,6 +253,57 @@ function subtractFrames(a: number, b: number): number;
 
 _Returns:_ the signed number of frames from `b` to `a`, correct across the 2^27 frame wrap for differences of up to 2^26 frames, about 25 days.
 
+### Configuration
+
+#### getNodes
+
+Asks every board on the network to report itself.
+
+_Signature:_
+
+```typescript
+function getNodes(): Promise<NodeStatus[]>;
+```
+
+_Returns:_ a promise for the boards that answered within a second, sorted by device ID. A board that is off or not on the network is absent, and so is one whose reply was lost twice, so a missing board is worth a second call. Throws before `connected`.
+
+#### configureNode
+
+Sets one property on one board.
+
+_Signature:_
+
+```typescript
+function configureNode<P extends keyof NodeConfiguration>(
+  deviceId: number,
+  property: P,
+  value: NodeConfiguration[P]
+): Promise<NodeStatus>;
+```
+
+_Arguments:_
+
+- `deviceId`: the board, 0 to 239, as `getNodes` reports it.
+- `property` and `value`: `channel` 0 to 7; `brightness` 0 to 255; `pixelCount` 1 to `MAX_PIXEL_COUNT`, the number of pixels the board renders and drives; `colorOrder`, the order the strip reads its three bytes in, `GRB` for a WS2812B; `statusLedBrightness` 0 to 255, for boards that have one; `nickname`, up to 16 printable ASCII characters. Throws for a value out of range.
+
+_Returns:_ a promise for the board's status carrying the new value, so a status the board sent for some other reason in the meantime isn't mistaken for the answer. A property the board doesn't honor, per `capabilities` in its status, is ignored, and the first status shows it unchanged. The board stores the change a second later. Rejects if the board hasn't answered after two attempts, about two seconds. Throws before `connected`.
+
+#### identifyNode
+
+Flashes a board white for five seconds, its strip and, on a board that has one, its status LED, so you can pick it out.
+
+_Signature:_
+
+```typescript
+function identifyNode(deviceId: number): Promise<NodeStatus>;
+```
+
+_Returns:_ a promise for the board's status, which confirms it heard. Rejects if the board hasn't answered after two attempts. Throws before `connected`.
+
+#### MAX_PIXEL_COUNT
+
+The most pixels a board drives, 300, which is the size of the firmware's strip buffers. A `pixelCount` past it throws.
+
 ### Animation builders
 
 #### createAnimationParameters
@@ -393,6 +450,26 @@ interface AnimationParameters {
 interface SceneOptions {
   startFrame?: number;
   fadeFrames?: number;
+}
+
+type ColorOrder = 'RGB' | 'RBG' | 'GRB' | 'GBR' | 'BRG' | 'BGR';
+
+interface NodeConfiguration {
+  channel: number; // 0 to 7
+  brightness: number; // 0 to 255
+  pixelCount: number; // 1 to MAX_PIXEL_COUNT
+  colorOrder: ColorOrder;
+  statusLedBrightness: number; // 0 to 255
+  nickname: string; // up to 16 printable ASCII characters
+}
+
+// Which of the properties a board honors
+type NodeCapabilities = { [P in keyof NodeConfiguration]: boolean };
+
+interface NodeStatus extends NodeConfiguration {
+  deviceId: number;
+  capabilities: NodeCapabilities;
+  mode: 'controller' | 'receiver';
 }
 ```
 

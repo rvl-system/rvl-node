@@ -4,6 +4,8 @@
 - A `startFrame` read from `getEarliestStartFrame` no longer throws when a frame boundary passes between the two calls
 - A board's clock-sync observation straggling in from the previous set no longer discards the current set's row, and a set whose start-of-set reference was lost is now processed a reference late instead of being dropped
 - An RVLI packet with trailing bytes is now dropped, as the boards drop it, where it used to be decoded
+- Added `getNodes`, `configureNode` and `identifyNode`, which list the boards on the network, set a board's channel, brightness, pixel count, color order, status LED brightness or nickname, and flash a board so it can be picked out, with `MAX_PIXEL_COUNT` and the `NodeStatus`, `NodeConfiguration`, `NodeCapabilities` and `ColorOrder` types. They need firmware with the configuration packets, and are the one part of the API that rejects, when a board doesn't answer
+- The RVLI header's reserved byte is now a destination, so a packet addressed to another node is dropped
 
 ## 8.0.0 (2026-10-08)
 

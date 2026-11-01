@@ -9,7 +9,7 @@ import {
 } from './harness.ts';
 import { buildIdReply, RVLI_PORT } from './packets.ts';
 
-const ID_REQUEST = Buffer.from([0x52, 0x56, 0x4c, 0x49, 1, 255, 1, 0, 1]);
+const ID_REQUEST = Buffer.from([0x52, 0x56, 0x4c, 0x49, 1, 255, 1, 255, 1]);
 
 test('an ID request goes out at init', async () => {
   const node = await startNode();
@@ -84,7 +84,7 @@ test('replies that are not a reply to this node are dropped', async () => {
     buildIdReply(240),
     // Another node's request, which is the same RVLI type with the request
     // subtype
-    Buffer.from([0x52, 0x56, 0x4c, 0x49, 1, 30, 1, 0, 1]),
+    Buffer.from([0x52, 0x56, 0x4c, 0x49, 1, 30, 1, 255, 1]),
   ]) {
     node.deliver(packet);
     expect(node.identity.getDeviceId()).toBe(10);

@@ -1,6 +1,6 @@
 import { AppendBuffer, checkRange } from "../buffer.js";
 import { getAnimationClock, getAnimationFrame, isClockSynchronized, subscribeToClockSteps, toAnimationClock, waitForClockSync, } from "../clock.js";
-import { DEFAULT_FADE_FRAMES, FRAME_PERIOD, MIN_FADE_FRAMES, PACKET_TYPE_OFF, PACKET_TYPE_PARAMETRIC_ANIMATION, REPEAT_SEND_FRAMES, RVLA_PORT, RVLA_SIGNATURE, RVLA_VERSION, } from "../config.js";
+import { DEFAULT_FADE_FRAMES, FRAME_PERIOD, MIN_FADE_FRAMES, NUM_CHANNELS, PACKET_TYPE_OFF, PACKET_TYPE_PARAMETRIC_ANIMATION, REPEAT_SEND_FRAMES, RVLA_PORT, RVLA_SIGNATURE, RVLA_VERSION, } from "../config.js";
 import { createEmptyAnimation } from "../parametric.js";
 import { ChannelScenes } from "../scenes.js";
 import { assertInitialized, send } from "../transport.js";
@@ -9,7 +9,6 @@ import { getDeviceId } from "./identity.js";
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_LAYERS = 4;
-const NUM_CHANNELS = 8;
 const MAX_FADE_FRAMES = 0xff;
 // Unmasked, as the firmware's sender writes its sums
 const MAX_START_FRAME = 0xffffffff;

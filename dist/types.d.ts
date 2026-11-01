@@ -23,3 +23,20 @@ export type SceneOptions = {
     startFrame?: number;
     fadeFrames?: number;
 };
+export type ColorOrder = 'RGB' | 'RBG' | 'GRB' | 'GBR' | 'BRG' | 'BGR';
+export type NodeConfiguration = {
+    channel: number;
+    brightness: number;
+    pixelCount: number;
+    colorOrder: ColorOrder;
+    statusLedBrightness: number;
+    nickname: string;
+};
+export type NodeCapabilities = {
+    [P in keyof NodeConfiguration]: boolean;
+};
+export type NodeStatus = NodeConfiguration & {
+    deviceId: number;
+    capabilities: NodeCapabilities;
+    mode: 'controller' | 'receiver';
+};

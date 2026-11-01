@@ -8,7 +8,13 @@ export const FIRST_BOARD = 20;
 export const RVLI_PORT = 4979;
 export const RVLA_PORT = 4978;
 
-function rvli(source: number, packetType: number, payload: number[]): Buffer {
+// The destination is every node unless a test says otherwise
+function rvli(
+  source: number,
+  packetType: number,
+  payload: number[],
+  destination = 255
+): Buffer {
   return Buffer.from([
     0x52,
     0x56,
@@ -17,7 +23,7 @@ function rvli(source: number, packetType: number, payload: number[]): Buffer {
     1,
     source,
     packetType,
-    0,
+    destination,
     ...payload,
   ]);
 }

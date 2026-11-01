@@ -1,11 +1,10 @@
 import { AppendBuffer } from '../buffer.ts';
 import { isClockSynchronized, waitForClockSync } from '../clock.ts';
 import {
+  EVERY_DEVICE_ID,
   ID_REQUEST_TYPE,
   RVLI_PACKET_TYPE_ID_ASSIGNMENT,
   RVLI_PORT,
-  RVLI_SIGNATURE,
-  RVLI_VERSION,
   UNASSIGNED_DEVICE_ID,
 } from '../config.ts';
 import { emit } from '../events.ts';
@@ -16,6 +15,7 @@ import {
   getNetworkInterface,
   send,
 } from '../transport.ts';
+import { writeInfrastructureHeader } from './infrastructure.ts';
 
 const IDENTITY_LOOP_INTERVAL = 250;
 const ID_RETRY_INTERVAL = 1000;
@@ -108,11 +108,12 @@ function runIdentityLoop(): void {
 
 function sendIdRequest(): void {
   const packet = new AppendBuffer();
-  packet.appendString(RVLI_SIGNATURE);
-  packet.append8(RVLI_VERSION);
-  packet.append8(UNASSIGNED_DEVICE_ID);
-  packet.append8(RVLI_PACKET_TYPE_ID_ASSIGNMENT);
-  packet.append8(0); // Reserved
+  writeInfrastructureHeader(
+    packet,
+    UNASSIGNED_DEVICE_ID,
+    RVLI_PACKET_TYPE_ID_ASSIGNMENT,
+    EVERY_DEVICE_ID
+  );
   packet.append8(ID_REQUEST_TYPE);
   void send(packet, RVLI_PORT);
 }

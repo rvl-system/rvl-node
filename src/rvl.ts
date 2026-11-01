@@ -1,6 +1,7 @@
 import { handleObservation, handleReference } from './clock.ts';
 import { getDefaultInterface } from './net.ts';
 import { startAnimationProtocol } from './protocols/animation.ts';
+import { handleStatus } from './protocols/configuration.ts';
 import {
   getDeviceId,
   handleIdReply,
@@ -27,6 +28,9 @@ function handleInfrastructurePacket(
       break;
     case 'observation':
       handleObservation(decoded.id, decoded.source, decoded.observedTime);
+      break;
+    case 'status':
+      handleStatus(decoded.status);
       break;
     case undefined:
       break;

@@ -11,6 +11,7 @@ import {
   DEFAULT_FADE_FRAMES,
   FRAME_PERIOD,
   MIN_FADE_FRAMES,
+  NUM_CHANNELS,
   PACKET_TYPE_OFF,
   PACKET_TYPE_PARAMETRIC_ANIMATION,
   REPEAT_SEND_FRAMES,
@@ -27,7 +28,6 @@ import { getDeviceId } from './identity.ts';
 const DEFAULT_TIME_PERIOD = 255;
 const DEFAULT_DISTANCE_PERIOD = 32;
 const MAX_NUM_LAYERS = 4;
-const NUM_CHANNELS = 8;
 const MAX_FADE_FRAMES = 0xff;
 // Unmasked, as the firmware's sender writes its sums
 const MAX_START_FRAME = 0xffffffff;

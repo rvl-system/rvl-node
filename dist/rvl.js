@@ -1,6 +1,7 @@
 import { handleObservation, handleReference } from "./clock.js";
 import { getDefaultInterface } from "./net.js";
 import { startAnimationProtocol } from "./protocols/animation.js";
+import { handleStatus } from "./protocols/configuration.js";
 import { getDeviceId, handleIdReply, startIdentityProtocol, } from "./protocols/identity.js";
 import { decodeInfrastructurePacket } from "./protocols/infrastructure.js";
 import { bindTransport, isInitialized } from "./transport.js";
@@ -19,6 +20,9 @@ function handleInfrastructurePacket(message, arrivalTime) {
             break;
         case 'observation':
             handleObservation(decoded.id, decoded.source, decoded.observedTime);
+            break;
+        case 'status':
+            handleStatus(decoded.status);
             break;
         case undefined:
             break;

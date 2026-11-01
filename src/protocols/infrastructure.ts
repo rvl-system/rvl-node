@@ -1,11 +1,21 @@
+import { type AppendBuffer } from '../buffer.ts';
 import {
+  COLOR_ORDERS,
+  EVERY_DEVICE_ID,
   ID_REPLY_TYPE,
   NUM_DEVICE_IDS,
+  PROPERTIES,
   RVLI_PACKET_TYPE_CLOCK_SYNC,
   RVLI_PACKET_TYPE_ID_ASSIGNMENT,
+  RVLI_PACKET_TYPE_STATUS,
   RVLI_SIGNATURE,
   RVLI_VERSION,
 } from '../config.ts';
+import {
+  type NodeCapabilities,
+  type NodeConfiguration,
+  type NodeStatus,
+} from '../types.ts';
 
 // These mirror src/rvl/protocols/clock_sync in rvl
 // (github.com/rvl-system/rvl)
@@ -18,15 +28,68 @@ const HEADER_LENGTH = 8;
 const ID_REPLY_PACKET_LENGTH = HEADER_LENGTH + 2;
 const REFERENCE_PACKET_LENGTH = HEADER_LENGTH + 6;
 const OBSERVATION_PACKET_LENGTH = HEADER_LENGTH + 8;
+const STATUS_PACKET_LENGTH = HEADER_LENGTH + 24;
 
 type InfrastructureMessage =
   | { type: 'idReply'; source: number; deviceId: number }
   | { type: 'reference'; source: number; id: number; startOfSet: boolean }
-  | { type: 'observation'; source: number; id: number; observedTime: number };
+  | { type: 'observation'; source: number; id: number; observedTime: number }
+  | { type: 'status'; source: number; status: NodeStatus };
+
+// Signature, version, source, packet type and destination, as every RVLI
+// writer writes them
+export function writeInfrastructureHeader(
+  packet: AppendBuffer,
+  source: number,
+  packetType: number,
+  destination: number
+): void {
+  packet.appendString(RVLI_SIGNATURE);
+  packet.append8(RVLI_VERSION);
+  packet.append8(source);
+  packet.append8(packetType);
+  packet.append8(destination);
+}
+
+function decodeCapabilities(bits: number): NodeCapabilities {
+  const has = (property: keyof NodeConfiguration) =>
+    (bits & (1 << PROPERTIES.indexOf(property))) !== 0;
+  return {
+    channel: has('channel'),
+    brightness: has('brightness'),
+    pixelCount: has('pixelCount'),
+    colorOrder: has('colorOrder'),
+    statusLedBrightness: has('statusLedBrightness'),
+    nickname: has('nickname'),
+  };
+}
+
+function decodeStatus(message: Buffer, source: number): NodeStatus | undefined {
+  const mode = message[9];
+  const orderIndex = message[14];
+  if (mode > 1 || orderIndex >= COLOR_ORDERS.length) {
+    return undefined;
+  }
+  const colorOrder = COLOR_ORDERS[orderIndex];
+  const nickname = message.toString('latin1', 16, 32);
+  const nicknameEnd = nickname.indexOf('\0');
+  return {
+    deviceId: source,
+    capabilities: decodeCapabilities(message[8]),
+    mode: mode === 0 ? 'controller' : 'receiver',
+    channel: message[10],
+    brightness: message[11],
+    pixelCount: message.readUInt16BE(12),
+    colorOrder,
+    statusLedBrightness: message[15],
+    nickname: nicknameEnd < 0 ? nickname : nickname.slice(0, nicknameEnd),
+  };
+}
 
 // Reads one RVLI datagram. Returns undefined for anything to drop: another
-// version, a source that can't be a node or is this one, an unknown type, or a
-// packet of the wrong length for its type
+// version, a source that can't be a node or is this one, a destination that is
+// neither every node nor this one, an unknown type, or a packet of the wrong
+// length for its type
 export function decodeInfrastructurePacket(
   message: Buffer,
   ownId: number | undefined
@@ -40,6 +103,12 @@ export function decodeInfrastructurePacket(
   }
   const source = message[5];
   if (source >= NUM_DEVICE_IDS || source === ownId) {
+    return undefined;
+  }
+  // Before an ID is assigned, only what is for every node, the ID reply among
+  // it
+  const destination = message[7];
+  if (destination !== EVERY_DEVICE_ID && destination !== ownId) {
     return undefined;
   }
   switch (message[6]) {
@@ -83,6 +152,14 @@ export function decodeInfrastructurePacket(
           return undefined;
       }
     }
+    case RVLI_PACKET_TYPE_STATUS: {
+      if (message.length !== STATUS_PACKET_LENGTH) {
+        return undefined;
+      }
+      const status = decodeStatus(message, source);
+      return status && { type: 'status', source, status };
+    }
+    // The three requests are only ever this node's own
     default:
       return undefined;
   }
