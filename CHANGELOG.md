@@ -1,11 +1,21 @@
-## 8.1.0 (unreleased)
+## 8.1.0 (2026-11-01)
+
+8.1.0 needs firmware and a coordinator that write the RVLI destination byte, the header's former reserved byte. RVL Node now drops a packet addressed to another node, and boards and coordinators from before the change write zero there, so against them it never gets a device ID.
+
+New:
+
+- Added `getNodes`, which asks every board on the network to report itself and resolves with each board's device ID, mode, settings, and which of the settings it honors
+- Added `configureNode`, which sets one property on one board, its channel, brightness, pixel count, color order, status LED brightness or nickname, and resolves with the board's status once it carries the new value. The board stores the setting, so it survives a reboot. A property the board doesn't honor, per its capabilities, is ignored
+- Added `identifyNode`, which flashes a board white for five seconds, strip and status LED, so you can tell which physical board an ID is
+- All three throw before `connected`. `configureNode` and `identifyNode` reject when the board hasn't answered after two attempts, about two seconds, which makes them the one part of the API that rejects
+- Added `MAX_PIXEL_COUNT`, the most pixels a board drives, and the `NodeStatus`, `NodeConfiguration`, `NodeCapabilities` and `ColorOrder` types
+
+Other changes:
 
 - The default fade, taken by a call without `fadeFrames`, is now 32 frames, a second, up from 16, to match the controller boards' own changes
-- A `startFrame` read from `getEarliestStartFrame` no longer throws when a frame boundary passes between the two calls
+- A `startFrame` read from `getEarliestStartFrame` no longer throws when a frame boundary passes between the two calls; the scene goes out four frames ahead instead of five
 - A board's clock-sync observation straggling in from the previous set no longer discards the current set's row, and a set whose start-of-set reference was lost is now processed a reference late instead of being dropped
-- An RVLI packet with trailing bytes is now dropped, as the boards drop it, where it used to be decoded
-- Added `getNodes`, `configureNode` and `identifyNode`, which list the boards on the network, set a board's channel, brightness, pixel count, color order, status LED brightness or nickname, and flash a board so it can be picked out, with `MAX_PIXEL_COUNT` and the `NodeStatus`, `NodeConfiguration`, `NodeCapabilities` and `ColorOrder` types. They need firmware with the configuration packets, and are the one part of the API that rejects, when a board doesn't answer
-- The RVLI header's reserved byte is now a destination, so a packet addressed to another node is dropped
+- An RVLI packet of the wrong length for its type is now dropped, as the boards drop it, where one with trailing bytes used to be decoded
 
 ## 8.0.0 (2026-10-08)
 
