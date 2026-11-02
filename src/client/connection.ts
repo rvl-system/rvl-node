@@ -2,10 +2,17 @@ import { getDefaultStore } from 'jotai';
 
 import {
   type Board,
-  type ClientMessage,
+  type ClientRequest,
+  type ConfigureFields,
   type ServerMessage,
 } from '../common/messages.ts';
-import { boardFamily, boardIdsAtom, fleetAtom, socketAtom } from './state.ts';
+import {
+  boardFamily,
+  boardIdsAtom,
+  fleetAtom,
+  limitsAtom,
+  socketAtom,
+} from './state.ts';
 
 const RETRY_DELAY = 250;
 
@@ -84,6 +91,7 @@ function applyMessage(message: ServerMessage): void {
   switch (message.type) {
     case 'hello':
       store.set(fleetAtom, message.fleet);
+      store.set(limitsAtom, message.limits);
       setBoards(message.boards);
       break;
     case 'fleet':
@@ -117,7 +125,7 @@ export function connect(): void {
 }
 
 // Every failure is a rejection, the not-connected one included
-function request(message: Omit<ClientMessage, 'requestId'>): Promise<Board> {
+function request(message: ClientRequest): Promise<Board> {
   return new Promise((resolve, reject) => {
     if (socket === undefined || socket.readyState !== WebSocket.OPEN) {
       reject(new Error('Not connected to rvl-setup'));
@@ -132,4 +140,11 @@ function request(message: Omit<ClientMessage, 'requestId'>): Promise<Board> {
 
 export function identifyBoard(deviceId: number): Promise<Board> {
   return request({ type: 'identify', deviceId });
+}
+
+export function configureBoard(
+  deviceId: number,
+  fields: ConfigureFields
+): Promise<Board> {
+  return request({ type: 'configure', deviceId, ...fields });
 }

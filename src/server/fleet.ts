@@ -1,4 +1,5 @@
 import {
+  configureNode,
   getDeviceId,
   getNetworkInterface,
   getNodes,
@@ -9,7 +10,11 @@ import {
   on,
 } from 'rvl-node';
 
-import { type Board, type Fleet } from '../common/messages.ts';
+import {
+  type Board,
+  type ConfigureMessage,
+  type Fleet,
+} from '../common/messages.ts';
 
 const LISTING_PERIOD = 5000;
 const MISSES_BEFORE_DROP = 3;
@@ -22,7 +27,20 @@ type FleetOptions = {
 
 type RosterEntry = { status: NodeStatus; misses: number };
 
+type Settlers = {
+  resolve: (board: Board) => void;
+  reject: (error: Error) => void;
+};
+
+type Outcome = { board: Board } | { error: Error };
+
+type Slot = {
+  next: ConfigureMessage | undefined;
+  waiters: Settlers[];
+};
+
 const roster = new Map<number, RosterEntry>();
+const slots = new Map<string, Slot>();
 let notifyChange: FleetOptions['onChange'] = () => undefined;
 let watchers = 0;
 let listingTimer: ReturnType<typeof setInterval> | undefined;
@@ -75,6 +93,61 @@ export function unwatchBoards(): void {
 
 export async function identifyBoard(deviceId: number): Promise<Board> {
   return mergeBoard(await identifyNode(deviceId));
+}
+
+// rvl-node resends a value a second after a lost reply; one in flight per
+// board and property keeps that resend from landing after a newer value
+export function configureBoard(message: ConfigureMessage): Promise<Board> {
+  const key = `${message.deviceId}:${message.property}`;
+  const slot = slots.get(key);
+  return new Promise((resolve, reject) => {
+    if (slot !== undefined) {
+      slot.next = message;
+      slot.waiters.push({ resolve, reject });
+      return;
+    }
+    const opened: Slot = { next: undefined, waiters: [{ resolve, reject }] };
+    slots.set(key, opened);
+    void drainSlot(key, opened, message);
+  });
+}
+
+async function drainSlot(
+  key: string,
+  slot: Slot,
+  first: ConfigureMessage
+): Promise<void> {
+  let outcome: Outcome;
+  let current: ConfigureMessage | undefined = first;
+  do {
+    outcome = await settleConfigure(current);
+    current = slot.next;
+    slot.next = undefined;
+  } while (current !== undefined);
+  slots.delete(key);
+  for (const { resolve, reject } of slot.waiters) {
+    if ('board' in outcome) {
+      resolve(outcome.board);
+    } else {
+      reject(outcome.error);
+    }
+  }
+}
+
+async function settleConfigure({
+  deviceId,
+  property,
+  value,
+}: ConfigureMessage): Promise<Outcome> {
+  try {
+    return {
+      board: mergeBoard(await configureNode(deviceId, property, value)),
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error : new Error('Unknown error'),
+    };
+  }
 }
 
 function mergeBoard(status: NodeStatus): Board {

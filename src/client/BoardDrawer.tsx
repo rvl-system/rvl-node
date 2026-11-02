@@ -1,7 +1,7 @@
 import { Drawer, Text } from '@mantine/core';
 import { useAtomValue } from 'jotai';
 
-import { BoardDetails } from './BoardDetails.tsx';
+import { BoardForm } from './BoardForm.tsx';
 import { BoardName } from './BoardName.tsx';
 import { boardFamily } from './state.ts';
 
@@ -22,7 +22,7 @@ export function BoardDrawer({ deviceId, opened, onClose }: Props) {
       title={board ? <BoardName board={board} /> : `Board ${deviceId}`}
     >
       {board ? (
-        <BoardDetails board={board} />
+        <BoardForm board={board} />
       ) : (
         <Text c="dimmed">This board has stopped answering.</Text>
       )}

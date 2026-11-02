@@ -4,9 +4,17 @@ import { join } from 'node:path';
 import fastifyStatic from '@fastify/static';
 import fastifyWebsocket from '@fastify/websocket';
 import Fastify from 'fastify';
+import { MAX_PIXEL_COUNT, NICKNAME_LENGTH, NUM_CHANNELS } from 'rvl-node';
 
-import { type ClientMessage, type ServerMessage } from '../common/messages.ts';
 import {
+  type ClientMessage,
+  isColorOrder,
+  isProperty,
+  type Limits,
+  type ServerMessage,
+} from '../common/messages.ts';
+import {
+  configureBoard,
   getBoards,
   getFleet,
   identifyBoard,
@@ -28,6 +36,12 @@ type ServerOptions = {
 type Socket = fastifyWebsocket.WebSocket;
 
 const clients = new Set<Socket>();
+
+const LIMITS: Limits = {
+  maxPixelCount: MAX_PIXEL_COUNT,
+  numChannels: NUM_CHANNELS,
+  nicknameLength: NICKNAME_LENGTH,
+};
 
 function send(socket: Socket, message: ServerMessage): void {
   if (socket.readyState === socket.OPEN) {
@@ -59,6 +73,35 @@ function isInteger(value: unknown): value is number {
   return typeof value === 'number' && Number.isInteger(value);
 }
 
+// rvl-node checks the ranges
+function parseConfigure(
+  requestId: number,
+  deviceId: number,
+  property: unknown,
+  value: unknown
+): ClientMessage | undefined {
+  if (!isProperty(property)) {
+    return undefined;
+  }
+  switch (property) {
+    case 'channel':
+    case 'brightness':
+    case 'pixelCount':
+    case 'statusLedBrightness':
+      return isInteger(value)
+        ? { type: 'configure', requestId, deviceId, property, value }
+        : undefined;
+    case 'colorOrder':
+      return isColorOrder(value)
+        ? { type: 'configure', requestId, deviceId, property, value }
+        : undefined;
+    case 'nickname':
+      return typeof value === 'string'
+        ? { type: 'configure', requestId, deviceId, property, value }
+        : undefined;
+  }
+}
+
 function parseClientMessage(text: string): ClientMessage | undefined {
   let parsed: unknown;
   try {
@@ -71,34 +114,43 @@ function parseClientMessage(text: string): ClientMessage | undefined {
     parsed === null ||
     !('type' in parsed) ||
     !('requestId' in parsed) ||
-    !('deviceId' in parsed)
+    !('deviceId' in parsed) ||
+    !isInteger(parsed.requestId) ||
+    !isInteger(parsed.deviceId)
   ) {
     return undefined;
   }
+  const { requestId, deviceId } = parsed;
+  if (parsed.type === 'identify') {
+    return { type: 'identify', requestId, deviceId };
+  }
   if (
-    parsed.type === 'identify' &&
-    isInteger(parsed.requestId) &&
-    isInteger(parsed.deviceId)
+    parsed.type === 'configure' &&
+    'property' in parsed &&
+    'value' in parsed
   ) {
-    return {
-      type: 'identify',
-      requestId: parsed.requestId,
-      deviceId: parsed.deviceId,
-    };
+    return parseConfigure(requestId, deviceId, parsed.property, parsed.value);
   }
   return undefined;
 }
 
 async function handleRequest(
   socket: Socket,
-  { requestId, deviceId }: ClientMessage
+  message: ClientMessage
 ): Promise<void> {
   try {
-    const board = await identifyBoard(deviceId);
-    send(socket, { type: 'result', requestId, board });
+    const board =
+      message.type === 'identify'
+        ? await identifyBoard(message.deviceId)
+        : await configureBoard(message);
+    send(socket, { type: 'result', requestId: message.requestId, board });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    send(socket, { type: 'result', requestId, error: message });
+    const reason = error instanceof Error ? error.message : 'Unknown error';
+    send(socket, {
+      type: 'result',
+      requestId: message.requestId,
+      error: reason,
+    });
   }
 }
 
@@ -118,7 +170,12 @@ export async function startServer({
   await server.register(fastifyWebsocket);
   server.get('/ws', { websocket: true }, (socket) => {
     clients.add(socket);
-    send(socket, { type: 'hello', fleet: getFleet(), boards: getBoards() });
+    send(socket, {
+      type: 'hello',
+      fleet: getFleet(),
+      boards: getBoards(),
+      limits: LIMITS,
+    });
     watchBoards();
     socket.on('message', (data, isBinary) => {
       const message = isBinary ? undefined : parseClientMessage(readText(data));

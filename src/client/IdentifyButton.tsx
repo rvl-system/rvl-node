@@ -3,14 +3,12 @@ import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 
 import { identifyBoard } from './connection.ts';
-import { fleetAtom, socketAtom } from './state.ts';
+import { onlineAtom } from './state.ts';
 
 export function IdentifyButton({ deviceId }: { deviceId: number }) {
-  const socket = useAtomValue(socketAtom);
-  const fleet = useAtomValue(fleetAtom);
+  const online = useAtomValue(onlineAtom);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
-  const canIdentify = socket === 'open' && fleet?.connected === true;
 
   async function identify(): Promise<void> {
     setPending(true);
@@ -29,7 +27,7 @@ export function IdentifyButton({ deviceId }: { deviceId: number }) {
       <Button
         variant="default"
         loading={pending}
-        disabled={!canIdentify}
+        disabled={!online}
         onClick={() => {
           void identify();
         }}
