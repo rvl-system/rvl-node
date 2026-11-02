@@ -6,6 +6,10 @@ Breaking changes:
 
 - Removed `mode` from `NodeStatus`. Device mode changes only from a controller board's own screen, so reporting it over the wire gave a configuration tool nothing it could act on
 
+New:
+
+- Added `NUM_CHANNELS` and `NICKNAME_LENGTH` beside `MAX_PIXEL_COUNT`, so a configuration UI can take its bounds from the package that checks them
+
 ## 8.1.0 (2026-11-01)
 
 8.1.0 needs firmware and a coordinator that write the RVLI destination byte, the header's former reserved byte. RVL Node now drops a packet addressed to another node, and boards and coordinators from before the change write zero there, so against them it never gets a device ID.

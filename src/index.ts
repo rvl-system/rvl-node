@@ -5,7 +5,12 @@ export {
   toAnimationClock,
   toLocalTime,
 } from './clock.ts';
-export { FRAME_PERIOD, MAX_PIXEL_COUNT } from './config.ts';
+export {
+  FRAME_PERIOD,
+  MAX_PIXEL_COUNT,
+  NICKNAME_LENGTH,
+  NUM_CHANNELS,
+} from './config.ts';
 export { on } from './events.ts';
 export {
   getEarliestStartFrame,

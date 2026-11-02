@@ -1,6 +1,6 @@
 export { init } from './rvl.ts';
 export { getAnimationClock, subtractFrames, toAnimationClock, toLocalTime, } from './clock.ts';
-export { FRAME_PERIOD, MAX_PIXEL_COUNT } from './config.ts';
+export { FRAME_PERIOD, MAX_PIXEL_COUNT, NICKNAME_LENGTH, NUM_CHANNELS, } from './config.ts';
 export { on } from './events.ts';
 export { getEarliestStartFrame, setAnimationParameters, setOff, } from './protocols/animation.ts';
 export { configureNode, getNodes, identifyNode, } from './protocols/configuration.ts';

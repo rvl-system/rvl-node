@@ -304,6 +304,14 @@ _Returns:_ a promise for the board's status, which confirms it heard. Rejects if
 
 The most pixels a board drives, 300, which is the size of the firmware's strip buffers. A `pixelCount` past it throws.
 
+#### NUM_CHANNELS
+
+The number of channels, 8. A `channel` is 0 to `NUM_CHANNELS - 1`.
+
+#### NICKNAME_LENGTH
+
+The most characters a `nickname` holds, 16.
+
 ### Animation builders
 
 #### createAnimationParameters
