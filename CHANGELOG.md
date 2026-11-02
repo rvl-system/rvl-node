@@ -1,4 +1,4 @@
-## 9.0.0 (unreleased)
+## 9.0.0 (2026-11-01)
 
 9.0.0 needs firmware from the same change: a board's status packet is 31 bytes, with no mode byte.
 
