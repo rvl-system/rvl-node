@@ -30,10 +30,6 @@ function noteFor(board: Board, property: Property): string | undefined {
 function describeRows(board: Board): Row[] {
   return [
     { label: 'Device ID', value: board.deviceId },
-    {
-      label: 'Mode',
-      value: board.mode === 'controller' ? 'Controller' : 'Receiver',
-    },
     { label: 'Channel', value: board.channel, note: noteFor(board, 'channel') },
     {
       label: 'Brightness',

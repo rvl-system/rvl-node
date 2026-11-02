@@ -17,7 +17,6 @@ type BoardProperties = {
 export type Board = BoardProperties & {
   deviceId: number;
   capabilities: { [P in keyof BoardProperties]: boolean };
-  mode: 'controller' | 'receiver';
   answering: boolean;
 };
 
