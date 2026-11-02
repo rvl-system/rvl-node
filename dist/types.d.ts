@@ -38,5 +38,4 @@ export type NodeCapabilities = {
 export type NodeStatus = NodeConfiguration & {
     deviceId: number;
     capabilities: NodeCapabilities;
-    mode: 'controller' | 'receiver';
 };

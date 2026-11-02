@@ -28,7 +28,7 @@ const HEADER_LENGTH = 8;
 const ID_REPLY_PACKET_LENGTH = HEADER_LENGTH + 2;
 const REFERENCE_PACKET_LENGTH = HEADER_LENGTH + 6;
 const OBSERVATION_PACKET_LENGTH = HEADER_LENGTH + 8;
-const STATUS_PACKET_LENGTH = HEADER_LENGTH + 24;
+const STATUS_PACKET_LENGTH = HEADER_LENGTH + 23;
 
 type InfrastructureMessage =
   | { type: 'idReply'; source: number; deviceId: number }
@@ -65,23 +65,21 @@ function decodeCapabilities(bits: number): NodeCapabilities {
 }
 
 function decodeStatus(message: Buffer, source: number): NodeStatus | undefined {
-  const mode = message[9];
-  const orderIndex = message[14];
-  if (mode > 1 || orderIndex >= COLOR_ORDERS.length) {
+  const orderIndex = message[13];
+  if (orderIndex >= COLOR_ORDERS.length) {
     return undefined;
   }
   const colorOrder = COLOR_ORDERS[orderIndex];
-  const nickname = message.toString('latin1', 16, 32);
+  const nickname = message.toString('latin1', 15, 31);
   const nicknameEnd = nickname.indexOf('\0');
   return {
     deviceId: source,
     capabilities: decodeCapabilities(message[8]),
-    mode: mode === 0 ? 'controller' : 'receiver',
-    channel: message[10],
-    brightness: message[11],
-    pixelCount: message.readUInt16BE(12),
+    channel: message[9],
+    brightness: message[10],
+    pixelCount: message.readUInt16BE(11),
     colorOrder,
-    statusLedBrightness: message[15],
+    statusLedBrightness: message[14],
     nickname: nicknameEnd < 0 ? nickname : nickname.slice(0, nicknameEnd),
   };
 }

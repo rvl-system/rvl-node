@@ -56,7 +56,7 @@ The fleet clock is available a few seconds after `init`, and `connected` waits f
 
 ### Configuring boards
 
-A board's channel, brightness, pixel count, color order, status LED brightness and nickname can be set over the wire, and the board stores them, so they survive a reboot. `getNodes` asks every board to report itself and returns what came back: each board's settings, its mode, and which of the six properties it honors, since a board without a status LED ignores that one and a board with physical controls reads channel and brightness from them. `configureNode` sets one property on one board and resolves with the board's report once it has applied it. `identifyNode` makes a board flash white for five seconds, strip and status LED, so you can tell which physical board an ID is.
+A board's channel, brightness, pixel count, color order, status LED brightness and nickname can be set over the wire, and the board stores them, so they survive a reboot. `getNodes` asks every board to report itself and returns what came back: each board's settings and which of the six properties it honors, since a board without a status LED ignores that one and a board with physical controls reads channel and brightness from them. `configureNode` sets one property on one board and resolves with the board's report once it has applied it. `identifyNode` makes a board flash white for five seconds, strip and status LED, so you can tell which physical board an ID is.
 
 Boards answer with a broadcast addressed to this node, which is lost a few percent of the time like any broadcast, so a listing asks twice and a targeted request asks once more before rejecting.
 
@@ -469,7 +469,6 @@ type NodeCapabilities = { [P in keyof NodeConfiguration]: boolean };
 interface NodeStatus extends NodeConfiguration {
   deviceId: number;
   capabilities: NodeCapabilities;
-  mode: 'controller' | 'receiver';
 }
 ```
 

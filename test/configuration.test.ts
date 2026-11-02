@@ -81,19 +81,16 @@ test('a listing asks twice and merges the replies by device ID', async () => {
   const listing = node.configuration.getNodes();
   expect(node.sent()).toHaveLength(1);
   node.deliver(buildStatus(3, 20, { nickname: 'Mini 1' }));
-  // Dropped: for another node, a mode or a color order the wire doesn't
-  // define, and a source that can't be a board
+  // Dropped: for another node, a color order the wire doesn't define, and a
+  // source that can't be a board
   node.deliver(buildStatus(4, 99));
-  node.deliver(buildStatus(5, 20, { mode: 2 }));
   node.deliver(buildStatus(6, 20, { colorOrder: 6 }));
   node.deliver(buildStatus(240, 20));
   await node.advance(250);
   expect(node.sent()).toHaveLength(2);
   expect(node.sent()[1].bytes).toEqual(node.sent()[0].bytes);
   // Board 2 only heard the second query, and board 3 answers both
-  node.deliver(
-    buildStatus(2, 20, { capabilities: 0x2f, mode: 0, brightness: 200 })
-  );
+  node.deliver(buildStatus(2, 20, { capabilities: 0x2f, brightness: 200 }));
   node.deliver(buildStatus(3, 20, { nickname: 'Mini 1' }));
   await node.advance(750);
   const nodes = await listing;
@@ -101,7 +98,6 @@ test('a listing asks twice and merges the replies by device ID', async () => {
     {
       deviceId: 2,
       capabilities: { ...ALL_CAPABILITIES, statusLedBrightness: false },
-      mode: 'controller',
       channel: 0,
       brightness: 200,
       pixelCount: 300,
@@ -112,7 +108,6 @@ test('a listing asks twice and merges the replies by device ID', async () => {
     {
       deviceId: 3,
       capabilities: ALL_CAPABILITIES,
-      mode: 'receiver',
       channel: 0,
       brightness: 50,
       pixelCount: 300,

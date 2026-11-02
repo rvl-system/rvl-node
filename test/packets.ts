@@ -52,7 +52,6 @@ export function buildObservation(
 
 type StatusFields = {
   capabilities?: number;
-  mode?: number;
   channel?: number;
   brightness?: number;
   pixelCount?: number;
@@ -62,8 +61,8 @@ type StatusFields = {
 };
 
 // A board's status as the firmware's sendStatus writes it, addressed to the
-// node that asked. The defaults are a receiver with every capability, GRB,
-// 300 pixels and no nickname
+// node that asked. The defaults are every capability, GRB, 300 pixels and
+// no nickname
 export function buildStatus(
   source: number,
   destination: number,
@@ -71,7 +70,6 @@ export function buildStatus(
 ): Buffer {
   const {
     capabilities = 0x3f,
-    mode = 1,
     channel = 0,
     brightness = 50,
     pixelCount = 300,
@@ -86,7 +84,6 @@ export function buildStatus(
     6,
     [
       capabilities,
-      mode,
       channel,
       brightness,
       pixelCount >> 8,
