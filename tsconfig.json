@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
+    "noEmit": true,
     "target": "ES2024",
     "lib": ["esnext"],
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    "rewriteRelativeImportExtensions": true,
-    "sourceMap": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

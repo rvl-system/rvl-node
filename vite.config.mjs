@@ -8,10 +8,4 @@ export default defineConfig({
     outDir: '../../dist/client',
     emptyOutDir: true,
   },
-  server: {
-    // dev:client talks to dev:server through this
-    proxy: {
-      '/ws': { target: 'ws://localhost:4980', ws: true },
-    },
-  },
 });
