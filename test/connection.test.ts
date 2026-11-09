@@ -63,6 +63,7 @@ const LIMITS: Limits = {
   maxPixelCount: 300,
   numChannels: 8,
   nicknameLength: 16,
+  maxCurrentLimit: 65535,
 };
 
 function board(deviceId: number, overrides: Partial<Board> = {}): Board {
@@ -75,6 +76,7 @@ function board(deviceId: number, overrides: Partial<Board> = {}): Board {
       colorOrder: true,
       statusLedBrightness: true,
       nickname: true,
+      currentLimit: true,
     },
     channel: 0,
     brightness: 255,
@@ -82,6 +84,7 @@ function board(deviceId: number, overrides: Partial<Board> = {}): Board {
     colorOrder: 'GRB',
     statusLedBrightness: 60,
     nickname: '',
+    currentLimit: 1500,
     answering: true,
     ...overrides,
   };

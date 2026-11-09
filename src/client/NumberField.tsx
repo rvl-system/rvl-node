@@ -1,31 +1,38 @@
 import { NumberInput } from '@mantine/core';
-import { useAtomValue } from 'jotai';
 
 import { ModalField } from './ModalField.tsx';
-import { limitsAtom } from './state.ts';
 import { useConfigure } from './useConfigure.ts';
 
 type Props = {
   deviceId: number;
+  property: 'pixelCount' | 'currentLimit';
+  label: string;
+  max: number;
+  unit?: string;
   value: number;
   disabled: boolean;
   description: string | undefined;
 };
 
-export function PixelCountField({
+export function NumberField({
   deviceId,
+  property,
+  label,
+  max,
+  unit,
   value,
   disabled,
   description,
 }: Props) {
-  const { maxPixelCount } = useAtomValue(limitsAtom);
   const { pending, error, configure } = useConfigure(deviceId);
+  const formatWithUnit = (count: number) =>
+    unit === undefined ? String(count) : `${count} ${unit}`;
   const isValid = (draft: number | string): draft is number =>
-    typeof draft === 'number' && draft >= 1 && draft <= maxPixelCount;
+    typeof draft === 'number' && draft >= 1 && draft <= max;
   return (
     <ModalField<number | string>
-      label="Pixel count"
-      display={String(value)}
+      label={label}
+      display={formatWithUnit(value)}
       disabled={disabled}
       description={description}
       initial={value}
@@ -34,16 +41,17 @@ export function PixelCountField({
       error={error}
       save={(draft) =>
         isValid(draft)
-          ? configure({ property: 'pixelCount', value: draft })
+          ? configure({ property, value: draft })
           : Promise.resolve(false)
       }
     >
       {(draft, setDraft) => (
         <NumberInput
-          label="Pixel count"
-          description={`1 to ${maxPixelCount}`}
+          label={label}
+          description={`1 to ${formatWithUnit(max)}`}
+          suffix={unit === undefined ? undefined : ` ${unit}`}
           min={1}
-          max={maxPixelCount}
+          max={max}
           allowDecimal={false}
           clampBehavior="blur"
           value={draft}

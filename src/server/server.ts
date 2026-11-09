@@ -5,7 +5,12 @@ import { join } from 'node:path';
 import fastifyStatic from '@fastify/static';
 import fastifyWebsocket from '@fastify/websocket';
 import Fastify, { type FastifyInstance } from 'fastify';
-import { MAX_PIXEL_COUNT, NICKNAME_LENGTH, NUM_CHANNELS } from 'rvl-node';
+import {
+  MAX_CURRENT_LIMIT,
+  MAX_PIXEL_COUNT,
+  NICKNAME_LENGTH,
+  NUM_CHANNELS,
+} from 'rvl-node';
 
 import {
   type ClientMessage,
@@ -44,6 +49,7 @@ const LIMITS: Limits = {
   maxPixelCount: MAX_PIXEL_COUNT,
   numChannels: NUM_CHANNELS,
   nicknameLength: NICKNAME_LENGTH,
+  maxCurrentLimit: MAX_CURRENT_LIMIT,
 };
 
 function send(socket: Socket, message: ServerMessage): void {
@@ -91,6 +97,7 @@ function parseConfigure(
     case 'brightness':
     case 'pixelCount':
     case 'statusLedBrightness':
+    case 'currentLimit':
       return isInteger(value)
         ? { type: 'configure', requestId, deviceId, property, value }
         : undefined;

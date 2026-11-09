@@ -47,6 +47,7 @@ vi.mock('rvl-node', () => ({
   MAX_PIXEL_COUNT: 300,
   NUM_CHANNELS: 8,
   NICKNAME_LENGTH: 16,
+  MAX_CURRENT_LIMIT: 65535,
   init: (options: { networkInterface: string }): void => {
     fake.networkInterface = options.networkInterface;
   },
@@ -95,6 +96,7 @@ export function board(
       colorOrder: true,
       statusLedBrightness: true,
       nickname: true,
+      currentLimit: true,
     },
     channel: 0,
     brightness: 255,
@@ -102,6 +104,7 @@ export function board(
     colorOrder: 'GRB',
     statusLedBrightness: 60,
     nickname: '',
+    currentLimit: 1500,
     ...overrides,
   };
 }

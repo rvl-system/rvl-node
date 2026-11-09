@@ -1,6 +1,6 @@
 # RVL Setup
 
-A web app for configuring the boards on an [rvl](https://github.com/rvl-system/rvl) network. It runs on a laptop joined to the fleet's WiFi, lists every board that answers, and sets each one's channel, brightness, pixel count, color order, status LED brightness and nickname over the wire, through [RVL Node](https://github.com/rvl-system/rvl-node). The boards store what they are given, so a setting made here survives a reboot.
+A web app for configuring the boards on an [rvl](https://github.com/rvl-system/rvl) network. It runs on a laptop joined to the fleet's WiFi, lists every board that answers, and sets each one's channel, brightness, pixel count, current limit, color order, status LED brightness and nickname over the wire, through [RVL Node](https://github.com/rvl-system/rvl-node). The boards store what they are given, so a setting made here survives a reboot.
 
 It runs from this checkout and is not published: the server runs its TypeScript directly, which Node does for a checkout and refuses for a package under `node_modules`.
 
@@ -35,7 +35,7 @@ Tapping a tile opens the board's settings, under its device ID, which save as th
 
 - **Channel** and **Color order** are dropdowns and save on selection.
 - **Brightness** and **Status LED brightness** are sliders. The board follows the slider as it moves, and the released value is the one it keeps.
-- **Pixel count** and **Nickname** edit behind a pencil, in a dialog with Save and Cancel, since typing them would send a change per keystroke. The pixel count is 1 to 300, the size of the firmware's strip buffer. The nickname is up to 16 characters, and empty means none.
+- **Pixel count**, **Current limit** and **Nickname** edit behind a pencil, in a dialog with Save and Cancel, since typing them would send a change per keystroke. The pixel count is 1 to 300, the size of the firmware's strip buffer. The current limit is the continuous rating, in mA, of what feeds the strip: its USB connector or cable, or its own supply. The board scales brightness down on any frame that would draw more, and a limit under about 1 mA per pixel leaves the strip black. Boards start at 1500. The nickname is up to 16 characters, and empty means none.
 
 A setting the board doesn't honor is disabled with the reason: a controller board sets its channel and brightness on its own screen, and a board without a status LED has no brightness for it. Everything is disabled while the server is off the fleet. Each control shows a spinner while the board is answering, and the board's error, such as "Node 3 did not answer", when it doesn't. The controls show what the board last reported, so a value the board clamped or ignored shows as the board applied it, and a change made from another page, or by a dial on a controller board, shows within a listing.
 

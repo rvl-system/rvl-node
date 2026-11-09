@@ -16,6 +16,7 @@ export const limitsAtom = atom<Limits>({
   maxPixelCount: 0,
   numChannels: 0,
   nicknameLength: 0,
+  maxCurrentLimit: 0,
 });
 
 // The roster: the sorted IDs, and one atom per board, keyed by device ID,

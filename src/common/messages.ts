@@ -22,6 +22,7 @@ const PROPERTIES = [
   'colorOrder',
   'statusLedBrightness',
   'nickname',
+  'currentLimit',
 ] as const;
 
 export type Property = (typeof PROPERTIES)[number];
@@ -40,6 +41,7 @@ type BoardProperties = {
   colorOrder: ColorOrder;
   statusLedBrightness: number;
   nickname: string;
+  currentLimit: number;
 };
 
 export type Board = BoardProperties & {
@@ -57,6 +59,7 @@ export type Limits = {
   maxPixelCount: number;
   numChannels: number;
   nicknameLength: number;
+  maxCurrentLimit: number;
 };
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown

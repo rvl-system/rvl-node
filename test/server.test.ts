@@ -15,6 +15,7 @@ const LIMITS: Limits = {
   maxPixelCount: 300,
   numChannels: 8,
   nicknameLength: 16,
+  maxCurrentLimit: 65535,
 };
 const OFFLINE: Fleet = { interface: 'en0', connected: false };
 const ONLINE: Fleet = { interface: 'en0', connected: true, deviceId: 4 };
@@ -212,6 +213,10 @@ const CONFIGURES: { fields: ConfigureFields; applied: Partial<NodeStatus> }[] =
     {
       fields: { property: 'nickname', value: 'left bar' },
       applied: { nickname: 'left bar' },
+    },
+    {
+      fields: { property: 'currentLimit', value: 3000 },
+      applied: { currentLimit: 3000 },
     },
   ];
 

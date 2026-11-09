@@ -7,8 +7,18 @@ import { ColorOrderSelect } from './ColorOrderSelect.tsx';
 import { IdentifyButton } from './IdentifyButton.tsx';
 import { LevelSlider } from './LevelSlider.tsx';
 import { NicknameField } from './NicknameField.tsx';
-import { PixelCountField } from './PixelCountField.tsx';
-import { onlineAtom } from './state.ts';
+import { NumberField } from './NumberField.tsx';
+import { limitsAtom, onlineAtom } from './state.ts';
+
+// What a row says while the board honors its property
+function describeHonored(property: Property): string | undefined {
+  switch (property) {
+    case 'currentLimit':
+      return "The continuous rating of what feeds the strip, in mA: the USB connector or cable, or the strip's own supply. Brightness is scaled down on any frame that would draw more.";
+    default:
+      return undefined;
+  }
+}
 
 // Why a board doesn't honor a property
 function describeMissing(property: Property): string {
@@ -25,11 +35,14 @@ function describeMissing(property: Property): string {
 
 export function BoardForm({ board }: { board: Board }) {
   const online = useAtomValue(onlineAtom);
+  const { maxPixelCount, maxCurrentLimit } = useAtomValue(limitsAtom);
   const { deviceId, capabilities } = board;
   const makeRowProps = (property: Property) => ({
     deviceId,
     disabled: !online || !capabilities[property],
-    description: capabilities[property] ? undefined : describeMissing(property),
+    description: capabilities[property]
+      ? describeHonored(property)
+      : describeMissing(property),
   });
   return (
     <Stack>
@@ -46,9 +59,20 @@ export function BoardForm({ board }: { board: Board }) {
         value={board.brightness}
         {...makeRowProps('brightness')}
       />
-      <PixelCountField
+      <NumberField
+        property="pixelCount"
+        label="Pixel count"
+        max={maxPixelCount}
         value={board.pixelCount}
         {...makeRowProps('pixelCount')}
+      />
+      <NumberField
+        property="currentLimit"
+        label="Current limit"
+        max={maxCurrentLimit}
+        unit="mA"
+        value={board.currentLimit}
+        {...makeRowProps('currentLimit')}
       />
       <ColorOrderSelect
         value={board.colorOrder}
