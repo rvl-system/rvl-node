@@ -58,24 +58,26 @@ type StatusFields = {
   colorOrder?: number;
   statusLedBrightness?: number;
   nickname?: string;
+  currentLimit?: number;
 };
 
 // A board's status as the firmware's sendStatus writes it, addressed to the
-// node that asked. The defaults are every capability, GRB, 300 pixels and
-// no nickname
+// node that asked. The defaults are every capability, GRB, 300 pixels, no
+// nickname and a 1500 mA limit
 export function buildStatus(
   source: number,
   destination: number,
   fields: StatusFields = {}
 ): Buffer {
   const {
-    capabilities = 0x3f,
+    capabilities = 0x7f,
     channel = 0,
     brightness = 50,
     pixelCount = 300,
     colorOrder = 2,
     statusLedBrightness = 60,
     nickname = '',
+    currentLimit = 1500,
   } = fields;
   const name = Buffer.alloc(16);
   name.write(nickname, 'latin1');
@@ -91,6 +93,8 @@ export function buildStatus(
       colorOrder,
       statusLedBrightness,
       ...name,
+      currentLimit >> 8,
+      currentLimit & 0xff,
     ],
     destination
   );

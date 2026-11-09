@@ -30,3 +30,4 @@ export declare const RVLI_SIGNATURE = "RVLI";
 export declare const PROPERTIES: readonly (keyof NodeConfiguration)[];
 export declare const COLOR_ORDERS: readonly ColorOrder[];
 export declare const MAX_PIXEL_COUNT = 300;
+export declare const MAX_CURRENT_LIMIT = 65535;

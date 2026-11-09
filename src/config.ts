@@ -53,6 +53,7 @@ export const PROPERTIES: readonly (keyof NodeConfiguration)[] = [
   'colorOrder',
   'statusLedBrightness',
   'nickname',
+  'currentLimit',
 ];
 export const COLOR_ORDERS: readonly ColorOrder[] = [
   'RGB',
@@ -67,3 +68,6 @@ export const COLOR_ORDERS: readonly ColorOrder[] = [
 // strip buffers, kept in step by hand. Not on the wire: it is one constant
 // across the fleet
 export const MAX_PIXEL_COUNT = 300;
+
+// The largest value the current limit's 16-bit field on the wire holds, in mA
+export const MAX_CURRENT_LIMIT = 65535;

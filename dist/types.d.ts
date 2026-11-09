@@ -31,6 +31,7 @@ export type NodeConfiguration = {
     colorOrder: ColorOrder;
     statusLedBrightness: number;
     nickname: string;
+    currentLimit: number;
 };
 export type NodeCapabilities = {
     [P in keyof NodeConfiguration]: boolean;

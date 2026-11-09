@@ -2,6 +2,7 @@ import { AppendBuffer } from '../buffer.ts';
 import {
   COLOR_ORDERS,
   EVERY_DEVICE_ID,
+  MAX_CURRENT_LIMIT,
   MAX_PIXEL_COUNT,
   NICKNAME_LENGTH,
   NUM_CHANNELS,
@@ -103,6 +104,9 @@ function appendPropertyValue(
       break;
     case 'pixelCount':
       packet.append16(expectNumber(property, value, 1, MAX_PIXEL_COUNT));
+      break;
+    case 'currentLimit':
+      packet.append16(expectNumber(property, value, 1, MAX_CURRENT_LIMIT));
       break;
     case 'colorOrder': {
       const index = COLOR_ORDERS.findIndex((order) => order === value);

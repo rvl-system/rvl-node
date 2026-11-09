@@ -40,6 +40,7 @@ export const PROPERTIES = [
     'colorOrder',
     'statusLedBrightness',
     'nickname',
+    'currentLimit',
 ];
 export const COLOR_ORDERS = [
     'RGB',
@@ -53,4 +54,6 @@ export const COLOR_ORDERS = [
 // strip buffers, kept in step by hand. Not on the wire: it is one constant
 // across the fleet
 export const MAX_PIXEL_COUNT = 300;
+// The largest value the current limit's 16-bit field on the wire holds, in mA
+export const MAX_CURRENT_LIMIT = 65535;
 //# sourceMappingURL=config.js.map

@@ -1,3 +1,12 @@
+## 9.1.0 (unreleased)
+
+9.1.0 needs firmware from the same change: a board's status packet is 33 bytes, with the current limit after the nickname. Against older firmware it drops every board's status, so `getNodes` lists nothing and `configureNode` and `identifyNode` reject.
+
+New:
+
+- Added `currentLimit` to `NodeConfiguration`, `NodeCapabilities` and `NodeStatus`. It is the continuous rating in mA of what feeds a board's strip, and the board scales its brightness down on any frame that would draw more. `configureNode` sets it, from 1 to `MAX_CURRENT_LIMIT`, and boards default to 1500
+- Added `MAX_CURRENT_LIMIT`, 65535, the largest value the current limit's 16-bit field on the wire holds
+
 ## 9.0.0 (2026-11-01)
 
 9.0.0 needs firmware from the same change: a board's status packet is 31 bytes, with no mode byte.

@@ -18,14 +18,14 @@ export type AnimationLayer = {
 };
 
 export type AnimationParameters = {
-  timePeriod?: number; // 1 to 255, default 255
-  distancePeriod?: number; // 1 to 255, default 32
+  timePeriod?: number; // 1 to 255
+  distancePeriod?: number; // 1 to 255
   animations: AnimationLayer[];
 };
 
 export type SceneOptions = {
   startFrame?: number; // a fleet frame, default the gate's choice
-  fadeFrames?: number; // 16 to 255, default 16
+  fadeFrames?: number; // 16 to 255
 };
 
 // The order a strip reads its three bytes in
@@ -39,6 +39,7 @@ export type NodeConfiguration = {
   colorOrder: ColorOrder;
   statusLedBrightness: number; // 0 to 255
   nickname: string; // up to 16 printable ASCII characters
+  currentLimit: number; // 1 to MAX_CURRENT_LIMIT, in mA
 };
 
 // Which of the properties a board honors

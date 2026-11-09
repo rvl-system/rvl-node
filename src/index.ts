@@ -7,6 +7,7 @@ export {
 } from './clock.ts';
 export {
   FRAME_PERIOD,
+  MAX_CURRENT_LIMIT,
   MAX_PIXEL_COUNT,
   NICKNAME_LENGTH,
   NUM_CHANNELS,

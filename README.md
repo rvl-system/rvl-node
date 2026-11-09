@@ -56,7 +56,7 @@ The fleet clock is available a few seconds after `init`, and `connected` waits f
 
 ### Configuring boards
 
-A board's channel, brightness, pixel count, color order, status LED brightness and nickname can be set over the wire, and the board stores them, so they survive a reboot. `getNodes` asks every board to report itself and returns what came back: each board's settings and which of the six properties it honors, since a board without a status LED ignores that one and a board with physical controls reads channel and brightness from them. `configureNode` sets one property on one board and resolves with the board's report once it has applied it. `identifyNode` makes a board flash white for five seconds, strip and status LED, so you can tell which physical board an ID is.
+A board's channel, brightness, pixel count, color order, status LED brightness, nickname and current limit can be set over the wire, and the board stores them, so they survive a reboot. `getNodes` asks every board to report itself and returns what came back: each board's settings and which of the seven properties it honors, since a board without a status LED ignores that one and a board with physical controls reads channel and brightness from them. `configureNode` sets one property on one board and resolves with the board's report once it has applied it. `identifyNode` makes a board flash white for five seconds, strip and status LED, so you can tell which physical board an ID is.
 
 Boards answer with a broadcast addressed to this node, which is lost a few percent of the time like any broadcast, so a listing asks twice and a targeted request asks once more before rejecting.
 
@@ -284,7 +284,7 @@ function configureNode<P extends keyof NodeConfiguration>(
 _Arguments:_
 
 - `deviceId`: the board, 0 to 239, as `getNodes` reports it.
-- `property` and `value`: `channel` 0 to 7; `brightness` 0 to 255; `pixelCount` 1 to `MAX_PIXEL_COUNT`, the number of pixels the board renders and drives; `colorOrder`, the order the strip reads its three bytes in, `GRB` for a WS2812B; `statusLedBrightness` 0 to 255, for boards that have one; `nickname`, up to 16 printable ASCII characters. Throws for a value out of range.
+- `property` and `value`: `channel` 0 to 7; `brightness` 0 to 255; `pixelCount` 1 to `MAX_PIXEL_COUNT`, the number of pixels the board renders and drives; `colorOrder`, the order the strip reads its three bytes in, `GRB` for a WS2812B; `statusLedBrightness` 0 to 255, for boards that have one; `nickname`, up to 16 printable ASCII characters; `currentLimit` 1 to `MAX_CURRENT_LIMIT`, the continuous rating in mA of what feeds the strip, its USB connector or cable or its own supply. The board scales its brightness down on any frame that would draw more, and a limit under about 1 mA per configured pixel shows black, since that much is drawn by the pixels even when dark. Throws for a value out of range.
 
 _Returns:_ a promise for the board's status carrying the new value, so a status the board sent for some other reason in the meantime isn't mistaken for the answer. A property the board doesn't honor, per `capabilities` in its status, is ignored, and the first status shows it unchanged. The board stores the change a second later. Rejects if the board hasn't answered after two attempts, about two seconds. Throws before `connected`.
 
@@ -311,6 +311,10 @@ The number of channels, 8. A `channel` is 0 to `NUM_CHANNELS - 1`.
 #### NICKNAME_LENGTH
 
 The most characters a `nickname` holds, 16.
+
+#### MAX_CURRENT_LIMIT
+
+The highest `currentLimit`, 65535 mA, the largest value its 16-bit field on the wire holds. A `currentLimit` past it throws.
 
 ### Animation builders
 
@@ -469,6 +473,7 @@ interface NodeConfiguration {
   colorOrder: ColorOrder;
   statusLedBrightness: number; // 0 to 255
   nickname: string; // up to 16 printable ASCII characters
+  currentLimit: number; // 1 to MAX_CURRENT_LIMIT, in mA
 }
 
 // Which of the properties a board honors

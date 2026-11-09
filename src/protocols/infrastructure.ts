@@ -28,7 +28,7 @@ const HEADER_LENGTH = 8;
 const ID_REPLY_PACKET_LENGTH = HEADER_LENGTH + 2;
 const REFERENCE_PACKET_LENGTH = HEADER_LENGTH + 6;
 const OBSERVATION_PACKET_LENGTH = HEADER_LENGTH + 8;
-const STATUS_PACKET_LENGTH = HEADER_LENGTH + 23;
+const STATUS_PACKET_LENGTH = HEADER_LENGTH + 25;
 
 type InfrastructureMessage =
   | { type: 'idReply'; source: number; deviceId: number }
@@ -61,6 +61,7 @@ function decodeCapabilities(bits: number): NodeCapabilities {
     colorOrder: has('colorOrder'),
     statusLedBrightness: has('statusLedBrightness'),
     nickname: has('nickname'),
+    currentLimit: has('currentLimit'),
   };
 }
 
@@ -81,6 +82,7 @@ function decodeStatus(message: Buffer, source: number): NodeStatus | undefined {
     colorOrder,
     statusLedBrightness: message[14],
     nickname: nicknameEnd < 0 ? nickname : nickname.slice(0, nicknameEnd),
+    currentLimit: message.readUInt16BE(31),
   };
 }
 

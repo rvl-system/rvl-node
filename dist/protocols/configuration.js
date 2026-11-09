@@ -1,5 +1,5 @@
 import { AppendBuffer } from "../buffer.js";
-import { COLOR_ORDERS, EVERY_DEVICE_ID, MAX_PIXEL_COUNT, NICKNAME_LENGTH, NUM_CHANNELS, NUM_DEVICE_IDS, PROPERTIES, RVLI_PACKET_TYPE_CONFIGURE, RVLI_PACKET_TYPE_IDENTIFY, RVLI_PACKET_TYPE_QUERY, RVLI_PORT, } from "../config.js";
+import { COLOR_ORDERS, EVERY_DEVICE_ID, MAX_CURRENT_LIMIT, MAX_PIXEL_COUNT, NICKNAME_LENGTH, NUM_CHANNELS, NUM_DEVICE_IDS, PROPERTIES, RVLI_PACKET_TYPE_CONFIGURE, RVLI_PACKET_TYPE_IDENTIFY, RVLI_PACKET_TYPE_QUERY, RVLI_PORT, } from "../config.js";
 import { send } from "../transport.js";
 import {} from "../types.js";
 import { getDeviceId, isConnected } from "./identity.js";
@@ -57,6 +57,9 @@ function appendPropertyValue(packet, property, value) {
             break;
         case 'pixelCount':
             packet.append16(expectNumber(property, value, 1, MAX_PIXEL_COUNT));
+            break;
+        case 'currentLimit':
+            packet.append16(expectNumber(property, value, 1, MAX_CURRENT_LIMIT));
             break;
         case 'colorOrder': {
             const index = COLOR_ORDERS.findIndex((order) => order === value);

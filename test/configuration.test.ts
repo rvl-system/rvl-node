@@ -19,6 +19,7 @@ const ALL_CAPABILITIES = {
   colorOrder: true,
   statusLedBrightness: true,
   nickname: true,
+  currentLimit: true,
 };
 
 // A sender with ID 20, synced, so the boards take it as a source
@@ -41,6 +42,7 @@ test('the requests are written as a board reads them', async () => {
   void configureNode(MINI, 'colorOrder', 'BGR');
   void configureNode(MINI, 'statusLedBrightness', 30);
   void configureNode(MINI, 'nickname', 'Mini 1');
+  void configureNode(MINI, 'currentLimit', 3000);
   const packets = node.sent();
   expect(packets.every((packet) => packet.port === RVLI_PORT)).toBe(true);
   expect(packets.map((packet) => [...packet.bytes])).toEqual([
@@ -73,6 +75,7 @@ test('the requests are written as a board reads them', async () => {
       0,
       0,
     ],
+    [...HEADER, 4, MINI, 6, 0x0b, 0xb8],
   ]);
 });
 
@@ -81,16 +84,20 @@ test('a listing asks twice and merges the replies by device ID', async () => {
   const listing = node.configuration.getNodes();
   expect(node.sent()).toHaveLength(1);
   node.deliver(buildStatus(3, 20, { nickname: 'Mini 1' }));
-  // Dropped: for another node, a color order the wire doesn't define, and a
-  // source that can't be a board
+  // Dropped: for another node, a color order the wire doesn't define, a source
+  // that can't be a board, and the wrong length: 9.0.0's 31 bytes, and a byte
+  // long
   node.deliver(buildStatus(4, 99));
   node.deliver(buildStatus(6, 20, { colorOrder: 6 }));
   node.deliver(buildStatus(240, 20));
+  const status = buildStatus(5, 20);
+  node.deliver(status.subarray(0, status.length - 2));
+  node.deliver(Buffer.concat([status, Buffer.from([0])]));
   await node.advance(250);
   expect(node.sent()).toHaveLength(2);
   expect(node.sent()[1].bytes).toEqual(node.sent()[0].bytes);
   // Board 2 only heard the second query, and board 3 answers both
-  node.deliver(buildStatus(2, 20, { capabilities: 0x2f, brightness: 200 }));
+  node.deliver(buildStatus(2, 20, { capabilities: 0x6f, brightness: 200 }));
   node.deliver(buildStatus(3, 20, { nickname: 'Mini 1' }));
   await node.advance(750);
   const nodes = await listing;
@@ -104,6 +111,7 @@ test('a listing asks twice and merges the replies by device ID', async () => {
       colorOrder: 'GRB',
       statusLedBrightness: 60,
       nickname: '',
+      currentLimit: 1500,
     },
     {
       deviceId: 3,
@@ -114,6 +122,7 @@ test('a listing asks twice and merges the replies by device ID', async () => {
       colorOrder: 'GRB',
       statusLedBrightness: 60,
       nickname: 'Mini 1',
+      currentLimit: 1500,
     },
   ]);
   // A reply after the window goes nowhere
@@ -155,7 +164,7 @@ test('a property the board lacks resolves on its first status', async () => {
     'statusLedBrightness',
     90
   );
-  node.deliver(buildStatus(2, 20, { capabilities: 0x2f }));
+  node.deliver(buildStatus(2, 20, { capabilities: 0x6f }));
   const status = await request;
   expect(status.capabilities.statusLedBrightness).toBe(false);
   expect(status.statusLedBrightness).toBe(60);
@@ -227,6 +236,15 @@ test('arguments a board would drop throw before anything is sent', async () => {
   );
   expect(() => configureNode(MINI, 'statusLedBrightness', -1)).toThrow(
     'statusLedBrightness must be an integer between 0 and 255, got -1'
+  );
+  expect(() => configureNode(MINI, 'currentLimit', 0)).toThrow(
+    'currentLimit must be an integer between 1 and 65535, got 0'
+  );
+  expect(() => configureNode(MINI, 'currentLimit', 65536)).toThrow(
+    'currentLimit must be an integer between 1 and 65535, got 65536'
+  );
+  expect(() => configureNode(MINI, 'currentLimit', 1.5)).toThrow(
+    'currentLimit must be an integer between 1 and 65535, got 1.5'
   );
   // @ts-expect-error a JavaScript caller can pass any string
   expect(() => configureNode(MINI, 'colorOrder', 'RGBW')).toThrow(

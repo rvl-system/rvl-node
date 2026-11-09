@@ -11,7 +11,7 @@ const HEADER_LENGTH = 8;
 const ID_REPLY_PACKET_LENGTH = HEADER_LENGTH + 2;
 const REFERENCE_PACKET_LENGTH = HEADER_LENGTH + 6;
 const OBSERVATION_PACKET_LENGTH = HEADER_LENGTH + 8;
-const STATUS_PACKET_LENGTH = HEADER_LENGTH + 23;
+const STATUS_PACKET_LENGTH = HEADER_LENGTH + 25;
 // Signature, version, source, packet type and destination, as every RVLI
 // writer writes them
 export function writeInfrastructureHeader(packet, source, packetType, destination) {
@@ -30,6 +30,7 @@ function decodeCapabilities(bits) {
         colorOrder: has('colorOrder'),
         statusLedBrightness: has('statusLedBrightness'),
         nickname: has('nickname'),
+        currentLimit: has('currentLimit'),
     };
 }
 function decodeStatus(message, source) {
@@ -49,6 +50,7 @@ function decodeStatus(message, source) {
         colorOrder,
         statusLedBrightness: message[14],
         nickname: nicknameEnd < 0 ? nickname : nickname.slice(0, nicknameEnd),
+        currentLimit: message.readUInt16BE(31),
     };
 }
 // Reads one RVLI datagram. Returns undefined for anything to drop: another
