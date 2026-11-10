@@ -26,7 +26,7 @@ function validateNum(
   }
 }
 
-export function createAnimationParameters(
+function createAnimationParameters(
   animation1?: AnimationLayer,
   animation2?: AnimationLayer,
   animation3?: AnimationLayer,
@@ -51,6 +51,7 @@ export function createEmptyAnimation(): AnimationLayer {
   };
 }
 
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createSolidColorAnimation(
   h: number,
   s: number,
@@ -67,6 +68,7 @@ export function createSolidColorAnimation(
   return layer;
 }
 
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createColorCycleAnimation(
   rate: number,
   a: number
@@ -83,6 +85,7 @@ export function createColorCycleAnimation(
   return layer;
 }
 
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createMovingAnimation(
   h: number,
   s: number,
@@ -103,6 +106,7 @@ export function createMovingAnimation(
   return layer;
 }
 
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createPulsingAnimation(
   h: number,
   s: number,
@@ -120,6 +124,7 @@ export function createPulsingAnimation(
   return layer;
 }
 
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createRainbowAnimation(
   a: number,
   rate: number
@@ -139,6 +144,7 @@ export function createRainbowAnimation(
 
 // The Wave preset without its foreground layer: the wave over the background,
 // so the strip's average color holds still while the pattern moves
+// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the music app
 export function createSimpleWaveParameters({
   rate,
   waveHue,

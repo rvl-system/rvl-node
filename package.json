@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "lint": "npm run lint --workspaces",
+    "lint": "npm run lint --workspaces && eslint -c eslint.config.mjs .",
     "typecheck": "npm run typecheck --workspaces",
     "test": "npm run test --workspaces"
   },

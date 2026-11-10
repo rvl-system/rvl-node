@@ -249,6 +249,7 @@ function scheduleOrHoldContent(
 
 // The public sends validate synchronously and return a promise rather than
 // being async, so a bad argument throws at the call site
+// eslint-disable-next-line import-integrity/no-unused-exports -- temporary: joins the entry point with the first app that sends scenes
 export function setAnimationParameters(
   channel: number,
   parameters: AnimationParameters,
@@ -265,6 +266,7 @@ export function setAnimationParameters(
   );
 }
 
+// eslint-disable-next-line import-integrity/no-unused-exports -- temporary: joins the entry point with the first app that sends scenes
 export function setOff(
   channel: number,
   options: SceneOptions = {}
@@ -275,6 +277,7 @@ export function setOff(
   return scheduleOrHoldContent(channel, { type: 'off' }, options);
 }
 
+// eslint-disable-next-line import-integrity/no-unused-exports -- temporary: joins the entry point with the music app
 export function getEarliestStartFrame(channel: number): number | undefined {
   assertInitialized();
   validateChannel(channel);

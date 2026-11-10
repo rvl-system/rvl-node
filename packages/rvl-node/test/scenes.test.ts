@@ -32,9 +32,9 @@ async function advanceFrames(count: number): Promise<void> {
 
 // Contents told apart by one hue, which readId() reads back; off reads as -1
 function wave(id: number) {
-  return node.parametric.createAnimationParameters(
-    node.parametric.createSolidColorAnimation(id, 255, 255)
-  );
+  return {
+    animations: [node.parametric.createSolidColorAnimation(id, 255, 255)],
+  };
 }
 
 function readId(scene: SentScene): number {

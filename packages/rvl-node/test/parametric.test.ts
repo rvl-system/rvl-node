@@ -1,7 +1,6 @@
 import { expect, test } from 'vitest';
 
 import {
-  createAnimationParameters,
   createColorCycleAnimation,
   createEmptyAnimation,
   createMovingAnimation,
@@ -33,19 +32,6 @@ test('an empty layer is all zeros', () => {
   for (const component of [empty.h, empty.s, empty.v, empty.a]) {
     expect(component).toEqual({ a: 0, b: 0, w_t: 0, w_x: 0, phi: 0 });
   }
-});
-
-test('parameters hold four layers, empty where none is given', () => {
-  const solid = createSolidColorAnimation(10, 20, 30);
-  const parameters = createAnimationParameters(solid);
-  expect(parameters.animations).toEqual([
-    solid,
-    createEmptyAnimation(),
-    createEmptyAnimation(),
-    createEmptyAnimation(),
-  ]);
-  expect(parameters.timePeriod).toBeUndefined();
-  expect(parameters.distancePeriod).toBeUndefined();
 });
 
 test('a solid color', () => {

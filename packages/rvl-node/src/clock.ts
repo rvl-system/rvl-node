@@ -201,6 +201,7 @@ export function toAnimationClock(localTime: number): number {
 }
 
 // The local time nearest now that maps to the clock value
+// eslint-disable-next-line import-integrity/no-unused-exports -- temporary: joins the entry point with the music app
 export function toLocalTime(animationClock: number): number {
   assertClockSynchronized();
   const now = performance.now();

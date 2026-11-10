@@ -4,6 +4,11 @@ RVL Node now lives in the [rvl-js](https://github.com/rvl-system/rvl-js) workspa
 
 These changes need firmware from the same change: a board's status packet is 33 bytes, with the current limit after the nickname. Against older firmware RVL Node drops every board's status, so `getNodes` lists nothing and `configureNode` and `identifyNode` reject.
 
+Breaking changes:
+
+- The entry point exports only what another package in the workspace imports. These left it, each to return with its first importer: `setAnimationParameters`, `setOff` and `getEarliestStartFrame`; `getAnimationClock`, `toAnimationClock`, `toLocalTime`, `subtractFrames` and `FRAME_PERIOD`; `createEmptyAnimation`, `createSolidColorAnimation`, `createColorCycleAnimation`, `createMovingAnimation`, `createPulsingAnimation`, `createRainbowAnimation` and `createSimpleWaveParameters`; and the types `AnimationColorParameters`, `AnimationLayer`, `AnimationParameters`, `ColorOrder`, `NodeCapabilities`, `NodeConfiguration` and `SceneOptions`
+- Removed `createAnimationParameters`. Parameters with fewer than four layers are padded with empty ones when they are sent, so nothing needs it
+
 New:
 
 - Added `currentLimit` to `NodeConfiguration`, `NodeCapabilities` and `NodeStatus`. It is the continuous rating in mA of what feeds a board's strip, and the board scales its brightness down on any frame that would draw more. `configureNode` sets it, from 1 to `MAX_CURRENT_LIMIT`, and boards default to 1500
