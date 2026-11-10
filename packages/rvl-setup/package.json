@@ -1,0 +1,64 @@
+{
+  "name": "rvl-setup",
+  "version": "1.0.0",
+  "description": "Configures the boards on an RVL network from the browser",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "vite build",
+    "start": "node src/server/bin.ts",
+    "typecheck": "tsc && tsc -p src/client && tsc -p test",
+    "test": "vitest run",
+    "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\"",
+    "dev": "node --watch src/server/bin.ts --dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rvl-system/rvl-setup.git"
+  },
+  "author": "Bryan Hughes <bryan@nebri.us>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/rvl-system/rvl-setup/issues"
+  },
+  "homepage": "https://github.com/rvl-system/rvl-setup#readme",
+  "dependencies": {
+    "@fastify/static": "10.1.7",
+    "@fastify/websocket": "11.3.4",
+    "fastify": "5.12.7",
+    "rvl-node": "9.0.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "2.1.1",
+    "@eslint/js": "10.0.1",
+    "@fastify/middie": "9.3.6",
+    "@mantine/core": "9.7.3",
+    "@mantine/hooks": "9.7.3",
+    "@tabler/icons-react": "3.49.0",
+    "@types/connect": "3.4.38",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/ws": "8.18.2",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "10.13.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.7",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-simple-import-sort": "14.0.0",
+    "globals": "17.13.0",
+    "import-integrity-lint": "1.3.1",
+    "jotai": "3.0.1",
+    "jotai-family": "1.1.0",
+    "prettier": "3.9.10",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}
