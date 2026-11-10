@@ -65,3 +65,6 @@ typings/
 
 # VS Code C++ cache
 .vscode/ipch
+
+# Build output: the page Vite builds for an app
+dist/

@@ -15,34 +15,18 @@
   "scripts": {
     "test": "vitest run",
     "build": "rm -rf dist && tsc",
-    "typecheck": "tsc --noEmit && tsc -p demo && tsc -p test",
-    "demo:waves": "node demo/waves.ts",
-    "demo:scenes": "node demo/scenes.ts",
+    "typecheck": "tsc --noEmit && tsc -p test",
     "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rvl-system/rvl-node.git"
+    "url": "git+https://github.com/rvl-system/rvl-js.git",
+    "directory": "packages/rvl-node"
   },
   "author": "Bryan Hughes <bryan@nebri.us>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/rvl-system/rvl-node/issues"
+    "url": "https://github.com/rvl-system/rvl-js/issues"
   },
-  "homepage": "https://github.com/rvl-system/rvl-node#readme",
-  "devDependencies": {
-    "@eslint/compat": "^2.1.1",
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.10.1",
-    "eslint": "^10.11.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-simple-import-sort": "^14.0.0",
-    "globals": "^17.12.0",
-    "import-integrity-lint": "^1.3.0",
-    "prettier": "^3.9.9",
-    "typescript": "~6.0.3",
-    "typescript-eslint": "^8.70.1",
-    "vitest": "^5.0.2"
-  }
+  "homepage": "https://github.com/rvl-system/rvl-js/tree/main/packages/rvl-node#readme"
 }

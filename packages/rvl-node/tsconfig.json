@@ -1,25 +1,11 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
     "declaration": true,
-    "target": "ES2024",
-    "lib": ["esnext"],
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
     "rewriteRelativeImportExtensions": true,
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "types": ["node"]
+    "sourceMap": true
   },
   "include": [
     "src/**/*.ts"

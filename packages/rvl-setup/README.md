@@ -1,6 +1,6 @@
 # RVL Setup
 
-A web app for configuring the boards on an [rvl](https://github.com/rvl-system/rvl) network. It runs on a laptop joined to the fleet's WiFi, lists every board that answers, and sets each one's channel, brightness, pixel count, current limit, color order, status LED brightness and nickname over the wire, through [RVL Node](https://github.com/rvl-system/rvl-node). The boards store what they are given, so a setting made here survives a reboot.
+A web app for configuring the boards on an [rvl](https://github.com/rvl-system/rvl) network. It runs on a laptop joined to the fleet's WiFi, lists every board that answers, and sets each one's channel, brightness, pixel count, current limit, color order, status LED brightness and nickname over the wire, through [RVL Node](../rvl-node). The boards store what they are given, so a setting made here survives a reboot.
 
 It runs from this checkout and is not published: the server runs its TypeScript directly, which Node does for a checkout and refuses for a package under `node_modules`.
 
@@ -9,23 +9,25 @@ It runs from this checkout and is not published: the server runs its TypeScript 
 - Node.js 24 or later.
 - The laptop on the fleet's WiFi with the coordinator up. RVL Node needs an interface with an IPv4 address that isn't self-assigned, and a device ID from the coordinator before it can talk to the boards.
 - No other RVL Node on the same machine. It binds UDP port 4979, and rvl-setup exits with a message if another instance holds it.
-- Boards and a coordinator flashed with firmware from the same change as the RVL Node release in `package.json`, since the wire changes with them.
+- Boards and a coordinator flashed with firmware from the same change as the RVL Node in this repository, since the wire changes with them.
 
 ## Running it
 
+From the root of the repository:
+
 ```bash
 npm install
-npm run build
-npm start
+npm run build -w rvl-setup
+npm start -w rvl-setup
 ```
 
-`npm start` prints two URLs: `http://localhost:4980`, and the same page by the laptop's address on the fleet interface, which a phone on the same WiFi can open. Options go after `--`:
+`npm start -w rvl-setup` prints two URLs: `http://localhost:4980`, and the same page by the laptop's address on the fleet interface, which a phone on the same WiFi can open. Options go after `--`:
 
 - `--port <number>`: the HTTP port, 4980 by default.
 - `--interface <name>`: the network interface to join the fleet on, such as `en0`. By default RVL Node picks the first usable one, and a name that isn't usable exits with the list of those that are.
 - `--dev`: the development mode under [Developing](#developing).
 
-A start without a built page exits with one line saying to run `npm run build`.
+A start without a built page exits with one line saying to run the build.
 
 ## The page
 
@@ -42,11 +44,11 @@ A setting the board doesn't honor is disabled with the reason: a controller boar
 ## Developing
 
 ```bash
-npm run dev
+npm run dev -w rvl-setup
 ```
 
-This runs the same server with Vite inside it: an edit to the page lands without a reload, and an edit to the server restarts it. Vite's hot reload uses its own WebSocket on port 24678. The other scripts are `npm test` for the Vitest suite, which drives the server through its WebSocket with RVL Node mocked and the page's store through a fake socket, `npm run typecheck`, `npm run lint`, and `npm run build`, which builds the page into `dist/client`.
+This runs the same server with Vite inside it: an edit to the page lands without a reload, and an edit to the server restarts it. Vite's hot reload uses its own WebSocket on port 24678. The other scripts take `-w rvl-setup` the same way: `npm test` for the Vitest suite, which drives the server through its WebSocket with RVL Node mocked and the page's store through a fake socket, `npm run typecheck`, `npm run lint`, and `npm run build`, which builds the page into `dist/client`.
 
 ## License
 
-GPL-3.0, see [LICENSE](LICENSE).
+GPL-3.0, see [LICENSE](../../LICENSE).
