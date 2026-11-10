@@ -2,7 +2,7 @@
 
 A web app for configuring the boards on an [rvl](https://github.com/rvl-system/rvl) network. It runs on a laptop joined to the fleet's WiFi, lists every board that answers, and sets each one's channel, brightness, pixel count, current limit, color order, status LED brightness and nickname over the wire, through [RVL Node](../rvl-node). The boards store what they are given, so a setting made here survives a reboot.
 
-It runs from this checkout and is not published: the server runs its TypeScript directly, which Node does for a checkout and refuses for a package under `node_modules`.
+It runs from this checkout and is not published: the server runs its TypeScript directly, which Node does for a checkout and refuses for a package under `node_modules`. RVL Node runs the same way: the workspace links it from `packages/rvl-node`, which isn't under `node_modules`, so Node strips its types like any other file in the checkout.
 
 ## Requirements
 

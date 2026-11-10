@@ -3,19 +3,13 @@
   "version": "9.0.0",
   "description": "A Node.js implementation of the RVL* library family",
   "type": "module",
+  "private": true,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+    ".": "./src/index.ts"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "vitest run",
-    "build": "rm -rf dist && tsc",
-    "typecheck": "tsc --noEmit && tsc -p test",
+    "typecheck": "tsc && tsc -p test",
     "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\""
   },
   "repository": {

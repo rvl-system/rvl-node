@@ -1,6 +1,8 @@
-## 9.1.0 (unreleased)
+## Unreleased
 
-9.1.0 needs firmware from the same change: a board's status packet is 33 bytes, with the current limit after the nickname. Against older firmware it drops every board's status, so `getNodes` lists nothing and `configureNode` and `identifyNode` reject.
+RVL Node now lives in the [rvl-js](https://github.com/rvl-system/rvl-js) workspace, where the other packages run it from its TypeScript source. It is not published to npm past 9.0.0.
+
+These changes need firmware from the same change: a board's status packet is 33 bytes, with the current limit after the nickname. Against older firmware RVL Node drops every board's status, so `getNodes` lists nothing and `configureNode` and `identifyNode` reject.
 
 New:
 
