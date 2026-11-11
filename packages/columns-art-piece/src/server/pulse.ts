@@ -9,11 +9,15 @@ import { getSettings, sendColumnScene, showColumns } from './show.ts';
 const CHANGE_LANDING_TIME =
   2 * (SCENE_LEAD_FRAMES + MIN_FADE_FRAMES) * FRAME_PERIOD;
 
+const RECENT_PULSES_AVOIDED = 2;
+
 type Pulse = { column: Column; settings: Settings };
 
 let waitTimer: ReturnType<typeof setTimeout> | undefined;
 let isPulsePlaying = false;
 let hasChangeWaiting = false;
+// Newest last
+let recentPulseChannels: number[] = [];
 
 function convertTenthsToFrames(tenths: number): number {
   return Math.round((tenths * 100) / FRAME_PERIOD);
@@ -30,17 +34,30 @@ function scheduleNextPulse(landingTime: number): void {
   waitTimer = setTimeout(startPulseOnRandomColumn, landingTime + delay);
 }
 
+// Never one of the last two pulsed, unless that would leave none to pick
+function pickColumnNotRecentlyPulsed(columns: Column[]): Column {
+  const avoidedCount = Math.min(RECENT_PULSES_AVOIDED, columns.length - 1);
+  const avoided = recentPulseChannels.slice(
+    recentPulseChannels.length - avoidedCount
+  );
+  const candidates = columns.filter(
+    ({ channel }) => !avoided.includes(channel)
+  );
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
 function startPulseOnRandomColumn(): void {
   const columns = getColumns();
   if (columns.length === 0) {
     scheduleNextPulse(0);
     return;
   }
+  const column = pickColumnNotRecentlyPulsed(columns);
+  recentPulseChannels = [...recentPulseChannels, column.channel].slice(
+    -RECENT_PULSES_AVOIDED
+  );
   // Kept for the decay, which has to undo exactly what the attack sent
-  const pulse: Pulse = {
-    column: columns[Math.floor(Math.random() * columns.length)],
-    settings: getSettings(),
-  };
+  const pulse: Pulse = { column, settings: getSettings() };
   const fadeFrames = convertTenthsToFrames(pulse.settings.pulseAttack);
   isPulsePlaying = true;
   sendColumnScene(pulse.column, pulse.settings, true, fadeFrames);

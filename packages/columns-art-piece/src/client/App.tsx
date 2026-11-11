@@ -2,7 +2,10 @@ import {
   Container,
   Group,
   Loader,
+  rem,
+  SimpleGrid,
   Stack,
+  Table,
   Tabs,
   Text,
   Title,
@@ -14,24 +17,37 @@ import { ColorSetting } from './ColorSetting.tsx';
 import { SliderSetting } from './SliderSetting.tsx';
 import { columnsAtom, hasHelloAtom } from './state.ts';
 
+// The table's own border, between the labels and the channels only
+const LABEL_STYLE = {
+  borderInlineEnd: `${rem(1)} solid var(--table-border-color)`,
+};
+
 function formatTenths(tenths: number): string {
   return (tenths / 10).toFixed(1);
 }
 
-function ColumnList() {
+function ColumnTable() {
   const columns = useAtomValue(columnsAtom);
   if (columns.length === 0) {
     return <Text c="dimmed">No columns have answered yet</Text>;
   }
   return (
-    <Text>
-      {columns
-        .map(
-          ({ channel, pixelCount }) =>
-            `Channel ${channel}: ${pixelCount} pixels`
-        )
-        .join(' · ')}
-    </Text>
+    <Table w="fit-content" mx="auto">
+      <Table.Tbody>
+        <Table.Tr>
+          <Table.Th style={LABEL_STYLE}>Channel</Table.Th>
+          {columns.map(({ channel }) => (
+            <Table.Td key={channel}>{channel}</Table.Td>
+          ))}
+        </Table.Tr>
+        <Table.Tr>
+          <Table.Th style={LABEL_STYLE}>Pixels</Table.Th>
+          {columns.map(({ channel, pixelCount }) => (
+            <Table.Td key={channel}>{pixelCount}</Table.Td>
+          ))}
+        </Table.Tr>
+      </Table.Tbody>
+    </Table>
   );
 }
 
@@ -46,37 +62,47 @@ function AnimationPanel() {
     );
   }
   return (
-    <Stack maw="var(--container-size-sm)">
-      <ColumnList />
-      <ColorSetting setting="firstColor" label="First color" />
-      <ColorSetting setting="secondColor" label="Second color" />
-      <SliderSetting
-        setting="coverage"
-        formatLabel={(coverage) => `Coverage: ${coverage}%`}
-      />
-      <SliderSetting setting="rate" formatLabel={(rate) => `Rate: ${rate}`} />
-      <Title order={2}>Pulse</Title>
-      <ColorSetting setting="pulseColor" label="Pulse color" />
-      <SliderSetting
-        setting="pulseIntensity"
-        formatLabel={(intensity) => `Pulse intensity: ${intensity}`}
-      />
-      <SliderSetting
-        setting="pulseAttack"
-        formatLabel={(tenths) => `Attack: ${formatTenths(tenths)} s`}
-      />
-      <SliderSetting
-        setting="pulseDecay"
-        formatLabel={(tenths) => `Decay: ${formatTenths(tenths)} s`}
-      />
-      <SliderSetting
-        setting="pulseMinDelay"
-        formatLabel={(seconds) => `Minimum delay: ${seconds} s`}
-      />
-      <SliderSetting
-        setting="pulseDelaySpread"
-        formatLabel={(seconds) => `Delay spread: ${seconds} s`}
-      />
+    <Stack gap="xl">
+      <ColumnTable />
+      <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+        <Stack>
+          <Title order={2}>Shift</Title>
+          <ColorSetting setting="firstColor" label="First color" />
+          <ColorSetting setting="secondColor" label="Second color" />
+          <SliderSetting
+            setting="coverage"
+            formatLabel={(coverage) => `Coverage: ${coverage}%`}
+          />
+          <SliderSetting
+            setting="rate"
+            formatLabel={(rate) => `Rate: ${rate}`}
+          />
+        </Stack>
+        <Stack>
+          <Title order={2}>Pulse</Title>
+          <ColorSetting setting="pulseColor" label="Pulse color" />
+          <SliderSetting
+            setting="pulseIntensity"
+            formatLabel={(intensity) => `Pulse intensity: ${intensity}`}
+          />
+          <SliderSetting
+            setting="pulseAttack"
+            formatLabel={(tenths) => `Attack: ${formatTenths(tenths)} s`}
+          />
+          <SliderSetting
+            setting="pulseDecay"
+            formatLabel={(tenths) => `Decay: ${formatTenths(tenths)} s`}
+          />
+          <SliderSetting
+            setting="pulseMinDelay"
+            formatLabel={(seconds) => `Minimum delay: ${seconds} s`}
+          />
+          <SliderSetting
+            setting="pulseDelaySpread"
+            formatLabel={(seconds) => `Delay spread: ${seconds} s`}
+          />
+        </Stack>
+      </SimpleGrid>
     </Stack>
   );
 }
