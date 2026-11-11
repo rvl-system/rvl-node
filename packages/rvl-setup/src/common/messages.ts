@@ -3,6 +3,8 @@
 // server assigns rvl-node's NodeStatus into Board, which keeps the two in
 // step at compile time
 
+export const SOCKET_PATH = '/rvl-setup/ws';
+
 export const COLOR_ORDERS = ['RGB', 'RBG', 'GRB', 'GBR', 'BRG', 'BGR'] as const;
 
 export type ColorOrder = (typeof COLOR_ORDERS)[number];

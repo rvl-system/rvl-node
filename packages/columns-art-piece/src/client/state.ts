@@ -1,10 +1,8 @@
 import { atom } from 'jotai';
 
-import { type Column, type Fleet, type Settings } from '../common/messages.ts';
+import { type Column, type Settings } from '../common/messages.ts';
 
-export const socketAtom = atom<'connecting' | 'open' | 'closed'>('connecting');
-
-export const fleetAtom = atom<Fleet | undefined>(undefined);
+export const hasHelloAtom = atom(false);
 
 export const columnsAtom = atom<Column[]>([]);
 

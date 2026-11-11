@@ -134,7 +134,7 @@ afterEach(() => {
 
 test('connect opens the socket on the page host and tracks its state', async () => {
   const { state, store, socket } = await loadClient();
-  expect(socket().url).toBe('ws://rvl-setup.test/ws');
+  expect(socket().url).toBe('ws://rvl-setup.test/rvl-setup/ws');
   expect(store.get(state.socketAtom)).toBe('connecting');
   socket().open();
   expect(store.get(state.socketAtom)).toBe('open');
@@ -223,7 +223,7 @@ test('configure sends the property and its value', async () => {
 test('a request before the socket opens rejects and sends nothing', async () => {
   const { connection, socket } = await loadClient();
   await expect(connection.identifyBoard(2)).rejects.toThrow(
-    'Not connected to rvl-setup'
+    'Not connected to the server'
   );
   expect(socket().sent).toHaveLength(0);
 });
@@ -234,7 +234,7 @@ test('a close rejects what is pending and reconnects after 250 ms', async () => 
   socket().receive(HELLO);
   const pending = connection.identifyBoard(2);
   const rejection = expect(pending).rejects.toThrow(
-    'Disconnected from rvl-setup'
+    'Disconnected from the server'
   );
   socket().close();
   expect(store.get(state.socketAtom)).toBe('closed');

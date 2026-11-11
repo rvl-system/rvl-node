@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { connectToSetup } from 'rvl-setup/client';
 
 import { App } from './App.tsx';
 import { connect } from './connection.ts';
@@ -14,6 +15,7 @@ if (!root) {
 }
 
 connect();
+connectToSetup();
 createRoot(root).render(
   <StrictMode>
     <MantineProvider theme={theme} defaultColorScheme="auto">

@@ -4,6 +4,10 @@
   "description": "Configures the boards on an RVL network from the browser",
   "type": "module",
   "private": true,
+  "exports": {
+    "./server": "./src/server/index.ts",
+    "./client": "./src/client/index.ts"
+  },
   "scripts": {
     "build": "vite build",
     "start": "node src/server/bin.ts",

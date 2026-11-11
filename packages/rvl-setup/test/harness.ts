@@ -158,7 +158,7 @@ export async function startTestServer() {
     const frames: ServerMessage[] = [];
     const waiting: ((message: ServerMessage) => void)[] = [];
     const ws = await server.injectWS(
-      '/ws',
+      '/rvl-setup/ws',
       {},
       {
         onInit: (socket) => {

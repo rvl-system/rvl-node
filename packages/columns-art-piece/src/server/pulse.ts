@@ -1,7 +1,7 @@
 import { FRAME_PERIOD, MIN_FADE_FRAMES, SCENE_LEAD_FRAMES } from 'rvl-node';
 
 import { type Column, type Settings } from '../common/messages.ts';
-import { getColumns } from './fleet.ts';
+import { getColumns } from './columns.ts';
 import { getSettings, sendColumnScene, showColumns } from './show.ts';
 
 // The longest rvl-node takes to land a change, since it holds one request

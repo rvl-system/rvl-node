@@ -5,6 +5,7 @@ import {
   type ClientRequest,
   type ConfigureFields,
   type ServerMessage,
+  SOCKET_PATH,
 } from '../common/messages.ts';
 import {
   boardFamily,
@@ -108,7 +109,9 @@ function applyMessage(message: ServerMessage): void {
 
 export function connect(): void {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const opening = new WebSocket(`${protocol}//${window.location.host}/ws`);
+  const opening = new WebSocket(
+    `${protocol}//${window.location.host}${SOCKET_PATH}`
+  );
   socket = opening;
   store.set(socketAtom, 'connecting');
   opening.addEventListener('open', () => {
@@ -119,7 +122,7 @@ export function connect(): void {
   });
   opening.addEventListener('close', () => {
     store.set(socketAtom, 'closed');
-    rejectPending('Disconnected from rvl-setup');
+    rejectPending('Disconnected from the server');
     setTimeout(connect, RETRY_DELAY);
   });
 }
@@ -128,7 +131,7 @@ export function connect(): void {
 function request(message: ClientRequest): Promise<Board> {
   return new Promise((resolve, reject) => {
     if (socket === undefined || socket.readyState !== WebSocket.OPEN) {
-      reject(new Error('Not connected to rvl-setup'));
+      reject(new Error('Not connected to the server'));
       return;
     }
     const requestId = nextRequestId;

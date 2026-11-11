@@ -1,7 +1,7 @@
 import { MIN_FADE_FRAMES, setAnimationParameters } from 'rvl-node';
 
 import { type Column, type Settings } from '../common/messages.ts';
-import { getColumns } from './fleet.ts';
+import { getColumns } from './columns.ts';
 import { buildColumnScene } from './scene.ts';
 
 let settings: Settings = {

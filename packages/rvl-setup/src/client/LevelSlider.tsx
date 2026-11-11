@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 import { useConfigure } from './useConfigure.ts';
 
-const SEND_INTERVAL = 250;
+const SEND_INTERVAL = 1000;
 
 type Props = {
   deviceId: number;

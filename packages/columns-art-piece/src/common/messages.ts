@@ -1,9 +1,5 @@
 // The wire between the server and the page
 
-export type Fleet = { interface: string } & (
-  { connected: true; deviceId: number } | { connected: false }
-);
-
 // One strip, found through the board on its channel
 export type Column = { channel: number; pixelCount: number };
 
@@ -49,8 +45,7 @@ export const NUMBER_RANGES: Record<
 };
 
 export type ServerMessage =
-  | { type: 'hello'; fleet: Fleet; columns: Column[]; settings: Settings }
-  | { type: 'fleet'; fleet: Fleet }
+  | { type: 'hello'; columns: Column[]; settings: Settings }
   | { type: 'columns'; columns: Column[] }
   | { type: 'settings'; settings: Settings };
 

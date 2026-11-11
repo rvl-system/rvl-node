@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import fastifyStatic from '@fastify/static';
 import fastifyWebsocket from '@fastify/websocket';
 import Fastify, { type FastifyInstance } from 'fastify';
+import { startFleetAndSetup } from 'rvl-setup/server';
 
 import {
   COLOR_SETTINGS,
@@ -13,7 +14,7 @@ import {
   type ServerMessage,
   type Settings,
 } from '../common/messages.ts';
-import { getColumns, getFleet, startFleet } from './fleet.ts';
+import { getColumns, replaceColumnsIfChanged } from './columns.ts';
 import { showColumnsBetweenPulses, startPulses } from './pulse.ts';
 import { applySettings, getSettings } from './show.ts';
 
@@ -45,15 +46,6 @@ function broadcast(message: ServerMessage): void {
   for (const client of clients) {
     send(client, message);
   }
-}
-
-function onFleetChange(what: 'fleet' | 'columns'): void {
-  if (what === 'fleet') {
-    broadcast({ type: 'fleet', fleet: getFleet() });
-    return;
-  }
-  showColumnsBetweenPulses();
-  broadcast({ type: 'columns', columns: getColumns() });
 }
 
 function readText(data: Buffer | ArrayBuffer | Buffer[]): string {
@@ -149,7 +141,7 @@ async function serveBuiltClient(server: FastifyInstance): Promise<void> {
 
 // Vite and middie load only here, so a start without --dev never imports
 // them. Vite's own HTML serving stays off: its fallback answers any GET,
-// the /ws upgrade included, which passes through the middlewares too
+// a socket's upgrade included, which passes through the middlewares too
 async function serveDevClient(server: FastifyInstance): Promise<void> {
   const [{ createServer }, { default: middie }] = await Promise.all([
     import('vite'),
@@ -189,7 +181,6 @@ export async function startServer({
     clients.add(socket);
     send(socket, {
       type: 'hello',
-      fleet: getFleet(),
       columns: getColumns(),
       settings: getSettings(),
     });
@@ -201,10 +192,16 @@ export async function startServer({
     });
   });
   startPulses();
-  startFleet({
+  startFleetAndSetup({
+    server,
     networkInterface,
-    onChange: onFleetChange,
-    onError: onFleetError,
+    onFleetError,
+    onBoardsChange: (boards) => {
+      if (replaceColumnsIfChanged(boards)) {
+        showColumnsBetweenPulses();
+        broadcast({ type: 'columns', columns: getColumns() });
+      }
+    },
   });
   await server.listen({ port, host: '0.0.0.0' });
   return server;
