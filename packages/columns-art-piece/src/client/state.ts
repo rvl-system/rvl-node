@@ -14,4 +14,10 @@ export const settingsAtom = atom<Settings>({
   secondColor: '#000000',
   coverage: 100,
   rate: 0,
+  pulseColor: '#000000',
+  pulseIntensity: 0,
+  pulseAttack: 5,
+  pulseDecay: 5,
+  pulseMinDelay: 0,
+  pulseDelaySpread: 0,
 });

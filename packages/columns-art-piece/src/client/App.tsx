@@ -6,6 +6,10 @@ import { FleetStatus } from './FleetStatus.tsx';
 import { SliderSetting } from './SliderSetting.tsx';
 import { columnsAtom, fleetAtom } from './state.ts';
 
+function formatTenths(tenths: number): string {
+  return (tenths / 10).toFixed(1);
+}
+
 function ColumnList() {
   const columns = useAtomValue(columnsAtom);
   if (columns.length === 0) {
@@ -47,6 +51,28 @@ export function App() {
             <SliderSetting
               setting="rate"
               formatLabel={(rate) => `Rate: ${rate}`}
+            />
+            <Title order={2}>Pulse</Title>
+            <ColorSetting setting="pulseColor" label="Pulse color" />
+            <SliderSetting
+              setting="pulseIntensity"
+              formatLabel={(intensity) => `Pulse intensity: ${intensity}`}
+            />
+            <SliderSetting
+              setting="pulseAttack"
+              formatLabel={(tenths) => `Attack: ${formatTenths(tenths)} s`}
+            />
+            <SliderSetting
+              setting="pulseDecay"
+              formatLabel={(tenths) => `Decay: ${formatTenths(tenths)} s`}
+            />
+            <SliderSetting
+              setting="pulseMinDelay"
+              formatLabel={(seconds) => `Minimum delay: ${seconds} s`}
+            />
+            <SliderSetting
+              setting="pulseDelaySpread"
+              formatLabel={(seconds) => `Delay spread: ${seconds} s`}
             />
           </>
         )}

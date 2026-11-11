@@ -9,27 +9,40 @@ let settings: Settings = {
   secondColor: '#0000ff',
   coverage: 120,
   rate: 8,
+  pulseColor: '#ffffff',
+  pulseIntensity: 255,
+  pulseAttack: 5,
+  pulseDecay: 30,
+  pulseMinDelay: 5,
+  pulseDelaySpread: 10,
 };
 
 export function getSettings(): Settings {
   return settings;
 }
 
-function showColumn({ channel, pixelCount }: Column): void {
-  void setAnimationParameters(channel, buildColumnScene(settings, pixelCount), {
-    fadeFrames: MIN_FADE_FRAMES,
-  });
+// Replaces the object, so a reference taken earlier keeps its values
+export function applySettings(changes: Partial<Settings>): void {
+  settings = { ...settings, ...changes };
+}
+
+export function sendColumnScene(
+  { channel, pixelCount }: Column,
+  sceneSettings: Settings,
+  withPulse: boolean,
+  fadeFrames: number
+): void {
+  void setAnimationParameters(
+    channel,
+    buildColumnScene(sceneSettings, pixelCount, withPulse),
+    { fadeFrames }
+  );
 }
 
 // rvl-node drops a scene its channel already has, so only a column whose
 // scene changed is sent
 export function showColumns(): void {
   for (const column of getColumns()) {
-    showColumn(column);
+    sendColumnScene(column, settings, false, MIN_FADE_FRAMES);
   }
-}
-
-export function applySettings(changes: Partial<Settings>): void {
-  settings = { ...settings, ...changes };
-  showColumns();
 }

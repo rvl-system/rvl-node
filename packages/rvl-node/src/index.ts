@@ -1,10 +1,12 @@
 export { init } from './rvl.ts';
 export {
+  FRAME_PERIOD,
   MAX_CURRENT_LIMIT,
   MAX_PIXEL_COUNT,
   MIN_FADE_FRAMES,
   NICKNAME_LENGTH,
   NUM_CHANNELS,
+  SCENE_LEAD_FRAMES,
 } from './config.ts';
 export { on } from './events.ts';
 export { createEmptyAnimation } from './parametric.ts';

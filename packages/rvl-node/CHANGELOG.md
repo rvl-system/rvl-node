@@ -6,7 +6,7 @@ These changes need firmware from the same change: a board's status packet is 33 
 
 Breaking changes:
 
-- The entry point exports only what another package in the workspace imports. These left it, each to return with its first importer: `setOff` and `getEarliestStartFrame`; `getAnimationClock`, `toAnimationClock`, `toLocalTime`, `subtractFrames` and `FRAME_PERIOD`; `createSolidColorAnimation`, `createColorCycleAnimation`, `createMovingAnimation`, `createPulsingAnimation`, `createRainbowAnimation` and `createSimpleWaveParameters`; and the types `AnimationColorParameters`, `ColorOrder`, `NodeCapabilities`, `NodeConfiguration` and `SceneOptions`
+- The entry point exports only what another package in the workspace imports. These left it, each to return with its first importer: `setOff` and `getEarliestStartFrame`; `getAnimationClock`, `toAnimationClock`, `toLocalTime` and `subtractFrames`; `createSolidColorAnimation`, `createColorCycleAnimation`, `createMovingAnimation`, `createPulsingAnimation`, `createRainbowAnimation` and `createSimpleWaveParameters`; and the types `AnimationColorParameters`, `ColorOrder`, `NodeCapabilities`, `NodeConfiguration` and `SceneOptions`
 - Removed `createAnimationParameters`. Parameters with fewer than four layers are padded with empty ones when they are sent, so nothing needs it
 
 New:
@@ -14,6 +14,7 @@ New:
 - Added `currentLimit` to `NodeConfiguration`, `NodeCapabilities` and `NodeStatus`. It is the continuous rating in mA of what feeds a board's strip, and the board scales its brightness down on any frame that would draw more. `configureNode` sets it, from 1 to `MAX_CURRENT_LIMIT`, and boards default to 1500
 - Added `MAX_CURRENT_LIMIT`, 65535, the largest value the current limit's 16-bit field on the wire holds
 - Added `MIN_FADE_FRAMES`, 16, the shortest fade a scene can ask for
+- Added `SCENE_LEAD_FRAMES`, 5, how far ahead of the current frame a scene with no start of its own begins
 
 ## 9.0.0 (2026-11-01)
 

@@ -14,7 +14,8 @@ import {
   type Settings,
 } from '../common/messages.ts';
 import { getColumns, getFleet, startFleet } from './fleet.ts';
-import { applySettings, getSettings, showColumns } from './show.ts';
+import { showColumnsBetweenPulses, startPulses } from './pulse.ts';
+import { applySettings, getSettings } from './show.ts';
 
 const PACKAGE_DIR = join(import.meta.dirname, '../..');
 const CLIENT_DIR = join(PACKAGE_DIR, 'dist/client');
@@ -51,7 +52,7 @@ function onFleetChange(what: 'fleet' | 'columns'): void {
     broadcast({ type: 'fleet', fleet: getFleet() });
     return;
   }
-  showColumns();
+  showColumnsBetweenPulses();
   broadcast({ type: 'columns', columns: getColumns() });
 }
 
@@ -133,6 +134,7 @@ function handleMessage(text: string | undefined): void {
     console.warn('Dropping settings the server does not accept');
   }
   applySettings(settings);
+  showColumnsBetweenPulses();
   broadcast({ type: 'settings', settings: getSettings() });
 }
 
@@ -198,6 +200,7 @@ export async function startServer({
       clients.delete(socket);
     });
   });
+  startPulses();
   startFleet({
     networkInterface,
     onChange: onFleetChange,
