@@ -1,0 +1,43 @@
+{
+  "name": "columns-art-piece",
+  "version": "1.0.0",
+  "description": "Runs the columns art piece: one animation stretched over each column's strip, changed from the browser",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "start": "node src/server/bin.ts",
+    "typecheck": "tsc && tsc -p src/client",
+    "lint": "eslint --report-unused-disable-directives \"**/*.{ts,tsx,mts,js,jsx,mjs}\"",
+    "dev": "node --watch src/server/bin.ts --dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rvl-system/rvl-js.git",
+    "directory": "packages/columns-art-piece"
+  },
+  "author": "Bryan Hughes <bryan@nebri.us>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/rvl-system/rvl-js/issues"
+  },
+  "homepage": "https://github.com/rvl-system/rvl-js/tree/main/packages/columns-art-piece",
+  "dependencies": {
+    "@fastify/static": "^10.1.8",
+    "@fastify/websocket": "^11.3.6",
+    "fastify": "^5.12.8",
+    "rvl-node": "*"
+  },
+  "devDependencies": {
+    "@fastify/middie": "^9.3.6",
+    "@mantine/core": "^9.7.4",
+    "@mantine/hooks": "^9.7.4",
+    "@types/connect": "^3.4.38",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.2",
+    "jotai": "^3.0.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

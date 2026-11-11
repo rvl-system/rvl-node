@@ -13,7 +13,7 @@
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces && eslint -c eslint.config.mjs .",
     "typecheck": "npm run typecheck --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.1",
