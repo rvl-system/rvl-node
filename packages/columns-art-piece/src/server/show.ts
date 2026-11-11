@@ -5,16 +5,16 @@ import { getColumns } from './columns.ts';
 import { buildColumnScene } from './scene.ts';
 
 let settings: Settings = {
-  firstColor: '#ff0000',
-  secondColor: '#0000ff',
+  firstColor: '#b30000',
+  secondColor: '#0000b3',
   coverage: 120,
   rate: 8,
-  pulseColor: '#ffffff',
+  pulseColor: '#ffbac7',
   pulseIntensity: 255,
   pulseAttack: 5,
-  pulseDecay: 30,
-  pulseMinDelay: 5,
-  pulseDelaySpread: 10,
+  pulseDecay: 18,
+  pulseMinDelay: 1,
+  pulseDelaySpread: 7,
 };
 
 export function getSettings(): Settings {
