@@ -2,12 +2,17 @@ import { type NodeStatus } from 'rvl-node';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import {
-  type Board,
   type ConfigureFields,
   type Fleet,
   type Limits,
 } from '../src/common/messages.ts';
-import { board, type Client, startTestServer } from './harness.ts';
+import {
+  answering,
+  board,
+  type Client,
+  silent,
+  startTestServer,
+} from './harness.ts';
 
 type TestServer = Awaited<ReturnType<typeof startTestServer>>;
 
@@ -27,14 +32,6 @@ beforeEach(async () => {
 });
 
 afterEach(() => fleet.stop());
-
-function answering(status: NodeStatus): Board {
-  return { ...status, answering: true };
-}
-
-function silent(status: NodeStatus): Board {
-  return { ...status, answering: false };
-}
 
 // A client on a joined fleet with boards 2 and 3 listed, its frames consumed
 async function connectListed(): Promise<Client> {

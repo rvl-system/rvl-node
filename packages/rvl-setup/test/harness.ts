@@ -1,9 +1,16 @@
+import fastifyWebsocket from '@fastify/websocket';
+import Fastify, { type FastifyInstance } from 'fastify';
 import { type NodeStatus } from 'rvl-node';
 import { vi } from 'vitest';
 
-import { type ServerMessage } from '../src/common/messages.ts';
+import { type Board, type ServerMessage } from '../src/common/messages.ts';
 
 type Listener = (...args: unknown[]) => void;
+
+type Fixtures = {
+  warn: ReturnType<typeof quietConsoleWarn>;
+  onFleetError: ReturnType<typeof vi.fn<(error: Error) => void>>;
+};
 
 type Call = {
   name: 'getNodes' | 'configureNode' | 'identifyNode';
@@ -109,6 +116,14 @@ export function board(
   };
 }
 
+export function answering(status: NodeStatus): Board {
+  return { ...status, answering: true };
+}
+
+export function silent(status: NodeStatus): Board {
+  return { ...status, answering: false };
+}
+
 export type Client = {
   frames: ServerMessage[];
   next: () => Promise<ServerMessage>;
@@ -118,24 +133,57 @@ export type Client = {
   close: () => Promise<void>;
 };
 
-// A fresh server on an ephemeral port over a fresh rvl-node fake, with the
-// console quiet and the module registry cleared so every module's state
-// starts over. Fake timers go on only once Fastify is up, so it started on
-// real ones; the one timer faked after that is the listing interval
-export async function startTestServer() {
+function quietConsoleWarn() {
+  return vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+}
+
+// A fresh rvl-node fake, with the console quiet and the module registry
+// cleared so every module's state starts over
+function resetFakeAndModules(): Fixtures {
   vi.restoreAllMocks();
   vi.useRealTimers();
-  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+  const warn = quietConsoleWarn();
   fake.reset();
   vi.resetModules();
+  return { warn, onFleetError: vi.fn<(error: Error) => void>() };
+}
+
+// rvl-setup's own server, on an ephemeral port
+export async function startTestServer() {
+  const fixtures = resetFakeAndModules();
   const { startServer } = await import('../src/server/server.ts');
-  const onFleetError = vi.fn<(error: Error) => void>();
   const server = await startServer({
     port: 0,
     networkInterface: 'en0',
     dev: false,
-    onFleetError,
+    onFleetError: fixtures.onFleetError,
   });
+  return driveStartedServer(server, fixtures);
+}
+
+// A host over the library, as an app that includes Setup is: its own
+// Fastify instance and a callback for the boards
+export async function startTestHost(onBoardsChange: (boards: Board[]) => void) {
+  const fixtures = resetFakeAndModules();
+  const { startFleetAndSetup } = await import('../src/server/setup.ts');
+  const server = Fastify({ logger: false });
+  await server.register(fastifyWebsocket);
+  startFleetAndSetup({
+    server,
+    networkInterface: 'en0',
+    onFleetError: fixtures.onFleetError,
+    onBoardsChange,
+  });
+  await server.ready();
+  return driveStartedServer(server, fixtures);
+}
+
+// Fake timers go on only now that Fastify is up, so it started on real
+// ones; the one timer faked after that is the listing interval
+function driveStartedServer(
+  server: FastifyInstance,
+  { warn, onFleetError }: Fixtures
+) {
   vi.useFakeTimers({
     toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
   });
