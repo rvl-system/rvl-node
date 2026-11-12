@@ -1,0 +1,17 @@
+[Unit]
+Description=Columns art piece
+# The app exits until wlan0 has an address on the fleet's network, so the
+# restarts must never run out
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=node /home/pi/rvl-js/packages/columns-art-piece/src/server/bin.ts --interface wlan0 --port 80
+Restart=always
+RestartSec=5
+SyslogIdentifier=columns-art-piece
+User=pi
+# Port 80 without root
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
