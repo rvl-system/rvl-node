@@ -5,10 +5,18 @@ import { getColumns } from './columns.ts';
 import { buildColumnScene } from './scene.ts';
 
 let settings: Settings = {
-  firstColor: '#b30000',
-  secondColor: '#0000b3',
-  coverage: 120,
-  rate: 8,
+  animation: 'shift',
+  shiftFirstColor: '#b30000',
+  shiftSecondColor: '#0000b3',
+  shiftCoverage: 120,
+  shiftRate: 8,
+  waveColor: '#b30000',
+  waveForegroundColor: '#0000b3',
+  waveBackgroundColor: '#00b300',
+  waveRate: 8,
+  waveCrests: 1,
+  colorCycleRate: 3,
+  pulseEnabled: true,
   pulseColor: '#ffbac7',
   pulseIntensity: 255,
   pulseAttack: 5,

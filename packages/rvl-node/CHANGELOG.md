@@ -6,7 +6,7 @@ These changes need firmware from the same change: a board's status packet is 33 
 
 Breaking changes:
 
-- The entry point exports only what another package in the workspace imports. These left it, each to return with its first importer: `setOff` and `getEarliestStartFrame`; `getAnimationClock`, `toAnimationClock`, `toLocalTime` and `subtractFrames`; `createSolidColorAnimation`, `createColorCycleAnimation`, `createMovingAnimation`, `createPulsingAnimation`, `createRainbowAnimation` and `createSimpleWaveParameters`; and the types `AnimationColorParameters`, `ColorOrder`, `NodeCapabilities`, `NodeConfiguration` and `SceneOptions`
+- The entry point exports only what another package in the workspace imports. These left it, each to return with its first importer: `setOff` and `getEarliestStartFrame`; `getAnimationClock`, `toAnimationClock`, `toLocalTime` and `subtractFrames`; `createSolidColorAnimation`, `createMovingAnimation`, `createPulsingAnimation`, `createRainbowAnimation` and `createSimpleWaveParameters`; and the types `AnimationColorParameters`, `ColorOrder`, `NodeCapabilities`, `NodeConfiguration` and `SceneOptions`
 - Removed `createAnimationParameters`. Parameters with fewer than four layers are padded with empty ones when they are sent, so nothing needs it
 
 New:

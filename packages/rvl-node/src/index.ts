@@ -9,7 +9,10 @@ export {
   SCENE_LEAD_FRAMES,
 } from './config.ts';
 export { on } from './events.ts';
-export { createEmptyAnimation } from './parametric.ts';
+export {
+  createColorCycleAnimation,
+  createEmptyAnimation,
+} from './parametric.ts';
 export { setAnimationParameters } from './protocols/animation.ts';
 export {
   configureNode,

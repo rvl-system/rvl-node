@@ -5,6 +5,7 @@ import {
   rem,
   SimpleGrid,
   Stack,
+  Switch,
   Table,
   Tabs,
   Text,
@@ -13,9 +14,11 @@ import {
 import { useAtomValue } from 'jotai';
 import { FleetStatus, SetupPanel } from 'rvl-setup/client';
 
+import { BaseAnimationSection } from './BaseAnimationSection.tsx';
 import { ColorSetting } from './ColorSetting.tsx';
 import { SliderSetting } from './SliderSetting.tsx';
 import { columnsAtom, hasHelloAtom } from './state.ts';
+import { useSetting } from './useSetting.ts';
 
 // The table's own border, between the labels and the channels only
 const LABEL_STYLE = {
@@ -51,6 +54,20 @@ function ColumnTable() {
   );
 }
 
+function PulseSwitch() {
+  const [enabled, changeEnabled] = useSetting('pulseEnabled');
+  return (
+    <Switch
+      size="md"
+      aria-label="Pulse enabled"
+      checked={enabled}
+      onChange={(event) => {
+        changeEnabled(event.currentTarget.checked);
+      }}
+    />
+  );
+}
+
 function AnimationPanel() {
   const hasHello = useAtomValue(hasHelloAtom);
   if (!hasHello) {
@@ -65,21 +82,12 @@ function AnimationPanel() {
     <Stack gap="xl">
       <ColumnTable />
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+        <BaseAnimationSection />
         <Stack>
-          <Title order={2}>Shift</Title>
-          <ColorSetting setting="firstColor" label="First color" />
-          <ColorSetting setting="secondColor" label="Second color" />
-          <SliderSetting
-            setting="coverage"
-            formatLabel={(coverage) => `Coverage: ${coverage}%`}
-          />
-          <SliderSetting
-            setting="rate"
-            formatLabel={(rate) => `Rate: ${rate}`}
-          />
-        </Stack>
-        <Stack>
-          <Title order={2}>Pulse</Title>
+          <Group>
+            <Title order={2}>Pulse</Title>
+            <PulseSwitch />
+          </Group>
           <ColorSetting setting="pulseColor" label="Pulse color" />
           <SliderSetting
             setting="pulseIntensity"

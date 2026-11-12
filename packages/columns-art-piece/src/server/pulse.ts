@@ -48,7 +48,8 @@ function pickColumnNotRecentlyPulsed(columns: Column[]): Column {
 
 function startPulseOnRandomColumn(): void {
   const columns = getColumns();
-  if (columns.length === 0) {
+  const settings = getSettings();
+  if (columns.length === 0 || !settings.pulseEnabled) {
     scheduleNextPulse(0);
     return;
   }
@@ -57,7 +58,7 @@ function startPulseOnRandomColumn(): void {
     -RECENT_PULSES_AVOIDED
   );
   // Kept for the decay, which has to undo exactly what the attack sent
-  const pulse: Pulse = { column, settings: getSettings() };
+  const pulse: Pulse = { column, settings };
   const fadeFrames = convertTenthsToFrames(pulse.settings.pulseAttack);
   isPulsePlaying = true;
   sendColumnScene(pulse.column, pulse.settings, true, fadeFrames);

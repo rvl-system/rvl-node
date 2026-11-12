@@ -9,6 +9,7 @@ import { startFleetAndSetup } from 'rvl-setup/server';
 
 import {
   COLOR_SETTINGS,
+  isAnimation,
   NUMBER_RANGES,
   NUMBER_SETTINGS,
   type ServerMessage,
@@ -100,6 +101,12 @@ function pickValidSettings(
   candidate: Record<string, unknown>
 ): Partial<Settings> {
   const settings: Partial<Settings> = {};
+  if (isAnimation(candidate.animation)) {
+    settings.animation = candidate.animation;
+  }
+  if (typeof candidate.pulseEnabled === 'boolean') {
+    settings.pulseEnabled = candidate.pulseEnabled;
+  }
   for (const key of COLOR_SETTINGS) {
     const value = candidate[key];
     if (isColor(value)) {

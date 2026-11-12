@@ -1,13 +1,19 @@
 import {
   type AnimationLayer,
   type AnimationParameters,
+  createColorCycleAnimation,
   createEmptyAnimation,
 } from 'rvl-node';
 
-import { type Settings } from '../common/messages.ts';
+import { type Animation, type Settings } from '../common/messages.ts';
 import { convertToFirmwareColor } from './color.ts';
 
 type Sweep = AnimationLayer['h'];
+// The layers under the pulse's, top first
+type BaseSceneBuilder = (
+  settings: Settings,
+  pixelCount: number
+) => AnimationParameters;
 
 const FULL_CYCLE = 256;
 const HALF_CYCLE = 128;
@@ -46,29 +52,32 @@ function calculateDistancePeriod(pixelCount: number, span: number): number {
 
 // One color over the whole column. It goes in each b, since a layer that
 // doesn't move shows only half of an a
-function buildPulseLayer(settings: Settings): AnimationLayer {
-  const color = convertToFirmwareColor(settings.pulseColor);
+function buildSolidLayer(hex: string): AnimationLayer {
+  const color = convertToFirmwareColor(hex);
   const layer = createEmptyAnimation();
   layer.h.b = color.h;
   layer.s.b = color.s;
   layer.v.b = color.v;
+  return layer;
+}
+
+function buildPulseLayer(settings: Settings): AnimationLayer {
+  const layer = buildSolidLayer(settings.pulseColor);
   layer.a.b = settings.pulseIntensity;
   return layer;
 }
 
-// Shift, with the two colors trading places, under the pulse's color when
-// asked. At a coverage of 100 a column shows the half cycle from one color to
-// the other, end to end. Every field is an integer in the encoder's range
-export function buildColumnScene(
+// The two colors trading places. At a coverage of 100 a column shows the
+// half cycle from one color to the other, end to end
+function buildShiftScene(
   settings: Settings,
-  pixelCount: number,
-  withPulse: boolean
+  pixelCount: number
 ): AnimationParameters {
-  const near = convertToFirmwareColor(settings.firstColor);
-  const far = convertToFirmwareColor(settings.secondColor);
+  const near = convertToFirmwareColor(settings.shiftFirstColor);
+  const far = convertToFirmwareColor(settings.shiftSecondColor);
   // In phase steps: what a column covers, and how far that runs past each
   // color
-  const span = Math.round((HALF_CYCLE * settings.coverage) / 100);
+  const span = Math.round((HALF_CYCLE * settings.shiftCoverage) / 100);
   const bleed = Math.round((span - HALF_CYCLE) / 2);
 
   const opaque = createEmptyAnimation();
@@ -82,15 +91,63 @@ export function buildColumnScene(
   fading.s = reverseSweep(opaque.s);
   fading.v = reverseSweep(opaque.v);
   fading.a.a = 255;
-  fading.a.w_t = settings.rate;
+  fading.a.w_t = settings.shiftRate;
 
   return {
     distancePeriod: calculateDistancePeriod(pixelCount, span),
-    // The top slot is the pulse's, and the encoder pads the bottom one
+    animations: [fading, opaque],
+  };
+}
+
+// A board's Wave: crests of one color travel over the background while the
+// foreground swells over the whole column. A column is one period, so it
+// holds the crests asked for
+function buildWaveScene(
+  settings: Settings,
+  pixelCount: number
+): AnimationParameters {
+  const wave = buildSolidLayer(settings.waveColor);
+  wave.a.a = 255;
+  wave.a.w_t = settings.waveRate;
+  wave.a.w_x = settings.waveCrests;
+  const foreground = buildSolidLayer(settings.waveForegroundColor);
+  foreground.a.a = 255;
+  foreground.a.w_t = settings.waveRate;
+  // In the bottom slot, which the firmware draws opaque
+  const background = buildSolidLayer(settings.waveBackgroundColor);
+  return {
+    distancePeriod: Math.min(pixelCount, MAX_DISTANCE_PERIOD),
+    animations: [wave, foreground, background],
+  };
+}
+
+function buildColorCycleScene(settings: Settings): AnimationParameters {
+  return {
+    animations: [createColorCycleAnimation(settings.colorCycleRate, 255)],
+  };
+}
+
+const BASE_SCENE_BUILDERS: Record<Animation, BaseSceneBuilder> = {
+  shift: buildShiftScene,
+  wave: buildWaveScene,
+  colorCycle: buildColorCycleScene,
+};
+
+// The chosen animation, under the pulse's color when asked. Every field is
+// an integer in the encoder's range
+export function buildColumnScene(
+  settings: Settings,
+  pixelCount: number,
+  withPulse: boolean
+): AnimationParameters {
+  const base = BASE_SCENE_BUILDERS[settings.animation](settings, pixelCount);
+  return {
+    ...base,
+    // The top slot is the pulse's, and the encoder pads any left at the
+    // bottom
     animations: [
       withPulse ? buildPulseLayer(settings) : createEmptyAnimation(),
-      fading,
-      opaque,
+      ...base.animations,
     ],
   };
 }

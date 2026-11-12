@@ -68,7 +68,6 @@ export function createSolidColorAnimation(
   return layer;
 }
 
-// eslint-disable-next-line import-integrity/no-test-only-imports -- temporary: joins the entry point with the first app to offer this pattern
 export function createColorCycleAnimation(
   rate: number,
   a: number
